@@ -1,0 +1,11 @@
+{
+  "devDependencies": {
+    "@babel/cli": "^7.10.1",
+    "@babel/core": "^7.10.2",
+    "@babel/preset-env": "^7.10.2"
+  },
+  "scripts": {
+    "test": "node lib/test.js",
+    "build": "babel src -d lib"
+  }
+}
