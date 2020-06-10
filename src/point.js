@@ -1,5 +1,6 @@
 import Vector from "./vector";
 import Utility from "./utility";
+import ZeroTest from "./zerotest";
 
 export default class Point
 {
@@ -45,6 +46,11 @@ export default class Point
         var x = p2.x - this.x;
         var y = p2.y - this.y;
         return new Vector(x, y);
+    }
+
+    isOrigin()
+    {
+        return ZeroTest.isZero(this.x) && ZeroTest.isZero(this.y);
     }
 
     coords()

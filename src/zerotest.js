@@ -4,4 +4,9 @@ export default class ZeroTest
     {
         return (number == 0) || Math.abs(number) < 0.000000000000001;
     }
+
+    static isEqual(a, b)
+    {
+        return this.isZero(a-b);
+    }
 }

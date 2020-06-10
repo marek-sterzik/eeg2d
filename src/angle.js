@@ -66,6 +66,19 @@ export default class Angle
         return new Angle(this.radians - a2.radians);
     }
 
+    normalize()
+    {
+        if (this.radians < 0) {
+            var n = Math.ceil((- this.radians) / (2 * Math.PI));
+            return new Angle(this.radians + 2 * n * Math.PI);
+        } else if (this.radians >= 2 * Math.PI) {
+            var n = Math.floor(this.radians / (2 * Math.PI));
+            return new Angle(this.radians - 2 * n * Math.PI);
+        } else {
+            return this;
+        }
+    }
+
     sin()
     {
         return Math.sin(this.radians);
