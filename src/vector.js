@@ -1,6 +1,6 @@
-import Utility from "./utility";
-import ZeroTest from "./zerotest";
-import Angle from "./angle";
+import Utility from "./utility.js";
+import ZeroTest from "./zerotest.js";
+import Angle from "./angle.js";
 
 export default class Vector
 {

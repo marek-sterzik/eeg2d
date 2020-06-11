@@ -1,9 +1,9 @@
-import Utility from "./utility";
-import Vector from "./vector";
-import Point from "./point";
-import Angle from "./angle";
-import TransformationMatrix from "./matrix";
-import ZeroTest from "./zerotest";
+import Utility from "./utility.js";
+import Vector from "./vector.js";
+import Point from "./point.js";
+import Angle from "./angle.js";
+import TransformationMatrix from "./matrix.js";
+import ZeroTest from "./zerotest.js";
 
 export default class Transformation
 {

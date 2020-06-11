@@ -1,5 +1,5 @@
-import Utility from "./utility";
-import ZeroTest from "./zerotest";
+import Utility from "./utility.js";
+import ZeroTest from "./zerotest.js";
 
 export default class Angle
 {
