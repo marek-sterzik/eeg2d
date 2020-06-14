@@ -167,7 +167,12 @@ export default class Transformation
 
     toString()
     {
-        return TransformationOperationStringifier.operationsToString(this.getOperations());
+        var args;
+        if (args = Utility.args(arguments, ["percision", "number", "default", null])) {
+        } else {
+            throw "Invalid arguments for toString()";
+        }
+        return TransformationOperationStringifier.operationsToString(this.getOperations(), args.percision);
     }
 
     interpolate(t2, x)
@@ -281,7 +286,12 @@ class TransformationDecomposition
 
     toString()
     {
-        return TransformationOperationStringifier.operationsToString(this.getOperations());
+        var args;
+        if (args = Utility.args(arguments, ["percision", "number", "default", null])) {
+        } else {
+            throw "Invalid arguments for toString()";
+        }
+        return TransformationOperationStringifier.operationsToString(this.getOperations(), args.percision);
     }
 
     compose(t2)
@@ -427,7 +437,7 @@ class TransformationOperationStringifier
         return canonicalDecomposition;
     }
 
-    static operationsToString(operations)
+    static operationsToString(operations, percision)
     {
         var string = '';
         var decomposition = this.getCanonicalOperations(operations);
@@ -460,6 +470,14 @@ class TransformationOperationStringifier
             case 'skewY':
                 args.push(operation.angle.deg());
                 break;
+            case 'matrix':
+                args.push(operation.matrix.m[0][0]);
+                args.push(operation.matrix.m[1][0]);
+                args.push(operation.matrix.m[0][1]);
+                args.push(operation.matrix.m[1][1]);
+                args.push(operation.matrix.m[0][2]);
+                args.push(operation.matrix.m[1][2]);
+                break;
             default:
                 throw "This should never happen.";
             }
@@ -472,7 +490,11 @@ class TransformationOperationStringifier
                 if (j > 0) {
                     string += ' ';
                 }
-                string += args[j];
+                var a = args[j];
+                if (typeof a === 'number' && percision !== null) {
+                    a = a.toFixed(percision).replace(/\.?0+$/, '');
+                }
+                string += a;
             }
             string += ')';
         }

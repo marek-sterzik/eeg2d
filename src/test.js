@@ -15,9 +15,9 @@ function main(geometry)
 
     var transformation = t1.compose(t2).compose(t3).compose(t4);
 
-    var decomposition = transformation.decompose();
+    transformation = transformation.decompose();
 
-    console.log(decomposition.toString());
+    console.log(transformation.toString(4));
 }
 
 import('./geometry.js').then(main);
