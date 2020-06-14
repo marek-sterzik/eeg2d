@@ -52,14 +52,4 @@ export default class Point
     {
         return ZeroTest.isZero(this.x) && ZeroTest.isZero(this.y);
     }
-
-    coords()
-    {
-        return [this.x, this.y];
-    }
-
-    copy()
-    {
-        return new Point(this.x, this.y);
-    }
 }

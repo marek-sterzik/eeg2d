@@ -84,7 +84,7 @@ export default class Transformation
             angle = args.angle;
             center = args.center;
         } else {
-            throw "Cannot construct a skew matrix from the given arguments";
+            throw "Cannot construct a skewX matrix from the given arguments";
         }
 
         return new Transformation(MatrixGenerator.skewX(angle, center));
@@ -101,26 +101,30 @@ export default class Transformation
             angle = args.angle;
             center = args.center;
         } else {
-            throw "Cannot construct a skew matrix from the given arguments";
+            throw "Cannot construct a skewY matrix from the given arguments";
         }
 
         return new Transformation(MatrixGenerator.skewY(angle, center));
     }
 
-
-    copy()
+    getTransformation()
     {
-        return new MatrixTransform(this.matrix);
+        return this;
+    }
+
+    _getCanonicalDecomposition(defaultCenterPoint)
+    {
+        return this.decompose(defaultCenterPoint);
     }
 
     compose(t2)
     {
-        return new MatrixTransformation(this.matrix.mul(t2.matrix));
+        return new Transformation(this.matrix.mul(t2.getTransformation().matrix));
     }
 
     inv()
     {
-        return new MatrixTransformation(this.matrix.inv())
+        return new Transformation(this.matrix.inv())
     }
 
     transformPoint(p)
@@ -136,101 +140,312 @@ export default class Transformation
     decompose()
     {
         var args;
-        var centerPoint;
-        
-        if (args = Utility.args(arguments)) {
-            centerPoint = new Point(0, 0);
-        } else if (args = Utility.args(arguments, ["centerPoint", Point])) {
+        var centerPoint, mode;
+        var origin = Point.origin();
+
+        if (args = Utility.args(arguments, ["centerPoint", Point, "default", origin], ["mode", "string", "default", "skewX"])) {
             centerPoint = args.centerPoint;
+            mode = args.mode;
+        } else if (args = Utility.args(arguments, ["mode", "string", "default", "skewX"])) {
+            centerPoint = origin;
+            mode = args.mode;
         } else {
             throw "Invalid arguments for the decompose() method";
         }
 
-        return new TransformationDecomposition(this.matrix, centerPoint);
+        if (mode !== 'skewX' && mode !== 'skewY' && mode !== 'matrix') {
+            throw "Invalid decomposition mode";
+        }
+
+        return new TransformationDecomposition(this, centerPoint, mode);
+    }
+
+    getOperations()
+    {
+        return [{"type": "matrix", "matrix": this.matrix}];
+    }
+
+    toString()
+    {
+        return TransformationOperationStringifier.operationsToString(this.getOperations());
+    }
+
+    interpolate(t2, x)
+    {
+        if (t2 instanceof TransformationDecomposition) {
+            return this._getCanonicalDecomposition(t2.centerPoint).interpolate(t2, x);
+        } else {
+            return this._getCanonicalDecomposition(Point.origin()).interpolate(t2, x);
+        }
     }
 }
 
 class TransformationDecomposition
 {
-    constructor(matrix, centerPoint)
+    constructor(transformation, centerPoint, mode)
     {
-        this.decomposition = this.decomposeTransformationInOrigin(matrix);
+        var matrix = transformation.matrix;
+
+        var az = Angle.zero();
+        this.centerPoint = centerPoint;
+        this.skewX = az;
+        this.skewY = az;
+        this.scaleX = 1;
+        this.scaleY = 1;
+        this.rotation = az;
+        this.translation = Vector.zero();
+        this.matrix = null;
+        this.transformation = transformation;
+
+        //Calculate the whole decomposition
+        var bx = new Vector(1, 0);
+        var by = new Vector(0, 1);
+        var bxImage, byImage;
+
+        if (matrix.isRegular() || mode !== 'matrix') {
+            //decompose skew part
+            bxImage = matrix.transformVector(bx);
+            byImage = matrix.transformVector(by);
+
+            if (mode === 'skewX') {
+                this.skewX = Angle.atan(bxImage.mul(byImage)/byImage.mul(byImage));
+                matrix = matrix.mul(MatrixGenerator.skewX(this.skewX.mul(-1), centerPoint));
+            } else {
+                this.skewY = Angle.atan(bxImage.mul(byImage)/bxImage.mul(bxImage));
+                matrix = matrix.mul(MatrixGenerator.skewY(this.skewY.mul(-1), centerPoint));
+            }
+            
+            //decompose scale
+            bxImage = matrix.transformVector(bx);
+            byImage = matrix.transformVector(by);
+            this.scaleX = bxImage.size();
+            this.scaleY = byImage.size();
+
+            //decompose flip
+            var bxImageRot = bxImage.rot(Angle.inDegrees(90));
+            if (bxImageRot.mul(byImage) < 0) {
+                this.scaleY = -this.scaleY;
+            }
+            
+            matrix = matrix.mul(MatrixGenerator.scale(1/this.scaleX, 1/this.scaleY, centerPoint));
+
+            //decompose rotation
+            bxImage = matrix.transformVector(bx);
+            this.rotation = bx.angleTo(bxImage);
+            
+            matrix = matrix.mul(MatrixGenerator.rotate(this.rotation.mul(-1), centerPoint));
+
+            //decompose translation
+            this.translation = centerPoint.vectorTo(matrix.transformPoint(centerPoint));
+        } else {
+            this.matrix = matrix;
+        }
+
+        Object.freeze(this);
     }
 
-    decomposeTransformationInOrigin(matrix)
+    getOperations()
     {
         var decomposition = [];
-        var origin = Point.origin();
-        var v = origin.vectorTo(matrix.transformPoint(origin));
-        if (!v.isZero()) {
-            decomposition.push({"type": "translate", "vector": v});
+
+        if (!this.translation.isZero()) {
+            decomposition.push({"type": "translate", "vector": this.translation});
         }
-        matrix = MatrixGenerator.translate(v.mul(-1)).mul(matrix);
 
-        var b1 = new Vector(1, 0);
-        var b2 = new Vector(0, 1);
-
-        var b1x = matrix.transformVector(b1);
-
-        if (b1x.isZero()) {
-            var b2x = matrix.transformVector(b2);
-            if (b2x.isZero()) {
-                decomposition.push({"type": "scale", "a": 0, "b": 0});
-            } else {
-                var angle = b2.angleTo(b2x);
-                if (!angle.isZero()) {
-                    decomposition.push({"type": "rotate", "angle": angle, "center": Point.origin()});
-                }
-                matrix = MatrixGenerator.rotate(angle.mul(-1), null).mul(matrix);
-                var b = b2x.mul(b2);
-                decomposition.push({"type": "scale", "a" : 0, "b": b});
-            }
-        } else {
-            var angle = b1.angleTo(b1x);
-            if (!angle.isZero()) {
-                decomposition.push({"type": "rotate", "angle": angle, "center": Point.origin()})
-            }
-            matrix = MatrixGenerator.rotate(angle.mul(-1), null).mul(matrix);
-            var b2x = matrix.transformVector(b2);
-            if (b2x.isZero()) {
-                var a = b1.mul(matrix.transformVector(b1));
-                decomposition.push({"type": "scale", "a" : a, "b": 0});
-            } else {
-                var angle2 = b2x.angleTo(b2);
-                if (!angle2.isZero()) {
-                    decomposition.push({"type": "skewX", "angle": angle2});
-                }
-                matrix = MatrixGenerator.skewX(angle2.mul(-1), null).mul(matrix);
-
-                var a = b1.mul(matrix.transformVector(b1));
-                var b = b2.mul(matrix.transformVector(b2));
-
-                if (!ZeroTest.isEqual(a, 1) || !ZeroTest.isEqual(b, 1)) {
-                    decomposition.push({"type": "scale", "a": a, "b": b});
-                }
-            }
+        if (!this.rotation.isZero()) {
+            decomposition.push({"type": "rotate", "angle": this.rotation, "centerPoint": this.centerPoint});
         }
+
+        if (!ZeroTest.isEqual(this.scaleX, 1) || !ZeroTest.isEqual(this.scaleY, 1)) {
+            decomposition.push({"type": "scale", "scaleX": this.scaleX, "scaleY": this.scaleY, "centerPoint": this.centerPoint});
+        }
+
+        if (!this.skewX.isZero()) {
+            decomposition.push({"type": "skewX", "angle": this.skewX, "centerPoint": this.centerPoint});
+        }
+
+        if (!this.skewY.isZero()) {
+            decomposition.push({"type": "skewY", "angle": this.skewY, "centerPoint": this.centerPoint});
+        }
+
+        if (this.matrix !== null) {
+            decomposition.push({"type": "matrix", "matrix": this.matrix});
+        }
+
+        if (decomposition.length === 0) {
+            decomposition.push({"type": "translate", "vector": Vector.zero()});
+        }
+
         return decomposition;
     }
 
     toString()
     {
+        return TransformationOperationStringifier.operationsToString(this.getOperations());
+    }
+
+    compose(t2)
+    {
+        return this.transformation.compose(t2);
+    }
+
+    decompose()
+    {
+        return this.transformation.decompose.apply(this.transformation, arguments);
+    }
+
+    transformPoint(p)
+    {
+        return this.transformation.transformPoint(p);
+    }
+
+    transformVector(v)
+    {
+        return this.transformation.transformVector(v);
+    }
+
+    inv()
+    {
+        return this.transformation.inv();
+    }
+
+    getTransformation()
+    {
+        return this.transformation;
+    }
+
+    _getCanonicalDecomposition(defaultCenterPoint)
+    {
+        return this;
+    }
+
+    interpolate(t2, x)
+    {
+        t2 = t2._getCanonicalDecomposition(this.centerPoint);
+        //FIXME implement interpolation
+    }
+}
+
+class MatrixGenerator
+{
+    static translate(v)
+    {
+        return new TransformationMatrix(1, 0, 0, 1, v.x, v.y);
+    }
+
+    static rotate(angle, center)
+    {
+        var tr = new TransformationMatrix(angle.cos(), angle.sin(), -angle.sin(), angle.cos(), 0, 0);
+
+        return this._moveCenter(tr, center);
+    }
+
+    static scale(a, b, center)
+    {
+        var tr = new TransformationMatrix(a, 0, 0, b, 0, 0);
+
+        return this._moveCenter(tr, center);
+    }
+
+    static skewX(angle, center)
+    {
+        var tr = new TransformationMatrix(1, angle.tan(), 0, 1, 0, 0);
+
+        return this._moveCenter(tr, center);
+    }
+
+    static skewY(angle, center)
+    {
+        var tr = new TransformationMatrix(1, 0, angle.tan(), 1, 0, 0);
+
+        return this._moveCenter(tr, center);
+    }
+
+    static _moveCenter(m, center)
+    {
+        if (center !== null) {
+            var v = Point.origin().vectorTo(center);
+            if (!v.isZero()) {
+                var t1 = this.translate(v);
+                var t2 = this.translate(v.mul(-1));
+                m = t1.mul(m).mul(t2);
+            }
+        }
+        return m;
+    }
+
+}
+
+class TransformationOperationStringifier
+{
+    static getCanonicalOperations(decomposition)
+    {
+        var canonicalDecomposition = [];
+        var translateVector = Vector.zero();
+        var origin = Point.origin();
+
+        for (var i = 0; i < decomposition.length; i++) {
+            var operation = decomposition[i];
+            if (operation.type === 'translate') {
+                translateVector = translateVector.add(operation.vector);
+            } else {
+                var needsShift = (operation.type !== 'rotate' && operation.type !== 'matrix');
+                var shiftVector;
+                
+                if (needsShift) {
+                    shiftVector = origin.vectorTo(operation.centerPoint);
+                    translateVector = translateVector.add(shiftVector);
+                }
+                
+                if (!translateVector.isZero()) {
+                    canonicalDecomposition.push({"type": "translate", "vector": translateVector});
+                }
+                
+                var op2;
+                
+                if (needsShift) {
+                    op2 = Object.assign({}, operation);
+                    delete op2.centerPoint;
+                } else {
+                    op2 = operation;
+                }
+
+                canonicalDecomposition.push(op2);
+
+                translateVector = Vector.zero();
+
+                if (needsShift) {
+                    translateVector = translateVector.sub(shiftVector);
+                }
+            }
+        }
+
+        if (!translateVector.isZero() || canonicalDecomposition.length === 0) {
+                canonicalDecomposition.push({"type": "translate", "vector": translateVector});
+        }
+
+        return canonicalDecomposition;
+    }
+
+    static operationsToString(operations)
+    {
         var string = '';
-        for (var i = 0; i < this.decomposition.length; i++) {
-            var operation = this.decomposition[i];
+        var decomposition = this.getCanonicalOperations(operations);
+        for (var i = 0; i < decomposition.length; i++) {
+            var operation = decomposition[i];
             var args = [];
             switch (operation.type) {
             case 'scale':
-                if(ZeroTest.isEqual(operation.a, operation.b)) {
-                    args.push(operation.a);
+                if(ZeroTest.isEqual(operation.scaleX, operation.scaleY)) {
+                    args.push(operation.scaleX);
                 } else {
-                    args.push(operation.a);
-                    args.push(operation.b);
+                    args.push(operation.scaleX);
+                    args.push(operation.scaleY);
                 }
                 break;
             case 'rotate':
                 args.push(operation.angle.deg());
-                if (!operation.center.isOrigin()) {
+                if (!operation.centerPoint.isOrigin()) {
                     args.push(operation.center.x);
                     args.push(operation.center.y);
                 }
@@ -265,156 +480,8 @@ class TransformationDecomposition
     }
 }
 
-class MatrixGenerator
-{
-    static translate(v)
-    {
-        return new TransformationMatrix(1, 0, 0, 1, v.x, v.y);
-    }
-
-    static rotate(angle, center)
-    {
-        var tr = new TransformationMatrix(angle.cos(), angle.sin(), -angle.sin(), angle.cos(), 0, 0);
-
-        return this._moveCenter(tr, center);
-    }
-
-    static rotateInv(angle, center)
-    {
-        var tr = new TransformationMatrix(angle.cos(), -angle.sin(), angle.sin(), angle.cos(), 0, 0);
-        
-        return this._moveCenter(tr, center);
-    }
-
-    static scale(a, b, center)
-    {
-        var tr = new TransformationMatrix(a, 0, 0, b, 0, 0);
-
-        return this._moveCenter(tr, center);
-    }
-
-    static scaleInv(a, b, center)
-    {
-        var tr = new TransformationMatrix(1/a, 0, 0, 1/b, 0, 0);
-
-        return this._moveCenter(tr, center);
-    }
-
-    static skewX(angle, center)
-    {
-        var tr = new TransformationMatrix(1, 0, angle.tan(), 1, 0, 0);
-
-        return this._moveCenter(tr, center);
-    }
-
-    static skewXInv(angle, center)
-    {
-        var tr = new TransformationMatrix(1, 0, -angle.tan(), 1, 0, 0);
-
-        return this._moveCenter(tr, center);
-    }
-
-    static skewY(angle, center)
-    {
-        var tr = new TransformationMatrix(1, angle.tan(), 0, 1, 0, 0);
-
-        return this._moveCenter(tr, center);
-    }
-
-    static skewYInv(angle, center)
-    {
-        var tr = new TransformationMatrix(1, angle.tan(), 0, 1, 0, 0);
-
-        return this._moveCenter(tr, center);
-    }
-
-    static _moveCenter(m, center)
-    {
-        if (center !== null) {
-            var v = Point.origin().vectorTo(center);
-            if (!v.isZero()) {
-                var t1 = this.translate(v);
-                var t2 = this.translate(v.mul(-1));
-                m = t1.mul(m).mul(t2);
-            }
-        }
-        return m;
-    }
-
-}
-
-
 /*
-export default function Transformation(center, angle, translation)
-{
-    this.center = center;
-    this.angle = angle;
-    this.translation = translation;
-}
 
-Transformation.prototype.compose = function (t2)
-{
-    var center = this.center;
-    var angle = this.angle.add(t2.angle);
-    var cdiff = t2.center.vectorTo(this.center);
-    var translation = cdiff.rot(t2.angle).sub(cdiff).add(this.translation.rot(t2.angle)).add(t2.translation);
-
-    return new Transformation(center, angle, translation);
-}
-
-Transformation.prototype.inv = function ()
-{
-    var center = this.center;
-    var angle = this.angle.mul(-1);
-    var translation = this.translation.rot(this.angle.mul(-1)).mul(-1);
-
-    return new Transformation(center, angle, translation);
-}
-
-Transformation.prototype.transformPoint = function (p)
-{
-    return this.center.rot(p, this.angle).addVector(this.translation);
-}
-
-Transformation.prototype.inverseTransformPoint = function (p)
-{
-    return this.center.rot(p.addVector(this.translation.mul(-1)), this.angle.mul(-1));
-}
-
-Transformation.prototype.pivotIn = function (c)
-{
-    return Transformation.rotation(c, Angle.zero()).compose(this);
-}
-
-Transformation.prototype.toString = function ()
-{
-    return "translate("+this.translation.x.toFixed(5)+","+this.translation.y.toFixed(5)+") rotate("+this.angle.deg().toFixed(5)+","+this.center.x.toFixed(5)+","+this.center.y.toFixed(5)+")";
-}
-
-Transformation.prototype.transformation = function ()
-{
-    return this;
-}
-
-Transformation.prototype.getPivot = function ()
-{
-    return this.center;
-}
-
-Transformation.prototype.getAngle = function ()
-{
-    return this.angle;
-}
-
-Transformation.prototype.getTranslation = function ()
-{
-    return this.translation;
-}
-
-Transformation.prototype.copy = function(center, angle, translation)
-{
-    return new Transformation(this.center, this.angle, this.translation);
-}
 
 Transformation._atomic = function(name, args)
 {

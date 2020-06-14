@@ -33,6 +33,11 @@ export default class Angle
         return new Angle(d * Math.PI / 180);
     }
 
+    static atan(x)
+    {
+        return new Angle(Math.atan(x));
+    }
+
     rad()
     {
         return this.radians;
@@ -102,11 +107,6 @@ export default class Angle
     transformation() 
     {
         return Transformation.rotation(Point.center(), this);
-    }
-
-    copy()
-    {
-        return new Angle(this.radians);
     }
 
     isZero()

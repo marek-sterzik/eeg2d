@@ -138,16 +138,18 @@ export default class Utility
 
         var mode = 'type';
         var arg = {};
+        var stringArg = false;
         arg.name = ar[0];
         arg.variadic = false;
 
         for (var i = 1; i < ar.length; i++) {
             var item = ar[i];
-            if (typeof item === 'string') {
+            if (typeof item === 'string' && !stringArg) {
                 if (item === 'variadic') {
                     arg.variadic = true;
                 } else if (item === 'check' || item === 'type' || item === 'default') {
                     mode = item;
+                    stringArg = true;
                 } else {
                     if ('type' in arg) {
                         throw "invalid argument description: type already defined";
@@ -162,6 +164,7 @@ export default class Utility
                     throw "invalid argument description";
                 }
                 arg[mode] = item;
+                stringArg = false;
             }
         }
 

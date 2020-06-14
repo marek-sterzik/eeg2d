@@ -94,9 +94,4 @@ export default class Vector
 
         return Angle.inRadians(angleRadians);
     }
-
-    copy()
-    {
-        return new Vector(this.x, this.y);
-    }
 }

@@ -1,5 +1,6 @@
 import Point from './point.js';
 import Vector from './vector.js';
+import ZeroTest from './zerotest.js';
 
 export default class TransformMatrix
 {
@@ -73,6 +74,33 @@ export default class TransformMatrix
             _scMul(0, 1), _scMul(1, 1),
             _scMul(0, 2), _scMul(1, 2),
         );
+    }
+
+    det()
+    {
+        return this.m[0][0] * this.m[1][1] - this.m[0][1] * this.m[1][0];
+    }
+
+    isRegular()
+    {
+        return !ZeroTest.isZero(this.det());
+    }
+
+    isSingular()
+    {
+        return ZeroTest.isZero(this.det());
+    }
+
+    getSingleSingularVector()
+    {
+        var a, b;
+        if (!ZeroTest.isZero(this.m[0][0]) || !ZeroTest.isZero(this.m[0][1])) {
+            return (new Vector(this.m[0][1], -this.m[0][0])).normalize();
+        } else if (!ZeroTest.isZero(this.m[1][0]) || !ZeroTest.isZero(this.m[1][1])) {
+            return (new Vector(this.m[1][1], -this.m[1][0])).normalize();
+        } else {
+            return null;
+        }
     }
 
     _transform(data)
