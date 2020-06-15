@@ -107,6 +107,21 @@ export default class Transformation
         return new Transformation(MatrixGenerator.skewY(angle, center));
     }
 
+    static skew()
+    {
+        var args;
+        var skewX, skewY, center;
+        if (args = Utility.args(arguments, "skewX", ["skewY", "default", 0], ["center", Point, "default", null])) {
+            skewX = new Angle(args.skewX);
+            skewY = new Angle(args.skewY);
+            center = args.center;
+        } else {
+            throw "Cannot construct a skew matrix from the given arguments";
+        }
+
+        return new Transformation(MatrixGenerator.skew(skewX, skewY, center));
+    }
+
     static identity()
     {
         return new Transformation(MatrixGenerator.identity());
@@ -527,6 +542,13 @@ class MatrixGenerator
         return this._moveCenter(tr, center);
     }
 
+    static skew(skewX, skewY, center)
+    {
+        var tr = new TransformationMatrix(1, skewX.tan(), skewY.tan(), 0, 0);
+        
+        return this._moveCenter(tr, center);
+    }
+
     static skewY(angle, center)
     {
         var tr = new TransformationMatrix(1, 0, angle.tan(), 1, 0, 0);
@@ -638,6 +660,12 @@ class TransformationOperationStringifier
             case 'skewY':
                 args.push(operation.angle.deg());
                 break;
+            case 'skew':
+                args.push(operation.skewX.deg());
+                if (!operation.skewY.isZero()) {
+                    args.push(operation.skewY.deg());
+                }
+                break;
             case 'matrix':
                 args.push(operation.matrix.m[0][0]);
                 args.push(operation.matrix.m[1][0]);
@@ -647,16 +675,18 @@ class TransformationOperationStringifier
                 args.push(operation.matrix.m[1][2]);
                 break;
             default:
-                throw "This should never happen.";
+                throw "Trying to convert an unknown operation to string: "+operation.type;
             }
+
             if (string != '') {
                 string += ' ';
             }
+
             string += operation.type;
             string += '(';
             for (var j = 0; j < args.length; j++) {
                 if (j > 0) {
-                    string += ' ';
+                    string += ', ';
                 }
                 var a = args[j];
                 if (typeof a === 'number' && percision !== null) {
