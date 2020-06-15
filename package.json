@@ -17,5 +17,5 @@
   },
   "main": "src/geometry.js",
   "type": "module",
-  "license": "GPL"
+  "license": "MIT"
 }
