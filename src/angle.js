@@ -23,6 +23,11 @@ export default class Angle
         return new Angle(0);
     }
 
+    static full()
+    {
+        return new Angle(2 * Math.PI);
+    }
+
     static inRadians(r)
     {
         return new Angle(r * 1);

@@ -1,6 +1,7 @@
 import Point from './point.js';
 import Vector from './vector.js';
 import ZeroTest from './zerotest.js';
+import Utility from './utility.js';
 
 export default class TransformMatrix
 {
@@ -52,27 +53,60 @@ export default class TransformMatrix
         _addRow(1, 0, -mx[1][0]);
         _mulRow(1, 1/mx[1][1]);
         _addRow(0, 1, -mx[0][1]);
+
         return new TransformMatrix(
             mx[0][3], mx[1][3],
             mx[0][4], mx[1][4],
-            mx[0][5], mx[1][5],
+            mx[0][5], mx[1][5]
         );
     }
 
-    mul(m2)
+    mul()
     {
-        var m1 = this;
-        var _scMul = function(row, col) {
-            var x = 0;
-            for (var i = 0; i < 3; i++) {
-                x += m1.m[row][i] * m2.m[i][col];
-            }
-            return x;
-        };
+        var args;
+        if (args = Utility.args(arguments, "scalar:number")) {
+            //scalar multiplication
+            return new TransformMatrix(
+                this.m[0][0] * args.scalar, this.m[1][0] * args.scalar,
+                this.m[0][1] * args.scalar, this.m[1][1] * args.scalar,
+                this.m[0][2] * args.scalar, this.m[1][2] * args.scalar
+            );
+        } else if (args = Utility.args(arguments, ["m2", TransformMatrix])) {
+            //matrix multiplication
+            var m1 = this;
+            var m2 = args.m2;
+            var _scMul = function(row, col) {
+                var x = 0;
+                for (var i = 0; i < 3; i++) {
+                    x += m1.m[row][i] * m2.m[i][col];
+                }
+                return x;
+            };
+            return new TransformMatrix(
+                _scMul(0, 0), _scMul(1, 0),
+                _scMul(0, 1), _scMul(1, 1),
+                _scMul(0, 2), _scMul(1, 2)
+            );
+        } else {
+            throw "invalid arguments";
+        }
+    }
+
+    add(m2)
+    {
         return new TransformMatrix(
-            _scMul(0, 0), _scMul(1, 0),
-            _scMul(0, 1), _scMul(1, 1),
-            _scMul(0, 2), _scMul(1, 2),
+            this.m[0][0] + m2.m[0][0], this.m[1][0] + m2.m[1][0],
+            this.m[0][1] + m2.m[0][1], this.m[1][1] + m2.m[1][1],
+            this.m[0][2] + m2.m[0][2], this.m[1][2] + m2.m[1][2]
+        );
+    }
+
+    sub(m2)
+    {
+        return new TransformMatrix(
+            this.m[0][0] - m2.m[0][0], this.m[1][0] - m2.m[1][0],
+            this.m[0][1] - m2.m[0][1], this.m[1][1] - m2.m[1][1],
+            this.m[0][2] - m2.m[0][2], this.m[1][2] - m2.m[1][2]
         );
     }
 
@@ -89,18 +123,6 @@ export default class TransformMatrix
     isSingular()
     {
         return ZeroTest.isZero(this.det());
-    }
-
-    getSingleSingularVector()
-    {
-        var a, b;
-        if (!ZeroTest.isZero(this.m[0][0]) || !ZeroTest.isZero(this.m[0][1])) {
-            return (new Vector(this.m[0][1], -this.m[0][0])).normalize();
-        } else if (!ZeroTest.isZero(this.m[1][0]) || !ZeroTest.isZero(this.m[1][1])) {
-            return (new Vector(this.m[1][1], -this.m[1][0])).normalize();
-        } else {
-            return null;
-        }
     }
 
     _transform(data)
