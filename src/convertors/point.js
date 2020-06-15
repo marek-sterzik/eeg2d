@@ -1,5 +1,6 @@
 import Convertor from "./convertor.js";
 import Point from "../point.js";
+import NumberConvertor from "./number.js";
 
 export default class PointConvertor extends Convertor
 {
@@ -8,14 +9,22 @@ export default class PointConvertor extends Convertor
         return Point;
     }
 
-    static parseDefault(string, convertorArgs)
+    static parseDefault(string)
     {
         return new Point(1, 1);
     }
 
-    static toStringDefault(vector, convertorArgs)
+    static toStringDefault(point)
     {
-        return "[1, 1]";
+        var fieldSeparator = this.getArg(['output.fieldSeparator', 'output.pointFieldSeparator'], ', ');
+        var openParenthesis = this.getArg(['output.openParenthesis', 'output.pointOpenParenthesis'], '[');
+        var closeParenthesis = this.getArg(['output.closeParenthesis', 'output.pointCloseParenthesis'], ']');
+        return "" +
+            openParenthesis +
+            NumberConvertor.toString(point.x, this.getArgs()) +
+            fieldSeparator +
+            NumberConvertor.toString(point.y, this.getArgs()) +
+            closeParenthesis;
     }
 
     static getCustomParserKey()

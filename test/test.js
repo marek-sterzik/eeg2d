@@ -2,9 +2,12 @@
 
 function main(geometry)
 {
-    const {Vector, Angle, Transformation, StringConvertor} = geometry
+    const {Vector, Point, Angle, Transformation, StringConvertor} = geometry
 
-    StringConvertor.getDefault({"percision": 4}).setDefault();
+    StringConvertor.getDefault({
+        "output.percision": 4,
+        "output.showAngleDefaultUnit": true,
+    }).setDefault();
     
     //var transformation = Transformation.skewY(Angle.inDegrees(45));
     //var transformation = Transformation.scale(2, -3);
@@ -18,6 +21,12 @@ function main(geometry)
     transformation = transformation.decompose();
 
     console.log(transformation.toString());
+
+    var v = new Vector(1, 2);
+    console.log(v.toString())
+    
+    var p = new Point(1, 2);
+    console.log(p.toString())
 }
 
 import('../src/eeg2d.js').then(main);

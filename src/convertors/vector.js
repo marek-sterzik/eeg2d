@@ -1,5 +1,6 @@
 import Convertor from "./convertor.js";
 import Vector from "../vector.js";
+import NumberConvertor from "./number.js";
 
 export default class VectorConvertor extends Convertor
 {
@@ -8,14 +9,22 @@ export default class VectorConvertor extends Convertor
         return Vector;
     }
 
-    static parseDefault(string, convertorArgs)
+    static parseDefault(string)
     {
         return new Vector(1, 1);
     }
 
-    static toStringDefault(vector, convertorArgs)
+    static toStringDefault(vector)
     {
-        return "(1, 1)";
+        var fieldSeparator = this.getArg(['output.fieldSeparator', 'output.vectorFieldSeparator'], ', ');
+        var openParenthesis = this.getArg(['output.openParenthesis', 'output.vectorOpenParenthesis'], '(');
+        var closeParenthesis = this.getArg(['output.closeParenthesis', 'output.vectorCloseParenthesis'], ')');
+        return "" +
+            openParenthesis +
+            NumberConvertor.toString(vector.x, this.getArgs()) +
+            fieldSeparator +
+            NumberConvertor.toString(vector.y, this.getArgs()) +
+            closeParenthesis;
     }
 
     static getCustomParserKey()

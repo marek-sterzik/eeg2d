@@ -1,4 +1,6 @@
 import Convertor from "./convertor.js";
+import AngleConvertor from "./angle.js";
+import NumberConvertor from "./number.js";
 import Transformation, {TransformationDecomposition} from "../transformation.js";
 import ZeroTest from "../zerotest.js";
 
@@ -9,15 +11,18 @@ export default class TransformationConvertor extends Convertor
         return [Transformation, TransformationDecomposition];
     }
 
-    static parseDefault(string, convertorArgs)
+    static parseDefault(string)
     {
         return Transformation.identity();
     }
 
-    static toStringDefault(transformation, convertorArgs)
+    static toStringDefault(transformation)
     {
         var string = '';
-        var percision = this.getArg(convertorArgs, 'percision', null);
+        var transformationSeparator = this.getArg('output.transformationSeparator', ' ');
+        var fieldSeparator = this.getArg(['output.fieldSeparator', 'output.transformationFieldSeparator'], ', ');
+        var openParenthesis = this.getArg(['output.openParenthesis', 'output.transformationOpenParenthesis'], '(');
+        var closeParenthesis = this.getArg(['output.closeParenthesis', 'output.transformationCloseParenthesis'], ')');
         var decomposition = transformation.getCanonicalOperations();
         for (var i = 0; i < decomposition.length; i++) {
             var operation = decomposition[i];
@@ -25,64 +30,55 @@ export default class TransformationConvertor extends Convertor
             switch (operation.type) {
             case 'scale':
                 if(ZeroTest.isEqual(operation.scaleX, operation.scaleY)) {
-                    args.push(operation.scaleX);
+                    args.push(NumberConvertor.toString(operation.scaleX, this.getArgs()));
                 } else {
-                    args.push(operation.scaleX);
-                    args.push(operation.scaleY);
+                    args.push(NumberConvertor.toString(operation.scaleX, this.getArgs()));
+                    args.push(NumberConvertor.toString(operation.scaleY, this.getArgs()));
                 }
                 break;
             case 'rotate':
-                args.push(operation.angle.deg());
+                args.push(AngleConvertor.toString(operation.angle, this.getArgs()));
                 if (!operation.centerPoint.isOrigin()) {
-                    args.push(operation.center.x);
-                    args.push(operation.center.y);
+                    args.push(NumberConvertor.toString(operation.center.x, this.getArgs()));
+                    args.push(NumberConvertor.toString(operation.center.y, this.getArgs()));
                 }
                 break;
             case 'translate':
-                args.push(operation.vector.x);
-                args.push(operation.vector.y);
+                args.push(NumberConvertor.toString(operation.vector.x, this.getArgs()));
+                args.push(NumberConvertor.toString(operation.vector.y, this.getArgs()));
                 break;
             case 'skewX':
-                args.push(operation.angle.deg());
+                args.push(AngleConvertor.toString(operation.angle, this.getArgs()));
                 break;
             case 'skewY':
-                args.push(operation.angle.deg());
+                args.push(AngleConvertor.toString(operation.angle, this.getArgs()));
                 break;
             case 'skew':
-                args.push(operation.skewX.deg());
+                args.push(AngleConvertor.toString(operation.skewX, this.getArgs()));
                 if (!operation.skewY.isZero()) {
-                    args.push(operation.skewY.deg());
+                    args.push(AngleConvertor.toString(operation.skewY, this.getArgs()));
                 }
                 break;
             case 'matrix':
-                args.push(operation.matrix.m[0][0]);
-                args.push(operation.matrix.m[1][0]);
-                args.push(operation.matrix.m[0][1]);
-                args.push(operation.matrix.m[1][1]);
-                args.push(operation.matrix.m[0][2]);
-                args.push(operation.matrix.m[1][2]);
+                args.push(NumberConvertor.toString(operation.matrix.m[0][0], this.getArgs()));
+                args.push(NumberConvertor.toString(operation.matrix.m[1][0], this.getArgs()));
+                args.push(NumberConvertor.toString(operation.matrix.m[0][1], this.getArgs()));
+                args.push(NumberConvertor.toString(operation.matrix.m[1][1], this.getArgs()));
+                args.push(NumberConvertor.toString(operation.matrix.m[0][2], this.getArgs()));
+                args.push(NumberConvertor.toString(operation.matrix.m[1][2], this.getArgs()));
                 break;
             default:
                 throw "Trying to convert an unknown operation to string: "+operation.type;
             }
 
             if (string != '') {
-                string += ' ';
+                string += transformationSeparator;
             }
 
             string += operation.type;
-            string += '(';
-            for (var j = 0; j < args.length; j++) {
-                if (j > 0) {
-                    string += ', ';
-                }
-                var a = args[j];
-                if (typeof a === 'number' && percision !== null) {
-                    a = a.toFixed(percision).replace(/\.?0+$/, '');
-                }
-                string += a;
-            }
-            string += ')';
+            string += openParenthesis;
+            string += args.join(fieldSeparator);
+            string += closeParenthesis;
         }
         return string;
     }

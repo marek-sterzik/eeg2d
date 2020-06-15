@@ -1,5 +1,7 @@
 export default class Convertor
 {
+    static _args = null;
+
     static parse(string, args)
     {
         var key = null;
@@ -10,7 +12,10 @@ export default class Convertor
         if (key !== null && key in args && args.key !== null) {
             parsedObject = args[key].call(string, string, args);
         } else {
-            parsedObject = this.parseDefault(string, args);
+            var tmpArgs = this._args;
+            this._args = args;
+            parsedObject = this.parseDefault(string);
+            this._args = tmpArgs;
         }
 
         this._matchType(parsedObject, true);
@@ -30,7 +35,10 @@ export default class Convertor
         if (key !== null && key in args && args.key !== null) {
             string = args[key].call(data, data, args);
         } else {
-            string = this.toStringDefault(data, args);
+            var tmpArgs = this._args;
+            this._args = args;
+            string = this.toStringDefault(data);
+            this._args = tmpArgs;
         }
 
         return string;
@@ -43,7 +51,7 @@ export default class Convertor
             objectClasses = this.getObjectClass();
         }
 
-        if (objectClasses === null) {
+        if (objectClasses === null || objectClasses === undefined) {
             return;
         }
 
@@ -53,8 +61,14 @@ export default class Convertor
 
         var names = [];
         for (var i = 0; i < objectClasses.length; i++) {
-            if (data instanceof objectClasses[i]) {
-                return;
+            if (typeof objectClasses[i] === 'string') {
+                if (typeof data === objectClasses[i]) {
+                    return;
+                }
+            } else {
+                if (data instanceof objectClasses[i]) {
+                    return;
+                }
             }
             names.push(objectClasses[i].name);
         }
@@ -70,7 +84,12 @@ export default class Convertor
         throw error;
     }
 
-    static getArg(convertorArgs, args, defaultValue)
+    static getArgs()
+    {
+        return this._args;
+    }
+
+    static getArg(args, defaultValue)
     {
         if (typeof args === 'string') {
             args = [args];
@@ -78,13 +97,13 @@ export default class Convertor
 
         var arg = undefined;
         for (var i = 0; i < args.length; i++) {
-            if (args[i] in convertorArgs && convertorArgs[args[i]] !== undefined) {
-                arg = convertorArgs[args[i]];
+            if (args[i] in this._args && this._args[args[i]] !== undefined) {
+                arg = this._args[args[i]];
             }
         }
 
         if (arg === undefined) {
-            arg = defaultValue;
+            arg = (defaultValue === undefined) ? null : defaultValue;
         }
 
         return arg;

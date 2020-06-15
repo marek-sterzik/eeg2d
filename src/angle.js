@@ -39,6 +39,11 @@ export default class Angle
         return new Angle(d * Math.PI / 180);
     }
 
+    static inGradians(g)
+    {
+        return new Angle(g * Math.PI / 200);
+    }
+
     static atan(x)
     {
         return new Angle(Math.atan(x));
@@ -52,6 +57,11 @@ export default class Angle
     deg()
     {
         return this.radians * 180 / Math.PI;
+    }
+
+    grad()
+    {
+        return this.radians * 200 / Math.PI;
     }
 
     mul(c)
