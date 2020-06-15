@@ -1,6 +1,6 @@
 {
   "name": "eeg2d",
-  "description": "JavaScript extended euclidian 2d geometry library with objects for points, vectors, angles, transformations, decomposed transformations",
+  "description": "Extended euclidian 2d geometry library for JavaScript with objects representing points, vectors, angles, transformations, transformation decompositions",
   "devDependencies": {
     "@babel/cli": "^7.10.1",
     "@babel/core": "^7.10.2",
@@ -17,5 +17,6 @@
   },
   "main": "src/geometry.js",
   "type": "module",
-  "license": "MIT"
+  "license": "MIT",
+  "version": "0.0.0"
 }
