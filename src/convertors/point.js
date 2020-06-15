@@ -8,12 +8,12 @@ export default class PointConvertor extends Convertor
         return Point;
     }
 
-    static parseDefault(string, args)
+    static parseDefault(string, convertorArgs)
     {
         return new Point(1, 1);
     }
 
-    static toStringDefault(vector, args)
+    static toStringDefault(vector, convertorArgs)
     {
         return "[1, 1]";
     }

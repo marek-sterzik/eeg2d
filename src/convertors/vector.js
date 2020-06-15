@@ -8,12 +8,12 @@ export default class VectorConvertor extends Convertor
         return Vector;
     }
 
-    static parseDefault(string, args)
+    static parseDefault(string, convertorArgs)
     {
         return new Vector(1, 1);
     }
 
-    static toStringDefault(vector, args)
+    static toStringDefault(vector, convertorArgs)
     {
         return "(1, 1)";
     }

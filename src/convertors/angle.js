@@ -8,12 +8,12 @@ export default class AngleConvertor extends Convertor
         return Angle;
     }
 
-    static parseDefault(string, args)
+    static parseDefault(string, convertorArgs)
     {
         return new Angle(0);
     }
 
-    static toStringDefault(vector, args)
+    static toStringDefault(angle, convertorArgs)
     {
         return "90deg";
     }

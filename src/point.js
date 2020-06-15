@@ -1,6 +1,7 @@
-import Vector from "./vector.js";
 import Utility from "./utility.js";
 import ZeroTest from "./zerotest.js";
+import StringConvertor from "./string_convertor.js";
+import Vector from "./vector.js";
 
 export default class Point
 {
@@ -11,10 +12,9 @@ export default class Point
             this.x = args.x;
             this.y = args.y;
         } else if (args = Utility.args(arguments, ["point", Point])) {
-            this.x = args.point.x;
-            this.y = args.point.y;
+            return args.point;
         } else if (args = Utility.args(arguments, "string:string")) {
-            throw "Loading points from a string is not yet implemented";
+            return StringConvertor.getDefault().parsePoint(args.string);
         } else {
             throw "Cannot construct vector from given arguments";
         }
@@ -51,5 +51,10 @@ export default class Point
     isOrigin()
     {
         return ZeroTest.isZero(this.x) && ZeroTest.isZero(this.y);
+    }
+
+    toString()
+    {
+        return StringConvertor.getDefault.apply(StringConvertor, arguments).pointToString(this);
     }
 }

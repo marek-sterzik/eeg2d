@@ -5,27 +5,38 @@ import TransformationConvertor from "./convertors/transformation.js";
 
 export default class StringConvertor
 {
+    static _defaultStringConvertor = null;
+
     static getDefault()
     {
-        if (! (_defaultStringConvertor in this)) {
+        if (this._defaultStringConvertor === null) {
             this._defaultStringConvertor = new StringConvertor();
         }
 
         var defaultConvertor = this._defaultStringConvertor;
 
         if (arguments.length >= 1) {
-            if (arguments.length >= 2) {
-                throw "StringConvertor.getDefault() accepts exactly 0 or 1 arguments";
-            }
-            defaultConvertor = defaultConvertor.getModifiedConvertor.apply(defaultConvertor, arguments[0]);
+            defaultConvertor = defaultConvertor.getModifiedConvertor.apply(defaultConvertor, arguments);
         }
 
         return defaultConvertor;
     }
 
-    static setDefault(stringConvertor)
+    static _setDefault(stringConvertor)
     {
+        var oldStringConvertor = this._defaultStringConvertor;
+
+        if (stringConvertor === null) {
+            stringConvertor = new StringConvertor();
+        }
         this._defaultStringConvertor = stringConvertor;
+
+        return oldStringConvertor;
+    }
+
+    setDefault()
+    {
+        this.constructor._setDefault(this);
     }
 
     constructor()

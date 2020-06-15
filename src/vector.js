@@ -1,5 +1,6 @@
 import Utility from "./utility.js";
 import ZeroTest from "./zerotest.js";
+import StringConvertor from "./string_convertor.js";
 import Angle from "./angle.js";
 
 export default class Vector
@@ -11,10 +12,9 @@ export default class Vector
             this.x = args.x;
             this.y = args.y;
         } else if (args = Utility.args(arguments, ["vector", Vector])) {
-            this.x = args.vector.x;
-            this.y = args.vector.y;
+            return args.vector;
         } else if (args = Utility.args(arguments, "string:string")) {
-            throw "Loading vectors from a string is not yet implemented";
+            return StringConvertor.getDefault().parseVector(args.string);
         } else {
             throw "Cannot construct vector from given arguments";
         }
@@ -93,5 +93,10 @@ export default class Vector
         }
 
         return Angle.inRadians(angleRadians);
+    }
+
+    toString()
+    {
+        return StringConvertor.getDefault.apply(StringConvertor, arguments).vectorToString(this);
     }
 }

@@ -1,5 +1,6 @@
 import Utility from "./utility.js";
 import ZeroTest from "./zerotest.js";
+import StringConvertor from "./string_convertor.js";
 
 export default class Angle
 {
@@ -9,9 +10,9 @@ export default class Angle
         if (args = Utility.args(arguments, "radians:number")) {
             this.radians = args.radians;
         } else if (args = Utility.args(arguments, ["angle", Angle])) {
-            this.radians = args.angle.radians;
+            return args.angle;
         } else if (args = Utility.args(arguments, "string:string")) {
-            throw "Loading an angle from a string is not yet implemented";
+            return StringConvertor.getDefault().parseAngle(args.string);
         } else {
             throw "Cannot construct an angle from given arguments";
         }
@@ -119,4 +120,8 @@ export default class Angle
         return ZeroTest.isZero(this.radians);
     }
 
+    toString()
+    {
+        return StringConvertor.getDefault.apply(StringConvertor, arguments).angleToString(this);
+    }
 }

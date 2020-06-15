@@ -1,15 +1,75 @@
 import Utility from "./utility.js";
+import ZeroTest from "./zerotest.js";
+import StringConvertor from "./string_convertor.js";
 import Vector from "./vector.js";
 import Point from "./point.js";
 import Angle from "./angle.js";
 import TransformationMatrix from "./matrix.js";
-import ZeroTest from "./zerotest.js";
 
-export default class Transformation
+class TransformationBase
+{
+    toString()
+    {
+        return StringConvertor.getDefault.apply(StringConvertor, arguments).transformationToString(this);
+    }
+    
+    getCanonicalOperations()
+    {
+        var decomposition = this.getOperations();
+        var canonicalDecomposition = [];
+        var translateVector = Vector.zero();
+        var origin = Point.origin();
+
+        for (var i = 0; i < decomposition.length; i++) {
+            var operation = decomposition[i];
+            if (operation.type === 'translate') {
+                translateVector = translateVector.add(operation.vector);
+            } else {
+                var needsShift = (operation.type !== 'rotate' && operation.type !== 'matrix');
+                var shiftVector;
+                
+                if (needsShift) {
+                    shiftVector = origin.vectorTo(operation.centerPoint);
+                    translateVector = translateVector.add(shiftVector);
+                }
+                
+                if (!translateVector.isZero()) {
+                    canonicalDecomposition.push({"type": "translate", "vector": translateVector});
+                }
+                
+                var op2;
+                
+                if (needsShift) {
+                    op2 = Object.assign({}, operation);
+                    op2.centerPoint = origin;
+                } else {
+                    op2 = operation;
+                }
+
+                canonicalDecomposition.push(op2);
+
+                translateVector = Vector.zero();
+
+                if (needsShift) {
+                    translateVector = translateVector.sub(shiftVector);
+                }
+            }
+        }
+
+        if (!translateVector.isZero() || canonicalDecomposition.length === 0) {
+                canonicalDecomposition.push({"type": "translate", "vector": translateVector});
+        }
+
+        return canonicalDecomposition;
+    }
+}
+
+export default class Transformation extends TransformationBase
 {
     constructor()
     {
         var args;
+        super();
         if (args = Utility.args(arguments, ["matrix", TransformationMatrix])) {
             this.matrix = args.matrix;
         } else if (args = Utility.args(arguments, "a:number", "b:number", "c:number", "d:number", "e:number", "f:number")) {
@@ -185,16 +245,6 @@ export default class Transformation
         return [{"type": "matrix", "matrix": this.matrix}];
     }
 
-    toString()
-    {
-        var args;
-        if (args = Utility.args(arguments, ["percision", "number", "default", null])) {
-        } else {
-            throw "Invalid arguments for toString()";
-        }
-        return TransformationOperationStringifier.operationsToString(this.getOperations(), args.percision);
-    }
-
     interpolate(t2)
     {
         if (t2 instanceof TransformationDecomposition) {
@@ -205,11 +255,12 @@ export default class Transformation
     }
 }
 
-class TransformationDecomposition
+export class TransformationDecomposition extends TransformationBase
 {
     constructor(transformation, centerPoint, mode)
     {
         var matrix = transformation.matrix;
+        super();
 
         var az = Angle.zero();
         this.centerPoint = centerPoint;
@@ -302,16 +353,6 @@ class TransformationDecomposition
         }
 
         return decomposition;
-    }
-
-    toString()
-    {
-        var args;
-        if (args = Utility.args(arguments, ["percision", "number", "default", null])) {
-        } else {
-            throw "Invalid arguments for toString()";
-        }
-        return TransformationOperationStringifier.operationsToString(this.getOperations(), args.percision);
     }
 
     compose(t2)
@@ -575,185 +616,4 @@ class MatrixGenerator
     }
 
 }
-
-class TransformationOperationStringifier
-{
-    static getCanonicalOperations(decomposition)
-    {
-        var canonicalDecomposition = [];
-        var translateVector = Vector.zero();
-        var origin = Point.origin();
-
-        for (var i = 0; i < decomposition.length; i++) {
-            var operation = decomposition[i];
-            if (operation.type === 'translate') {
-                translateVector = translateVector.add(operation.vector);
-            } else {
-                var needsShift = (operation.type !== 'rotate' && operation.type !== 'matrix');
-                var shiftVector;
-                
-                if (needsShift) {
-                    shiftVector = origin.vectorTo(operation.centerPoint);
-                    translateVector = translateVector.add(shiftVector);
-                }
-                
-                if (!translateVector.isZero()) {
-                    canonicalDecomposition.push({"type": "translate", "vector": translateVector});
-                }
-                
-                var op2;
-                
-                if (needsShift) {
-                    op2 = Object.assign({}, operation);
-                    delete op2.centerPoint;
-                } else {
-                    op2 = operation;
-                }
-
-                canonicalDecomposition.push(op2);
-
-                translateVector = Vector.zero();
-
-                if (needsShift) {
-                    translateVector = translateVector.sub(shiftVector);
-                }
-            }
-        }
-
-        if (!translateVector.isZero() || canonicalDecomposition.length === 0) {
-                canonicalDecomposition.push({"type": "translate", "vector": translateVector});
-        }
-
-        return canonicalDecomposition;
-    }
-
-    static operationsToString(operations, percision)
-    {
-        var string = '';
-        var decomposition = this.getCanonicalOperations(operations);
-        for (var i = 0; i < decomposition.length; i++) {
-            var operation = decomposition[i];
-            var args = [];
-            switch (operation.type) {
-            case 'scale':
-                if(ZeroTest.isEqual(operation.scaleX, operation.scaleY)) {
-                    args.push(operation.scaleX);
-                } else {
-                    args.push(operation.scaleX);
-                    args.push(operation.scaleY);
-                }
-                break;
-            case 'rotate':
-                args.push(operation.angle.deg());
-                if (!operation.centerPoint.isOrigin()) {
-                    args.push(operation.center.x);
-                    args.push(operation.center.y);
-                }
-                break;
-            case 'translate':
-                args.push(operation.vector.x);
-                args.push(operation.vector.y);
-                break;
-            case 'skewX':
-                args.push(operation.angle.deg());
-                break;
-            case 'skewY':
-                args.push(operation.angle.deg());
-                break;
-            case 'skew':
-                args.push(operation.skewX.deg());
-                if (!operation.skewY.isZero()) {
-                    args.push(operation.skewY.deg());
-                }
-                break;
-            case 'matrix':
-                args.push(operation.matrix.m[0][0]);
-                args.push(operation.matrix.m[1][0]);
-                args.push(operation.matrix.m[0][1]);
-                args.push(operation.matrix.m[1][1]);
-                args.push(operation.matrix.m[0][2]);
-                args.push(operation.matrix.m[1][2]);
-                break;
-            default:
-                throw "Trying to convert an unknown operation to string: "+operation.type;
-            }
-
-            if (string != '') {
-                string += ' ';
-            }
-
-            string += operation.type;
-            string += '(';
-            for (var j = 0; j < args.length; j++) {
-                if (j > 0) {
-                    string += ', ';
-                }
-                var a = args[j];
-                if (typeof a === 'number' && percision !== null) {
-                    a = a.toFixed(percision).replace(/\.?0+$/, '');
-                }
-                string += a;
-            }
-            string += ')';
-        }
-        return string;
-    }
-}
-
-/*
-
-
-Transformation._atomic = function(name, args)
-{
-    switch (name) {
-    case 'rotate':
-        if (args.length == 1) {
-            args.push(0);
-            args.push(0);
-        }
-        if (args.length != 3) {
-            throw "rotate needs to have 1 or 3 arguments";
-        }
-        var angle = Angle.inDegrees(args[0]);
-        var center = new Point(args[1], args[2]);
-        return Transformation.rotation(center, angle);
-    case 'translate':
-        if (args.length != 2) {
-            throw "translate needs to have 2 arguments";
-        }
-        var v = new Vector(args[0], args[1]);
-        return Transformation.translation(v);
-    default:
-        throw "unknown atomic transformation: "+name;
-    }
-}
-
-
-Transformation.fromString = function(str)
-{
-    str = str.trim();
-    var transformation = Transformation.zero();
-    while (str != "") {
-        var match = str.match(/^([a-z]+)\s*\(([^\)]*)\)\s*(.*)/);
-        if (!match) {
-            throw "not a transformation";
-        }
-
-        var t = match[1];
-        var args = match[2].split(/\s*,\s{0,}/); //{0,} is here instead of * to be able to comment out
-        str = match[3];
-
-        var argsFinal = [];
-        for (var i in args) {
-            argsFinal.push(parseFloat(args[i].trim()));
-        }
-
-        transformation = Transformation._atomic(t, argsFinal).compose(transformation);
-    }
-    //TODO implement
-
-    return transformation;
-}
-
-*/
 
