@@ -1,9 +1,10 @@
 path = require('path');
 
 module.exports = {
-  entry: './src/geometry.js',
+  entry: './src/eeg2d.js',
   output: {
-    filename: 'geometry.js',
+    filename: 'eeg2d.js',
     path: path.resolve(__dirname, 'dist'),
   },
+  mode: 'production'
 };

@@ -1,4 +1,6 @@
 {
+  "name": "eeg2d",
+  "description": "JavaScript extended euclidian 2d geometry library with objects for points, vectors, angles, transformations, decomposed transformations",
   "devDependencies": {
     "@babel/cli": "^7.10.1",
     "@babel/core": "^7.10.2",
@@ -6,10 +8,14 @@
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
   },
-  "scripts": {
-    "test": "node lib/test.js",
-    "build": "webpack --config webpack.config.cjs"
+  "author": {
+    "name": "Marek Sterzik",
+    "email": "marek.sterzik@gmail.com"
   },
-  "main": "geometry.js",
-  "type": "module"
+  "scripts": {
+    "build": "webpack --config config/webpack.config.cjs"
+  },
+  "main": "src/geometry.js",
+  "type": "module",
+  "license": "GPL"
 }

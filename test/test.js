@@ -1,7 +1,5 @@
 #!/usr/bin/node
 
-
-
 function main(geometry)
 {
     const {Vector, Angle, Transformation} = geometry
@@ -20,4 +18,4 @@ function main(geometry)
     console.log(transformation.toString(4));
 }
 
-import('./geometry.js').then(main);
+import('../src/eeg2d.js').then(main);
