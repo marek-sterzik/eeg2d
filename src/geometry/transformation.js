@@ -2,10 +2,11 @@ import Args from "../utility/args.js";
 import ZeroTest from "../utility/zerotest.js";
 import StringConvertor from "../utility/string_convertor.js";
 
+import TransformationMatrix from "../math/matrix.js";
+
 import Vector from "./vector.js";
 import Point from "./point.js";
 import Angle from "./angle.js";
-import TransformationMatrix from "./matrix.js";
 
 class TransformationBase
 {

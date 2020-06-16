@@ -1,8 +1,8 @@
 import Args from "../utility/args.js";
 import ZeroTest from "../utility/zerotest.js";
 
-import Point from './point.js';
-import Vector from './vector.js';
+import Point from '../geometry/point.js';
+import Vector from '../geometry/vector.js';
 
 export default class TransformMatrix
 {
