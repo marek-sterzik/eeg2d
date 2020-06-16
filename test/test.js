@@ -1,31 +1,26 @@
 #!/usr/bin/node
 
-function main(geometry)
-{
-    const {Vector, Point, Angle, Transformation, StringConvertor} = geometry
+import {Vector, Point, Angle, Transformation, StringConvertor} from "../src/eeg2d.js";
 
-    StringConvertor.get({
-        "number.output.percision": 4,
-    }).setDefault();
-    
-    //var transformation = Transformation.skewY(Angle.deg(45));
-    //var transformation = Transformation.scale(2, -3);
-    var t1 = Transformation.translate(1, 1);
-    var t2 = Transformation.rotate(Angle.deg(45));
-    var t3 = Transformation.scale(2, -3);
-    var t4 = Transformation.skewX(Angle.deg(45));
+StringConvertor.get({
+    "number.output.percision": 4,
+}).setDefault();
 
-    var transformation = t1.compose(t2).compose(t3).compose(t4);
+//var transformation = Transformation.skewY(Angle.deg(45));
+//var transformation = Transformation.scale(2, -3);
+var t1 = Transformation.translate(1, 1);
+var t2 = Transformation.rotate(Angle.deg(45));
+var t3 = Transformation.scale(2, -3);
+var t4 = Transformation.skewX(Angle.deg(45));
 
-    transformation = transformation.decompose();
+var transformation = t1.compose(t2).compose(t3).compose(t4);
 
-    console.log(transformation.toString());
+transformation = transformation.decompose();
 
-    var v = new Vector(1, 2);
-    console.log(v.toString())
-    
-    var p = new Point(1, 2);
-    console.log(p.toString())
-}
+console.log(transformation.toString());
 
-import('../src/eeg2d.js').then(main);
+var v = new Vector(1, 2);
+console.log(v.toString())
+
+var p = new Point(1, 2);
+console.log(p.toString())
