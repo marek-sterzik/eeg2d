@@ -1,71 +1,70 @@
 import Convertor from "./convertor.js";
 import NumberConvertor from "./number.js";
-import Angle from "../angle.js";
+
+import Angle from "../geometry/angle.js";
 
 export default class AngleConvertor extends Convertor
 {
-    static getObjectClass()
+    static getName()
     {
-        return Angle;
+        return 'angle';
     }
 
-    static parseDefault(string)
+    static accepts(object)
+    {
+        return (object instanceof Angle);
+    }
+
+    static parse(string, params, fnName)
     {
         return new Angle(0);
     }
 
-    static toStringDefault(angle)
+    static toString(angle, params, fnName)
     {
-        var angleUnit = this.getRealUnit(this.getArg('output.angleUnit', 'deg'));
-        var angleDefaultUnit = this.getRealUnit(this.getArg('output.angleDefaultUnit', 'deg'));
+        var angleUnit = this.getRealUnit(params.get('angle.output.unit'), false);
+        var angleDefaultUnit = this.getRealUnit(params.get('angle.defaultUnit'), true);
         var number;
         if (angleUnit === 'rad') {
             number = angle.rad();
         } else if (angleUnit === 'grad') {
             number = angle.grad();
+        } else if (angleUnit === 'turn') {
+            number = angle.turn();
         } else {
             number = angle.deg();
         }
 
-        var string = NumberConvertor.toString(number, this.getArgs());
+        var string = params.invokeToString(NumberConvertor, number);
 
-        if (this.getArg('output.showAngleDefaultUnit', false) || angleUnit !== angleDefaultUnit) {
-            string += this.getArg('output.unitSeparator', '');
-            string += this.getAngleOutputUnit(angleUnit);
+        if (params.get('angle.output.showDefaultUnit') || angleUnit !== angleDefaultUnit) {
+            string += params.get('angle.output.unitSeparator');
+            string += this.getAngleOutputUnit(angleUnit, params);
         }
 
         return string;
     }
 
-    static getAngleOutputUnit(unit)
+    static getAngleOutputUnit(unit, params)
     {
-        var convertor = this.getArg('output.angleOutputUnit', {"deg": "deg", "rad": "rad", "grad": "grad"});
-        if (typeof convertor === 'string') {
-            return convertor;
-        }
-        if (convertor instanceof Object && unit in convertor) {
+        var convertor = params.get('angle.units');
+        if (unit in convertor) {
             return convertor[unit];
         }
 
         return unit;
     }
 
-    static getRealUnit(u)
+    static getRealUnit(u, allowEmpty)
     {
-        if (u !== 'deg' && u !== 'rad' && u !== 'grad') {
+        if (u !== 'deg' && u !== 'rad' && u !== 'grad' && u !== 'turn') {
+            u = null;
+        }
+
+        if (!allowEmpty && u === null) {
             u = 'deg';
         }
 
         return u;
-    }
-
-    static getCustomParserKey()
-    {
-        return 'angleParser';
-    }
-
-    static getCustomToStringKey()
-    {
-        return 'angleToString';
     }
 }

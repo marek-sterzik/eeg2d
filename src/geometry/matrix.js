@@ -1,7 +1,8 @@
+import Args from "../utility/args.js";
+import ZeroTest from "../utility/zerotest.js";
+
 import Point from './point.js';
 import Vector from './vector.js';
-import ZeroTest from './zerotest.js';
-import Utility from './utility.js';
 
 export default class TransformMatrix
 {
@@ -64,14 +65,14 @@ export default class TransformMatrix
     mul()
     {
         var args;
-        if (args = Utility.args(arguments, "scalar:number")) {
+        if (args = Args.args(arguments, "scalar:number")) {
             //scalar multiplication
             return new TransformMatrix(
                 this.m[0][0] * args.scalar, this.m[1][0] * args.scalar,
                 this.m[0][1] * args.scalar, this.m[1][1] * args.scalar,
                 this.m[0][2] * args.scalar, this.m[1][2] * args.scalar
             );
-        } else if (args = Utility.args(arguments, ["m2", TransformMatrix])) {
+        } else if (args = Args.args(arguments, ["m2", TransformMatrix])) {
             //matrix multiplication
             var m1 = this;
             var m2 = args.m2;

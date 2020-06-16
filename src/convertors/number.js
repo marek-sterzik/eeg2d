@@ -2,33 +2,28 @@ import Convertor from "./convertor.js";
 
 export default class NumberConvertor extends Convertor
 {
-    static getObjectClass()
+    static getName()
     {
         return 'number';
     }
 
-    static parseDefault(string)
+    static accepts(object)
+    {
+        return (typeof object === 'number');
+    }
+
+    static parse(string, params, fnName)
     {
         return 0;
     }
 
-    static toStringDefault(number)
+    static toString(number, params, fnName)
     {
-        var percision = this.getArg('output.percision', null);
+        var percision = params.get('number.output.percision');
         if (percision !== null) {
             number = number.toFixed(percision).replace(/\.?0+$/, '');
         }
         return "" + number;
-    }
-
-    static getCustomParserKey()
-    {
-        return 'numberParser';
-    }
-
-    static getCustomToStringKey()
-    {
-        return 'numberToString';
     }
 }
 

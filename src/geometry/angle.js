@@ -1,18 +1,18 @@
-import Utility from "./utility.js";
-import ZeroTest from "./zerotest.js";
-import StringConvertor from "./string_convertor.js";
+import Args from "../utility/args.js";
+import ZeroTest from "../utility/zerotest.js";
+import StringConvertor from "../utility/string_convertor.js";
 
 export default class Angle
 {
     constructor()
     {
         var args;
-        if (args = Utility.args(arguments, "radians:number")) {
+        if (args = Args.args(arguments, "radians:number")) {
             this.radians = args.radians;
-        } else if (args = Utility.args(arguments, ["angle", Angle])) {
+        } else if (args = Args.args(arguments, ["angle", Angle])) {
             return args.angle;
-        } else if (args = Utility.args(arguments, "string:string")) {
-            return StringConvertor.getDefault().parseAngle(args.string);
+        } else if (args = Args.args(arguments, "string:string")) {
+            return StringConvertor.get().parseAngle(args.string);
         } else {
             throw "Cannot construct an angle from given arguments";
         }
@@ -29,19 +29,35 @@ export default class Angle
         return new Angle(2 * Math.PI);
     }
 
-    static inRadians(r)
+    static straight()
+    {
+        return new Angle(Math.PI);
+    }
+
+
+    static right()
+    {
+        return new Angle(Math.PI / 2);
+    }
+
+    static rad(r)
     {
         return new Angle(r * 1);
     }
 
-    static inDegrees(d)
+    static deg(d)
     {
         return new Angle(d * Math.PI / 180);
     }
 
-    static inGradians(g)
+    static grad(g)
     {
         return new Angle(g * Math.PI / 200);
+    }
+
+    static turn(t)
+    {
+        return new Angle(t * 2 * Math.PI);
     }
 
     static atan(x)
@@ -62,6 +78,11 @@ export default class Angle
     grad()
     {
         return this.radians * 200 / Math.PI;
+    }
+
+    turn()
+    {
+        return this.radians / (2 * Math.PI);
     }
 
     mul(c)
@@ -132,6 +153,6 @@ export default class Angle
 
     toString()
     {
-        return StringConvertor.getDefault.apply(StringConvertor, arguments).angleToString(this);
+        return StringConvertor.get.apply(StringConvertor, arguments).angleToString(this);
     }
 }

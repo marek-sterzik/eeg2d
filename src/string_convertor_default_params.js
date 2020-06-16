@@ -1,0 +1,77 @@
+export let StringConvertorDefaultParams = {
+    // the angle unit considered as default ['deg', 'rad', 'grad', 'turn', null]:
+    'angle.defaultUnit': 'deg',
+    
+    // the real units being used (object defining for each unit the input/output)
+    'angle.units':  {'deg': 'deg', 'rad': 'rad', 'grad': 'grad', 'turn': 'turn'},
+    
+    // the unit used to output angles ['deg', 'rad', 'grad', 'turn']:
+    'angle.output.unit': 'deg',
+
+    // set to true if the default unit should be output [true, false]:
+    'angle.output.showDefaultUnit': false,
+
+    // the string to be used as unit separator for angles:
+    'angle.output.unitSeparator': '',
+
+    // the percision to be used to output numbers (number or null)
+    'number.output.percision': null,
+
+    // the delimeter between point coordinates
+    'point.output.delimeter': ', ',
+    
+    // the parenthesis used to output a point
+    'point.output.parenthesis': ['[', ']'],
+    
+    // the delimeter between vector coordinates
+    'vector.output.delimeter': ', ',
+    
+    // the parenthesis used to output a vector
+    'vector.output.parenthesis': ['(', ')'],
+
+    // the delimeter between transformations
+    'transformation.output.transformationDelimeter': ' ',
+
+    // the delimeter between fields of the transformation
+    'transformation.output.fieldDelimeter': ', ',
+
+    // the parenthesis used to output a transformation
+    'transformation.output.parenthesis': ['(', ')'],
+    
+    // all 'fn.*' params expect either a custom function or null.
+    // The function is used to parse/stringify an object.
+    // All these functions gets 3 arguments:
+    //   1. the string/object itself to be parsed/stringified
+    //   2. the string convertor params (use params.get('<param>') to get a single param value)
+    //   3. the name of the conversion operation, i.e. the name of the param 'fn.*' itself
+    // parser function to be used for transformation
+
+    //vector parser
+    'fn.vector.parse': null,
+
+    //vector stringifier
+    'fn.vector.toString': null,
+    
+    //point parser
+    'fn.point.parse': null,
+
+    //point stringifier
+    'fn.point.toString': null,
+
+    //angle parser
+    'fn.angle.parse': null,
+
+    //angle stringifier
+    'fn.angle.toString': null,
+    
+    //transformation parser
+    'fn.transformation.parse': null,
+
+    //transformation stringifier
+    'fn.transformation.toString': null,
+
+};
+
+export class Reference
+{
+}

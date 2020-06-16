@@ -1,4 +1,4 @@
-export default class Utility
+export default class Args
 {
     constructor()
     {

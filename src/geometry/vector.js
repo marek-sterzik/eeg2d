@@ -1,6 +1,7 @@
-import Utility from "./utility.js";
-import ZeroTest from "./zerotest.js";
-import StringConvertor from "./string_convertor.js";
+import Args from "../utility/args.js";
+import ZeroTest from "../utility/zerotest.js";
+import StringConvertor from "../utility/string_convertor.js";
+
 import Angle from "./angle.js";
 
 export default class Vector
@@ -8,13 +9,13 @@ export default class Vector
     constructor()
     {
         var args;
-        if (args = Utility.args(arguments, "x:number", "y:number")) {
+        if (args = Args.args(arguments, "x:number", "y:number")) {
             this.x = args.x;
             this.y = args.y;
-        } else if (args = Utility.args(arguments, ["vector", Vector])) {
+        } else if (args = Args.args(arguments, ["vector", Vector])) {
             return args.vector;
-        } else if (args = Utility.args(arguments, "string:string")) {
-            return StringConvertor.getDefault().parseVector(args.string);
+        } else if (args = Args.args(arguments, "string:string")) {
+            return StringConvertor.get().parseVector(args.string);
         } else {
             throw "Cannot construct vector from given arguments";
         }
@@ -49,9 +50,9 @@ export default class Vector
     mul()
     {
         var args;
-        if (args = Utility.args(arguments, "scalar:number")) {
+        if (args = Args.args(arguments, "scalar:number")) {
             return new Vector (this.x * args.scalar, this.y * args.scalar);
-        } else if (args = Utility.args(arguments, ["vector", Vector])) {
+        } else if (args = Args.args(arguments, ["vector", Vector])) {
             return (this.x * args.vector.x) + (this.y * args.vector.y);
         } else {
             throw "invalid arguments";
@@ -92,11 +93,11 @@ export default class Vector
             angleRadians = 2*Math.PI - angleRadians;
         }
 
-        return Angle.inRadians(angleRadians);
+        return Angle.rad(angleRadians);
     }
 
     toString()
     {
-        return StringConvertor.getDefault.apply(StringConvertor, arguments).vectorToString(this);
+        return StringConvertor.get.apply(StringConvertor, arguments).vectorToString(this);
     }
 }

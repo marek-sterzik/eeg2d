@@ -1,6 +1,7 @@
-import Utility from "./utility.js";
-import ZeroTest from "./zerotest.js";
-import StringConvertor from "./string_convertor.js";
+import Args from "../utility/args.js";
+import ZeroTest from "../utility/zerotest.js";
+import StringConvertor from "../utility/string_convertor.js";
+
 import Vector from "./vector.js";
 import Point from "./point.js";
 import Angle from "./angle.js";
@@ -10,7 +11,7 @@ class TransformationBase
 {
     toString()
     {
-        return StringConvertor.getDefault.apply(StringConvertor, arguments).transformationToString(this);
+        return StringConvertor.get.apply(StringConvertor, arguments).transformationToString(this);
     }
     
     getCanonicalOperations()
@@ -70,12 +71,12 @@ export default class Transformation extends TransformationBase
     {
         var args;
         super();
-        if (args = Utility.args(arguments, ["matrix", TransformationMatrix])) {
+        if (args = Args.args(arguments, ["matrix", TransformationMatrix])) {
             this.matrix = args.matrix;
-        } else if (args = Utility.args(arguments, "a:number", "b:number", "c:number", "d:number", "e:number", "f:number")) {
+        } else if (args = Args.args(arguments, "a:number", "b:number", "c:number", "d:number", "e:number", "f:number")) {
             this.matrix = new TransformationMatrix(args.a, args.b, args.c, args.d, args.e, args.f);
-        } else if (args = Utility.args(arguments, "string:string")) {
-            throw "Loading transformations from a string is not yet implemented";
+        } else if (args = Args.args(arguments, "string:string")) {
+            return StringConvertor.get().parseTransformation(args.string);
         } else {
             throw "Cannot construct a transformation from given arguments";
         }
@@ -86,9 +87,9 @@ export default class Transformation extends TransformationBase
     {
         var args;
         var v;
-        if (args = Utility.args(arguments, ["v", Vector])) {
+        if (args = Args.args(arguments, ["v", Vector])) {
             v = args.v
-        } else if (args = Utility.args(arguments, "x:number", ["y", "number", "default", null])) {
+        } else if (args = Args.args(arguments, "x:number", ["y", "number", "default", null])) {
             v = new Vector(args.x, args.y);
         } else {
             throw "Cannot construct a translation transformation from the given arguments";
@@ -101,10 +102,10 @@ export default class Transformation extends TransformationBase
     {
         var args;
         var angle, center;
-        if (args = Utility.args(arguments, ["angle", Angle], ["center", Point, "default", null])) {
+        if (args = Args.args(arguments, ["angle", Angle], ["center", Point, "default", null])) {
             angle = args.angle;
             center = args.center;
-        } else if (args = Utility.args(arguments, "angle:number", ["center", Point, "default", null])) {
+        } else if (args = Args.args(arguments, "angle:number", ["center", Point, "default", null])) {
             angle = new Angle(args.angle);
             center = args.center;
         } else {
@@ -118,11 +119,11 @@ export default class Transformation extends TransformationBase
     {
         var args;
         var a, b, center;
-        if (args = Utility.args(arguments, "a:number", ["b", "number", "default", null], ["center", Point, "default", null])) {
+        if (args = Args.args(arguments, "a:number", ["b", "number", "default", null], ["center", Point, "default", null])) {
             a = args.a;
             b = (args.b === null) ? args.a : args.b;
             center = args.center;
-        } else if (args = Utility.args(arguments, "a:number", ["center", Point, "default", null])) {
+        } else if (args = Args.args(arguments, "a:number", ["center", Point, "default", null])) {
             a = args.a;
             b = args.a;
             center = args.center;
@@ -137,10 +138,10 @@ export default class Transformation extends TransformationBase
     {
         var args;
         var angle, center;
-        if (args = Utility.args(arguments, "angle:number", ["center", Point, "default", null])) {
+        if (args = Args.args(arguments, "angle:number", ["center", Point, "default", null])) {
             angle = new Angle(args.angle);
             center = args.center;
-        } else if (args = Utility.args(arguments, ["angle", Angle], ["center", Point, "default", null])) {
+        } else if (args = Args.args(arguments, ["angle", Angle], ["center", Point, "default", null])) {
             angle = args.angle;
             center = args.center;
         } else {
@@ -154,10 +155,10 @@ export default class Transformation extends TransformationBase
     {
         var args;
         var angle, center;
-        if (args = Utility.args(arguments, "angle:number", ["center", Point, "default", null])) {
+        if (args = Args.args(arguments, "angle:number", ["center", Point, "default", null])) {
             angle = new Angle(args.angle);
             center = args.center;
-        } else if (args = Utility.args(arguments, ["angle", Angle], ["center", Point, "default", null])) {
+        } else if (args = Args.args(arguments, ["angle", Angle], ["center", Point, "default", null])) {
             angle = args.angle;
             center = args.center;
         } else {
@@ -171,7 +172,7 @@ export default class Transformation extends TransformationBase
     {
         var args;
         var skewX, skewY, center;
-        if (args = Utility.args(arguments, "skewX", ["skewY", "default", 0], ["center", Point, "default", null])) {
+        if (args = Args.args(arguments, "skewX", ["skewY", "default", 0], ["center", Point, "default", null])) {
             skewX = new Angle(args.skewX);
             skewY = new Angle(args.skewY);
             center = args.center;
@@ -223,10 +224,10 @@ export default class Transformation extends TransformationBase
         var centerPoint, mode;
         var origin = Point.origin();
 
-        if (args = Utility.args(arguments, ["centerPoint", Point, "default", origin], ["mode", "string", "default", "skewX"])) {
+        if (args = Args.args(arguments, ["centerPoint", Point, "default", origin], ["mode", "string", "default", "skewX"])) {
             centerPoint = args.centerPoint;
             mode = args.mode;
-        } else if (args = Utility.args(arguments, ["mode", "string", "default", "skewX"])) {
+        } else if (args = Args.args(arguments, ["mode", "string", "default", "skewX"])) {
             centerPoint = origin;
             mode = args.mode;
         } else {
@@ -298,7 +299,7 @@ export class TransformationDecomposition extends TransformationBase
             this.scaleY = byImage.size();
 
             //decompose flip
-            var bxImageRot = bxImage.rot(Angle.inDegrees(90));
+            var bxImageRot = bxImage.rot(Angle.right());
             if (bxImageRot.mul(byImage) < 0) {
                 this.scaleY = -this.scaleY;
             }
@@ -407,10 +408,10 @@ class TransformationInterpolation
     at()
     {
         var args, x, numberOfRotations;
-        if (args = Utility.args(arguments, "x:number", "rotationMode:string:default:shortest")) {
+        if (args = Args.args(arguments, "x:number", "rotationMode:string:default:shortest")) {
             x = args.x;
             numberOfRotations = this._getNumberOfRotations(args.rotationMode);
-        } else if (args = Utility.args(arguments, "x:number", "numberOfRotations:number")) {
+        } else if (args = Args.args(arguments, "x:number", "numberOfRotations:number")) {
             x = args.x;
             numberOfRotations = args.numberOfRotations;
             if (numberOfRotations | 0 !== numberOfRotations) {

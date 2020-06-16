@@ -1,39 +1,34 @@
 import Convertor from "./convertor.js";
-import Point from "../point.js";
 import NumberConvertor from "./number.js";
+
+import Point from "../geometry/point.js";
 
 export default class PointConvertor extends Convertor
 {
-    static getObjectClass()
+    static getName()
     {
-        return Point;
+        return 'point';
     }
 
-    static parseDefault(string)
+    static accepts(object)
+    {
+        return (object instanceof Point);
+    }
+
+    static parse(string, params, fnName)
     {
         return new Point(1, 1);
     }
 
-    static toStringDefault(point)
+    static toString(point, params, fnName)
     {
-        var fieldSeparator = this.getArg(['output.fieldSeparator', 'output.pointFieldSeparator'], ', ');
-        var openParenthesis = this.getArg(['output.openParenthesis', 'output.pointOpenParenthesis'], '[');
-        var closeParenthesis = this.getArg(['output.closeParenthesis', 'output.pointCloseParenthesis'], ']');
+        var delimeter = params.get('point.output.delimeter');
+        var parenthesis = params.get('point.output.parenthesis');
         return "" +
-            openParenthesis +
-            NumberConvertor.toString(point.x, this.getArgs()) +
-            fieldSeparator +
-            NumberConvertor.toString(point.y, this.getArgs()) +
-            closeParenthesis;
-    }
-
-    static getCustomParserKey()
-    {
-        return 'pointParser';
-    }
-
-    static getCustomToStringKey()
-    {
-        return 'pointToString';
+            parenthesis[0] +
+            params.invokeToString(NumberConvertor, point.x) +
+            delimeter +
+            params.invokeToString(NumberConvertor, point.y) +
+            parenthesis[1];
     }
 }

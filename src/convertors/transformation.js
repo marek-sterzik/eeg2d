@@ -1,96 +1,124 @@
 import Convertor from "./convertor.js";
 import AngleConvertor from "./angle.js";
 import NumberConvertor from "./number.js";
-import Transformation, {TransformationDecomposition} from "../transformation.js";
-import ZeroTest from "../zerotest.js";
+
+import Transformation, {TransformationDecomposition} from "../geometry/transformation.js";
+import ZeroTest from "../utility/zerotest.js";
 
 export default class TransformationConvertor extends Convertor
 {
-    static getObjectClass()
+    static getName()
     {
-        return [Transformation, TransformationDecomposition];
+        return 'transformation';
     }
 
-    static parseDefault(string)
+    static accepts(object)
+    {
+        return (object instanceof Transformation) || (object instanceof TransformationDecomposition);
+    }
+
+    static parse(string, params, fnName)
     {
         return Transformation.identity();
     }
 
-    static toStringDefault(transformation)
+    static parseTransformationList(string)
+    {
+        var transformations = [];
+        string = string.trim();
+
+        while (string !== '') {
+            var match = string.match(/^([a-zA-Z_][a-zA-Z_0-9]+)\s*(.*)/);
+
+            if (!match) {
+                return null;
+            }
+
+        }
+
+
+        var transformation = Transformation.zero();
+        while (str != "") {
+            var match = str.match(/^([a-zA-Z]+)\s*\(([^\)]*)\)\s*(.*)/);
+            if (!match) {
+                throw "not a transformation";
+            }
+
+            var t = match[1];
+            var args = match[2].split(/\s*,\s*/);
+            str = match[3];
+
+            var argsFinal = [];
+            for (var i in args) {
+                argsFinal.push(parseFloat(args[i].trim()));
+            }
+
+            transformation = Transformation._atomic(t, argsFinal).compose(transformation);
+        }
+    }
+
+    static toString(transformation, params, fnName)
     {
         var string = '';
-        var transformationSeparator = this.getArg('output.transformationSeparator', ' ');
-        var fieldSeparator = this.getArg(['output.fieldSeparator', 'output.transformationFieldSeparator'], ', ');
-        var openParenthesis = this.getArg(['output.openParenthesis', 'output.transformationOpenParenthesis'], '(');
-        var closeParenthesis = this.getArg(['output.closeParenthesis', 'output.transformationCloseParenthesis'], ')');
+        
+        var transformationDelimeter = params.get('transformation.output.transformationDelimeter');
+        var fieldDelimeter = params.get('transformation.output.fieldDelimeter');
+        var parenthesis = params.get('transformation.output.parenthesis');
+
         var decomposition = transformation.getCanonicalOperations();
+        
         for (var i = 0; i < decomposition.length; i++) {
             var operation = decomposition[i];
             var args = [];
             switch (operation.type) {
             case 'scale':
-                if(ZeroTest.isEqual(operation.scaleX, operation.scaleY)) {
-                    args.push(NumberConvertor.toString(operation.scaleX, this.getArgs()));
-                } else {
-                    args.push(NumberConvertor.toString(operation.scaleX, this.getArgs()));
-                    args.push(NumberConvertor.toString(operation.scaleY, this.getArgs()));
+                args.push(params.invokeToString(NumberConvertor, operation.scaleX));
+                if(!ZeroTest.isEqual(operation.scaleX, operation.scaleY)) {
+                    args.push(params.invokeToString(NumberConvertor, operation.scaleY));
                 }
                 break;
             case 'rotate':
-                args.push(AngleConvertor.toString(operation.angle, this.getArgs()));
+                args.push(params.invokeToString(AngleConvertor, operation.angle));
                 if (!operation.centerPoint.isOrigin()) {
-                    args.push(NumberConvertor.toString(operation.center.x, this.getArgs()));
-                    args.push(NumberConvertor.toString(operation.center.y, this.getArgs()));
+                    args.push(params.invokeToString(NumberConvertor, operation.center.x));
+                    args.push(params.invokeToString(NumberConvertor, operation.center.y));
                 }
                 break;
             case 'translate':
-                args.push(NumberConvertor.toString(operation.vector.x, this.getArgs()));
-                args.push(NumberConvertor.toString(operation.vector.y, this.getArgs()));
+                args.push(params.invokeToString(NumberConvertor, operation.vector.x));
+                args.push(params.invokeToString(NumberConvertor, operation.vector.y));
                 break;
             case 'skewX':
-                args.push(AngleConvertor.toString(operation.angle, this.getArgs()));
+                args.push(params.invokeToString(AngleConvertor, operation.angle));
                 break;
             case 'skewY':
-                args.push(AngleConvertor.toString(operation.angle, this.getArgs()));
+                args.push(params.invokeToString(AngleConvertor, operation.angle));
                 break;
             case 'skew':
-                args.push(AngleConvertor.toString(operation.skewX, this.getArgs()));
+                args.push(params.invokeToString(AngleConvertor, operation.skewX));
                 if (!operation.skewY.isZero()) {
-                    args.push(AngleConvertor.toString(operation.skewY, this.getArgs()));
+                    args.push(params.invokeToString(AngleConvertor, operation.skewY));
                 }
                 break;
             case 'matrix':
-                args.push(NumberConvertor.toString(operation.matrix.m[0][0], this.getArgs()));
-                args.push(NumberConvertor.toString(operation.matrix.m[1][0], this.getArgs()));
-                args.push(NumberConvertor.toString(operation.matrix.m[0][1], this.getArgs()));
-                args.push(NumberConvertor.toString(operation.matrix.m[1][1], this.getArgs()));
-                args.push(NumberConvertor.toString(operation.matrix.m[0][2], this.getArgs()));
-                args.push(NumberConvertor.toString(operation.matrix.m[1][2], this.getArgs()));
+                args.push(params.invokeToString(NumberConvertor, operation.matrix.m[0][0]));
+                args.push(params.invokeToString(NumberConvertor, operation.matrix.m[1][0]));
+                args.push(params.invokeToString(NumberConvertor, operation.matrix.m[0][1]));
+                args.push(params.invokeToString(NumberConvertor, operation.matrix.m[1][1]));
+                args.push(params.invokeToString(NumberConvertor, operation.matrix.m[0][2]));
+                args.push(params.invokeToString(NumberConvertor, operation.matrix.m[1][2]));
                 break;
             default:
                 throw "Trying to convert an unknown operation to string: "+operation.type;
             }
 
             if (string != '') {
-                string += transformationSeparator;
+                string += transformationDelimeter;
             }
 
-            string += operation.type;
-            string += openParenthesis;
-            string += args.join(fieldSeparator);
-            string += closeParenthesis;
+            string += operation.type + parenthesis[0] + args.join(fieldDelimeter) + parenthesis[1];
         }
         return string;
-    }
-
-    static getCustomParserKey()
-    {
-        return 'transformationParser';
-    }
-
-    static getCustomToStringKey()
-    {
-        return 'transformationToString';
     }
 }
 
@@ -108,7 +136,7 @@ Transformation._atomic = function(name, args)
         if (args.length != 3) {
             throw "rotate needs to have 1 or 3 arguments";
         }
-        var angle = Angle.inDegrees(args[0]);
+        var angle = Angle.deg(args[0]);
         var center = new Point(args[1], args[2]);
         return Transformation.rotation(center, angle);
     case 'translate':
@@ -122,32 +150,6 @@ Transformation._atomic = function(name, args)
     }
 }
 
-
-Transformation.fromString = function(str)
-{
-    str = str.trim();
-    var transformation = Transformation.zero();
-    while (str != "") {
-        var match = str.match(/^([a-z]+)\s*\(([^\)]*)\)\s*(.*)/);
-        if (!match) {
-            throw "not a transformation";
-        }
-
-        var t = match[1];
-        var args = match[2].split(/\s*,\s{0,}/); //{0,} is here instead of * to be able to comment out
-        str = match[3];
-
-        var argsFinal = [];
-        for (var i in args) {
-            argsFinal.push(parseFloat(args[i].trim()));
-        }
-
-        transformation = Transformation._atomic(t, argsFinal).compose(transformation);
-    }
-    //TODO implement
-
-    return transformation;
-}
 
 */
 

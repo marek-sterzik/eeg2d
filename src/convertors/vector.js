@@ -1,39 +1,34 @@
 import Convertor from "./convertor.js";
-import Vector from "../vector.js";
 import NumberConvertor from "./number.js";
+
+import Vector from "../geometry/vector.js";
 
 export default class VectorConvertor extends Convertor
 {
-    static getObjectClass()
+    static getName()
     {
-        return Vector;
+        return 'vector';
     }
 
-    static parseDefault(string)
+    static accepts(object)
+    {
+        return (object instanceof Vector);
+    }
+
+    static parse(string, params, fnName)
     {
         return new Vector(1, 1);
     }
 
-    static toStringDefault(vector)
+    static toString(vector, params, fnName)
     {
-        var fieldSeparator = this.getArg(['output.fieldSeparator', 'output.vectorFieldSeparator'], ', ');
-        var openParenthesis = this.getArg(['output.openParenthesis', 'output.vectorOpenParenthesis'], '(');
-        var closeParenthesis = this.getArg(['output.closeParenthesis', 'output.vectorCloseParenthesis'], ')');
+        var delimeter = params.get('vector.output.delimeter');
+        var parenthesis = params.get('vector.output.parenthesis');
         return "" +
-            openParenthesis +
-            NumberConvertor.toString(vector.x, this.getArgs()) +
-            fieldSeparator +
-            NumberConvertor.toString(vector.y, this.getArgs()) +
-            closeParenthesis;
-    }
-
-    static getCustomParserKey()
-    {
-        return 'vectorParser';
-    }
-
-    static getCustomToStringKey()
-    {
-        return 'vectorToString';
+            parenthesis[0] +
+            params.invokeToString(NumberConvertor, vector.x) +
+            delimeter +
+            params.invokeToString(NumberConvertor, vector.y) +
+            parenthesis[1];
     }
 }
