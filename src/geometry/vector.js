@@ -3,6 +3,7 @@ import ZeroTest from "../utility/zerotest.js";
 import StringConvertor from "../utility/string_convertor.js";
 
 import Angle from "./angle.js";
+import Transformation from "./transformation.js";
 
 export default class Vector
 {
@@ -27,24 +28,19 @@ export default class Vector
         return new Vector(0, 0);
     }
 
-    transformation()
+    translation()
     {
-        return Transformation.translation(this);
+        return Transformation.translate(this);
     }
 
     size()
     {
-        return Math.sqrt(this.mulScalar(this));
+        return Math.sqrt(this.mul(this));
     }
 
     isZero()
     {
         return ZeroTest.isZero(this.x) && ZeroTest.isZero(this.y);
-    }
-
-    mulScalar(v)
-    {
-        return this.mul(v);
     }
 
     mul()
@@ -88,7 +84,7 @@ export default class Vector
 
     angleTo(v)
     {
-        var angleRadians = Math.acos(this.mulScalar(v) / (this.size() * v.size()));
+        var angleRadians = Math.acos(this.mul(v) / (this.size() * v.size()));
         if (this.x * v.y - this.y * v.x < 0) {
             angleRadians = 2*Math.PI - angleRadians;
         }

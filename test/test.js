@@ -1,5 +1,1 @@
-import vector from "./geometry/vector.js";
-import point from "./geometry/point.js";
-
-vector();
-point();
+import "./geometry/geometry.spec.js";
