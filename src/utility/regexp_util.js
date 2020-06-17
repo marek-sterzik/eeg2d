@@ -9,7 +9,7 @@ export default class RegexpUtil
         var newPattern, trimPattern;
         var newFlags;
         newPattern = '(' + pattern.source + ')(.*)$';
-        trimPattern = pattern.source + '$';
+        trimPattern = '(' + pattern.source + ')$';
         newFlags = pattern.flags.replace(/[gs]/, '');
 
         this.readTokenPattern = new RegExp('^' + newPattern, newFlags);
@@ -36,12 +36,20 @@ export default class RegexpUtil
         return [matches[1], matches[matches.length - 1]];
     }
 
+    readTokenFromEnd(string)
+    {
+        var match = string.match(this.trimToken);
+        if (!match) {
+            return [null, string];
+        }
+        return [match[1], string.replace(this.trimToken, '')];
+    }
+
     trim(string)
     {
         var s;
         [s, string] = this.readToken(string);
-
-        string = string.replace(this.trimToken, '');
+        [s, string] = this.readTokenFromEnd(string);
 
         return string;
     }
@@ -81,17 +89,23 @@ class StringUtil
         }
     }
 
-    trim(string)
+    readTokenFromEnd(string)
     {
-        var s;
-        [s, string] = this.readToken(string);
-
         if (
             string.length > this.pattern.length &&
             string.substr(string.length - this.pattern.length, this.pattern.length) === this.pattern
         ) {
-            string = string.substr(0, string.length - this.pattern.length);
+            return [this.pattern,  string.substr(0, string.length - this.pattern.length)];
         }
+
+        return [null, string];
+    }
+
+    trim(string)
+    {
+        var s;
+        [s, string] = this.readToken(string);
+        [s, string] = this.readTokenFromEnd(string);
 
         return string;
     }

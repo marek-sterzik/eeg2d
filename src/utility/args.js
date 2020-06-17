@@ -1,10 +1,5 @@
 export default class Args
 {
-    constructor()
-    {
-        console.log("construct Utility");
-    }
-
     static args()
     {
         if (arguments.length == 0) {

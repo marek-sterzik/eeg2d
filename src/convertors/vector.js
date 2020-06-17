@@ -1,9 +1,8 @@
-import Convertor from "./convertor.js";
-import NumberConvertor from "./number.js";
+import CoupleConvertor from "./couple.js";
 
 import Vector from "../geometry/vector.js";
 
-export default class VectorConvertor extends Convertor
+export default class VectorConvertor extends CoupleConvertor
 {
     static getName()
     {
@@ -15,20 +14,13 @@ export default class VectorConvertor extends Convertor
         return (object instanceof Vector);
     }
 
-    static parse(string, params, fnName)
+    static coupleToObject(couple)
     {
-        return new Vector(1, 1);
+        return new Vector(couple[0], couple[1]);
     }
 
-    static toString(vector, params, fnName)
+    static objectToCouple(object)
     {
-        var delimeter = params.get('vector.output.delimeter');
-        var parenthesis = params.get('vector.output.parenthesis');
-        return "" +
-            parenthesis[0] +
-            params.invokeToString(NumberConvertor, vector.x) +
-            delimeter +
-            params.invokeToString(NumberConvertor, vector.y) +
-            parenthesis[1];
+        return [object.x, object.y];
     }
 }

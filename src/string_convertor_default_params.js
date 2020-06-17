@@ -3,7 +3,7 @@ export let StringConvertorDefaultParams = {
     'angle.defaultUnit': 'deg',
     
     // the real units being used (object defining for each unit the input/output)
-    'angle.units':  {'deg': 'deg', 'rad': 'rad', 'grad': 'grad', 'turn': 'turn'},
+    'angle.units':  {'deg': ['deg'], 'rad': ['rad'], 'grad': ['grad'], 'turn': ['turn']},
     
     // the unit used to output angles ['deg', 'rad', 'grad', 'turn']:
     'angle.output.unit': 'deg',
@@ -14,8 +14,17 @@ export let StringConvertorDefaultParams = {
     // the string to be used as unit separator for angles:
     'angle.output.unitSeparator': '',
 
+    // the space being ignored in the angle (also used for trimming the unit separator)
+    'angle.input.space': /\s+/,
+
+    // specify if the unit reader is case sensitive or not
+    'angle.input.unitsCaseSensitive': true,
+
     // the percision to be used to output numbers (number or null)
     'number.output.percision': null,
+
+    // space accepted arround numbers
+    'number.input.space': /\s+/,
 
     // the delimeter between point coordinates
     'point.output.delimeter': ', ',
@@ -23,11 +32,29 @@ export let StringConvertorDefaultParams = {
     // the parenthesis used to output a point
     'point.output.parenthesis': ['[', ']'],
     
+    // the space being ignored in the point
+    'point.input.space': /\s+/,
+
+    // the delimeter between point coordinates
+    'point.input.delimeter': /\s*[, ]\s*/,
+    
+    // the delimeter between point coordinates
+    'point.input.parenthesis': [/[\[\(]?/, /[\]\)]?/],
+    
     // the delimeter between vector coordinates
     'vector.output.delimeter': ', ',
     
     // the parenthesis used to output a vector
     'vector.output.parenthesis': ['(', ')'],
+    
+    // the space being ignored in the point
+    'vector.input.space': /\s+/,
+
+    // the delimeter between point coordinates
+    'vector.input.delimeter': /\s*[, ]\s*/,
+    
+    // the delimeter between point coordinates
+    'vector.input.parenthesis': [/[\[\(]?/, /[\]\)]?/],
 
     // the delimeter between transformations
     'transformation.output.transformationDelimeter': ' ',
@@ -39,7 +66,7 @@ export let StringConvertorDefaultParams = {
     'transformation.output.parenthesis': ['(', ')'],
 
     // the space accepted in the transformation on various places
-    'transformation.input.space': /\s*/,
+    'transformation.input.space': /\s+/,
 
     // the transformation identifier
     'transformation.input.identifier': /[a-zA-Z_][a-zA-Z0-9_]*/,

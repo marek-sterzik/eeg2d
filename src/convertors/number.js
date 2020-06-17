@@ -1,5 +1,7 @@
 import Convertor from "./convertor.js";
 
+import RegexpUtil from "../utility/regexp_util.js"
+
 export default class NumberConvertor extends Convertor
 {
     static getName()
@@ -14,7 +16,15 @@ export default class NumberConvertor extends Convertor
 
     static parse(string, params, fnName)
     {
-        return 0;
+        var space = new RegexpUtil(params.get('number.input.space'));
+        
+        string = space.trim(string);
+
+        var number = Number(string);
+        if (isNaN(number) && !isFinite(number)) {
+            throw "Cannot parse number";
+        }
+        return number;
     }
 
     static toString(number, params, fnName)

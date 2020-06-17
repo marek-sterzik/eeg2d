@@ -1,6 +1,8 @@
 import Convertor from "./convertor.js";
 import NumberConvertor from "./number.js";
 
+import RegexpUtil from "../utility/regexp_util.js"
+
 import Angle from "../geometry/angle.js";
 
 export default class AngleConvertor extends Convertor
@@ -15,23 +17,92 @@ export default class AngleConvertor extends Convertor
         return (object instanceof Angle);
     }
 
+    static getAllAvailableUnits()
+    {
+        return ['deg', 'rad', 'grad', 'turn'];
+    }
+
     static parse(string, params, fnName)
     {
-        return new Angle(0);
+        var space = new RegexpUtil(params.get('angle.input.space'));
+        var caseSensitive = params.get('angle.input.unitsCaseSensitive');
+        var units = params.get('angle.units');
+        var availableUnits = this.getAllAvailableUnits();
+        var unitFound = null;
+        var newString;
+        
+        string = space.trim(string);
+
+        for (var i = 0; i < availableUnits.length; i++) {
+            if (availableUnits[i] in units) {
+                var unitVariants = units[availableUnits[i]];
+                for (var j = 0; j < unitVariants.length; j++) {
+                    var s = this.findUnit(string, unitVariants[j], caseSensitive);
+                    if (s !== null) {
+                        if (unitFound === null || availableUnits[i].length > unitFound.length) {
+                            unitFound = availableUnits[i];
+                            newString = s;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (unitFound !== null) {
+            string = space.trim(newString);
+        } else {
+            unitFound = params.get('angle.defaultUnit');
+            var unitExists = false;
+            for (var i = 0; i < availableUnits.length; i++) {
+                if (availableUnits[i] === unitFound) {
+                    unitExists = true;
+                    break;
+                }
+            }
+
+            if (!unitExists) {
+                unitFound = availableUnits[0];
+            }
+        }
+
+        var number = params.invokeParse(NumberConvertor, string);
+
+        return Angle[unitFound].call(Angle, number);
+    }
+
+    static findUnit(string, unit, caseSensitive)
+    {
+        if (string.length < unit.length) {
+            return null;
+        }
+
+        var parsedUnit = string.substr(string.length - unit.length, unit.length);
+        
+        if (caseSensitive) {
+            unit = unit.toLowerCase();
+            parsedUnit = parsedUnit.toLowerCase();
+        }
+
+        if (unit !== parsedUnit) {
+            return null;
+        }
+
+        return string.substr(0, string.length - unit.length);
     }
 
     static toString(angle, params, fnName)
     {
         var angleUnit = this.getRealUnit(params.get('angle.output.unit'), false);
         var angleDefaultUnit = this.getRealUnit(params.get('angle.defaultUnit'), true);
-        var number;
-        if (angleUnit === 'rad') {
-            number = angle.rad();
-        } else if (angleUnit === 'grad') {
-            number = angle.grad();
-        } else if (angleUnit === 'turn') {
-            number = angle.turn();
-        } else {
+        var number = null;
+
+        var availableUnits = this.getAllAvailableUnits();
+        for (var i = 0; i < availableUnits.length; i++) {
+            if (angleUnit === availableUnits[i]) {
+                number = angle[angleUnit].call(angle);
+            }
+        }
+        if (number === null) {
             number = angle.deg();
         }
 
@@ -47,9 +118,9 @@ export default class AngleConvertor extends Convertor
 
     static getAngleOutputUnit(unit, params)
     {
-        var convertor = params.get('angle.units');
-        if (unit in convertor) {
-            return convertor[unit];
+        var units = params.get('angle.units');
+        if (unit in units) {
+            return units[unit][0];
         }
 
         return unit;
@@ -57,12 +128,20 @@ export default class AngleConvertor extends Convertor
 
     static getRealUnit(u, allowEmpty)
     {
-        if (u !== 'deg' && u !== 'rad' && u !== 'grad' && u !== 'turn') {
+        var availableUnits = this.getAllAvailableUnits();
+        var found = false;
+        for (var i = 0; i < availableUnits.length; i++) {
+            if (u === availableUnits[i]) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
             u = null;
         }
 
         if (!allowEmpty && u === null) {
-            u = 'deg';
+            u = availableUnits[0];
         }
 
         return u;
