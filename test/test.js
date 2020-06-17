@@ -1,6 +1,7 @@
 #!/usr/bin/node
 
 import {Vector, Point, Angle, Transformation, StringConvertor} from "../src/eeg2d.js";
+import RegexpUtil from '../src/utility/regexp_util.js';
 
 StringConvertor.get({
     "number.output.percision": 4,
@@ -24,3 +25,8 @@ console.log(v.toString())
 
 var p = new Point(1, 2);
 console.log(p.toString())
+
+var stringTransformation = "translate( 1 , 1 ) rotate( 45 ) scale( 2 , -3 ) skewX( 45 )";
+transformation = new Transformation(stringTransformation);
+
+console.log(transformation.toString());

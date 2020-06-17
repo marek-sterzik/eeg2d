@@ -37,6 +37,22 @@ export let StringConvertorDefaultParams = {
 
     // the parenthesis used to output a transformation
     'transformation.output.parenthesis': ['(', ')'],
+
+    // the space accepted in the transformation on various places
+    'transformation.input.space': /\s*/,
+
+    // the transformation identifier
+    'transformation.input.identifier': /[a-zA-Z_][a-zA-Z0-9_]*/,
+
+    // the delimeter between transformations being read
+    'transformation.input.transformationDelimeter': /\s/,
+
+    // the delimeter between fields of the transformation
+    'transformation.input.fieldDelimeter': /\s*[,\s]\s*/,
+
+    // the parenthesis being parsed for a transformation
+    'transformation.input.parenthesis': [ /\s*\(/ , ')'],
+
     
     // all 'fn.*' params expect either a custom function or null.
     // The function is used to parse/stringify an object.

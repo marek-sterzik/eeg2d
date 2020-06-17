@@ -4,6 +4,7 @@ import NumberConvertor from "./number.js";
 
 import Transformation, {TransformationDecomposition} from "../geometry/transformation.js";
 import ZeroTest from "../utility/zerotest.js";
+import RegexpUtil from "../utility/regexp_util.js"
 
 export default class TransformationConvertor extends Convertor
 {
@@ -19,42 +20,138 @@ export default class TransformationConvertor extends Convertor
 
     static parse(string, params, fnName)
     {
+        console.log(string);
+        var transformationList = this.parseTransformationList(string, params);
+
+        if (transformationList === null) {
+            throw "Cannot parse transformation";
+        }
+
+        this.convertTransformationArguments(transformationList, params);
+        
+        console.log(transformationList);
         return Transformation.identity();
     }
 
-    static parseTransformationList(string)
+    static getConvertorDescriptors()
+    {
+        return {
+            'scale': [NumberConvertor, NumberConvertor],
+            'rotate': [AngleConvertor, NumberConvertor, NumberConvertor],
+            'translate': [NumberConvertor, NumberConvertor],
+            'skewX': [AngleConvertor],
+            'skewY': [AngleConvertor],
+            'skew': [AngleConvertor, AngleConvertor],
+            'matrix': [NumberConvertor, NumberConvertor, NumberConvertor, NumberConvertor, NumberConvertor, NumberConvertor]
+        };
+    }
+
+    static convertTransformationArguments(transformationList, params)
+    {
+        var convertors = this.getConvertorDescriptors();
+
+        for (var i = 0; i < transformationList.length; i++) {
+            var name = transformationList[i].name;
+            var args = transformationList[i].args;
+            if (!name in convertors) {
+                throw "unknown transformation: " + name;
+            }
+            
+            var argConvertors = convertors[name];
+
+            if (args.length > argConvertors.length) {
+                throw "too many arguments for transformation: " + name;
+            }
+
+            for (var j = 0; j < args.length; j++) {
+                args[j] = params.invokeParse(argConvertors[j], args[j]);
+            }
+        }
+    }
+
+    static parseTransformationList(string, params)
     {
         var transformations = [];
         string = string.trim();
 
-        while (string !== '') {
-            var match = string.match(/^([a-zA-Z_][a-zA-Z_0-9]+)\s*(.*)/);
+        var space = new RegexpUtil(params.get('transformation.input.space'));
+        var identifier = new RegexpUtil(params.get('transformation.input.identifier'));
+        var transformationDelimeter = new RegexpUtil(params.get('transformation.input.transformationDelimeter'));
+        var fieldDelimeter = new RegexpUtil(params.get('transformation.input.fieldDelimeter'));
+        var parenthesis = params.get('transformation.input.parenthesis').map(function(x) {return new RegexpUtil(x);});
 
-            if (!match) {
+        
+        var first = true;
+        var token;
+        var ar;
+        var record;
+        while (string !== '') {
+            record = {};
+            if (!first) {
+                ar = transformationDelimeter.split2(string);
+                if (ar.length < 2) {
+                    return null;
+                }
+
+                if (ar[0] !== '' && !space.matchAll(ar[0])) {
+                    return null;
+                }
+
+                string = ar[1];
+            }
+            first = false;
+
+            [token, string] = space.readToken(string);
+
+            if (string === '') {
+                break;
+            }
+            
+            [record.name, string] = identifier.readToken(string);
+
+            if (record.name === null) {
                 return null;
             }
 
-        }
+            [token, string] = space.readToken(string);
 
+            [token, string] = parenthesis[0].readToken(string);
 
-        var transformation = Transformation.zero();
-        while (str != "") {
-            var match = str.match(/^([a-zA-Z]+)\s*\(([^\)]*)\)\s*(.*)/);
-            if (!match) {
-                throw "not a transformation";
+            if (token === null) {
+                return null;
+            }
+            
+            ar = parenthesis[1].split2(string);
+
+            if (ar.length < 2) {
+                return null;
             }
 
-            var t = match[1];
-            var args = match[2].split(/\s*,\s*/);
-            str = match[3];
+            record.args = this.parseTransformationArgs(ar[0], space, fieldDelimeter);
+            string = ar[1];
 
-            var argsFinal = [];
-            for (var i in args) {
-                argsFinal.push(parseFloat(args[i].trim()));
-            }
-
-            transformation = Transformation._atomic(t, argsFinal).compose(transformation);
+            transformations.push(record);
         }
+
+        return transformations;
+    }
+
+    static parseTransformationArgs(argString, space, fieldDelimeter)
+    {
+        var splitted = [];
+        var ar = [argString];
+
+        do {
+            if (ar.length > 1) {
+                splitted.push(space.trim(ar.shift()));
+            }
+            argString = space.trim(ar.shift());
+            ar = fieldDelimeter.split2(argString);
+        } while (ar.length > 1);
+        
+        splitted.push(space.trim(ar.shift()));
+
+        return splitted;
     }
 
     static toString(transformation, params, fnName)
@@ -121,35 +218,3 @@ export default class TransformationConvertor extends Convertor
         return string;
     }
 }
-
-/*
-
-
-Transformation._atomic = function(name, args)
-{
-    switch (name) {
-    case 'rotate':
-        if (args.length == 1) {
-            args.push(0);
-            args.push(0);
-        }
-        if (args.length != 3) {
-            throw "rotate needs to have 1 or 3 arguments";
-        }
-        var angle = Angle.deg(args[0]);
-        var center = new Point(args[1], args[2]);
-        return Transformation.rotation(center, angle);
-    case 'translate':
-        if (args.length != 2) {
-            throw "translate needs to have 2 arguments";
-        }
-        var v = new Vector(args[0], args[1]);
-        return Transformation.translation(v);
-    default:
-        throw "unknown atomic transformation: "+name;
-    }
-}
-
-
-*/
-
