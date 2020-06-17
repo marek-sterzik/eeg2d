@@ -24,7 +24,8 @@
     "email": "marek.sterzik@gmail.com"
   },
   "scripts": {
-    "build": "webpack --config config/webpack.config.cjs"
+    "build": "webpack --config config/webpack.config.cjs",
+    "test": "mocha"
   },
   "main": "src/eeg2d.js",
   "type": "module",
