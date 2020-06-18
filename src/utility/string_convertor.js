@@ -5,17 +5,12 @@ import TransformationConvertor from "../convertors/transformation.js";
 
 import {StringConvertorDefaultParams, Reference} from "../string_convertor_default_params.js";
 
+
 export default class StringConvertor
 {
-    static _defaultStringConvertor = null;
-
     static get()
     {
-        if (this._defaultStringConvertor === null) {
-            this._defaultStringConvertor = new StringConvertor();
-        }
-
-        var defaultConvertor = this._defaultStringConvertor;
+        var defaultConvertor = defaultStringConvertor;
 
 
         if (arguments.length >= 1) {
@@ -28,12 +23,12 @@ export default class StringConvertor
 
     static setDefault(stringConvertor)
     {
-        var oldStringConvertor = this._defaultStringConvertor;
+        var oldStringConvertor = defaultStringConvertor;
 
         if (stringConvertor === null) {
             stringConvertor = new StringConvertor();
         }
-        this._defaultStringConvertor = stringConvertor;
+        defaultStringConvertor = stringConvertor;
 
         return oldStringConvertor;
     }
@@ -93,9 +88,6 @@ export default class StringConvertor
     {
         return this.params.invokeToString(TransformationConvertor, transformation);
     }
-
-
-
 }
 
 class StringConvertorParams
@@ -166,4 +158,6 @@ class StringConvertorParams
         return null;
     }
 }
+
+var defaultStringConvertor = new StringConvertor();
 

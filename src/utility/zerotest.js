@@ -1,9 +1,8 @@
 export default class ZeroTest
 {
-    static epsilon = 0.0000000000001;
     static isZero(number)
     {
-        return (number == 0) || Math.abs(number) < this.epsilon;
+        return (number == 0) || Math.abs(number) < zeroTestEpsilon;
     }
 
     static isEqual(a, b)
@@ -11,3 +10,5 @@ export default class ZeroTest
         return this.isZero(a-b);
     }
 }
+
+var zeroTestEpsilon = 0.0000000000001;
