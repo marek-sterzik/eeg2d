@@ -58,6 +58,7 @@ export default function VectorTest() {
     });
 
     it("angle operations", function(){
+        //universal angle operations
         var angle = Angle.deg(30);
         var v1 = new Vector(1, 0);
         var v2 = v1.rot(angle);
@@ -71,8 +72,20 @@ export default function VectorTest() {
         assert(ZeroTest.isEqual(angle2.deg(), 30));
         var angle3 = v3.angleTo(v2);
         assert(ZeroTest.isEqual(angle3.deg(), 330));
-        
-        //remaining operations to test:
+
+        //test all rotations 10 degrees
+        var b = new Vector(1, 0);
+        var b2 = b.rot(Angle.deg(20));
+        for (var i = 0; i < 36; i++) {
+            var a = Angle.deg(i*10);
+            var v = b.rot(a);
+            assert(ZeroTest.isEqual(v.x, Math.cos(i * Math.PI / 18)));
+            assert(ZeroTest.isEqual(v.y, Math.sin(i * Math.PI / 18)));
+
+            v = b2.rot(a);
+            assert(ZeroTest.isEqual(v.x, Math.cos((i + 2) * Math.PI / 18)));
+            assert(ZeroTest.isEqual(v.y, Math.sin((i + 2) * Math.PI / 18)));
+        }
     });
 
     it("translation", function(){

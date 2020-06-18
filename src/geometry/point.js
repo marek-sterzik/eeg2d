@@ -27,9 +27,16 @@ export default class Point
         return new Point(0, 0);
     }
 
-    rot(p2, angle)
+    rot(o2, angle)
     {
-        return this.addVector(this.vectorTo(p2).rot(angle));
+        if (o2 instanceof Point) {
+            o2 = this.vectorTo(o2);
+        }
+
+        if (!o2 instanceof Vector) {
+            throw "invalid argument: needs to rotate a vector or a point";
+        }
+        return this.addVector(o2.rot(angle));
     }
 
     addVector(v)
