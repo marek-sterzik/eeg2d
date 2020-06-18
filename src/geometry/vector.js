@@ -28,7 +28,7 @@ export default class Vector
         return new Vector(0, 0);
     }
 
-    translation()
+    getTranslation()
     {
         return Transformation.translate(this);
     }

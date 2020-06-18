@@ -1,7 +1,6 @@
-import assert from "assert";
+import assert from "../assert/assert.js";
 
 import {Point, Vector, Angle} from "../../src/eeg2d.js";
-import ZeroTest from "../../src/utility/zerotest.js";
 
 export default function PointTest() {
     it("construction", function() {
@@ -35,8 +34,8 @@ export default function PointTest() {
         assert.equal(v2.y, 1);
 
         var p3 = new Point(4, 6);
-        assert(ZeroTest.isEqual(p1.distanceTo(p3), 5));
-        assert(ZeroTest.isEqual(p3.distanceTo(p1), 5));
+        assert.approxEqual(p1.distanceTo(p3), 5);
+        assert.approxEqual(p3.distanceTo(p1), 5);
         
         assert.equal((new Point(0, 0)).isOrigin(), true);
         assert.equal((new Point(0.00001, 0)).isOrigin(), false);
@@ -46,12 +45,12 @@ export default function PointTest() {
         var angle = Angle.deg(90);
         var p4 = new Point(3, 4);
         var p5 = p1.rot(p4, angle);
-        assert(ZeroTest.isEqual(p5.x, -1));
-        assert(ZeroTest.isEqual(p5.y, 4));
+        assert.approxEqual(p5.x, -1);
+        assert.approxEqual(p5.y, 4);
 
         var p6 = p1.rot(p1.vectorTo(p4), angle);
-        assert(ZeroTest.isEqual(p6.x, -1));
-        assert(ZeroTest.isEqual(p6.y, 4));
+        assert.approxEqual(p6.x, -1);
+        assert.approxEqual(p6.y, 4);
 
         assert.equal(p1.toString(), "[1, 2]");
     });

@@ -2,6 +2,9 @@ import Args from "../utility/args.js";
 import ZeroTest from "../utility/zerotest.js";
 import StringConvertor from "../utility/string_convertor.js";
 
+import Point from "./point.js";
+import Transformation from "./transformation.js";
+
 export default class Angle
 {
     constructor()
@@ -141,9 +144,16 @@ export default class Angle
         return this.cos() / this.sin();
     }
 
-    transformation() 
+    getRotation() 
     {
-        return Transformation.rotation(Point.center(), this);
+        var args;
+        var center;
+        if (args = Args.args(arguments, ["center", Point, "default", Point.origin()])) {
+            center = args.center;
+        } else {
+            throw "Cannot construct an angle from given arguments";
+        }
+        return Transformation.rotate(this, center);
     }
 
     isZero()

@@ -1,7 +1,6 @@
-import assert from "assert";
+import assert from "../assert/assert.js";
 
 import {Vector, Angle} from "../../src/eeg2d.js";
-import ZeroTest from "../../src/utility/zerotest.js";
 
 export default function VectorTest() {
     it("construction", function() {
@@ -42,11 +41,11 @@ export default function VectorTest() {
         assert.equal(x, 4);
 
         var v6 = new Vector(3, 4);
-        assert(ZeroTest.isEqual(v6.size(), 5));
+        assert.approxEqual(v6.size(), 5);
 
         var v7 = v6.normalize();
-        assert(ZeroTest.isEqual(v7.x, 3/5));
-        assert(ZeroTest.isEqual(v7.y, 4/5));
+        assert.approxEqual(v7.x, 3/5);
+        assert.approxEqual(v7.y, 4/5);
 
         assert.equal((new Vector(0, 0)).isZero(), true);
         assert.equal((new Vector(0.00001, 0)).isZero(), false);
@@ -62,16 +61,16 @@ export default function VectorTest() {
         var angle = Angle.deg(30);
         var v1 = new Vector(1, 0);
         var v2 = v1.rot(angle);
-        assert(ZeroTest.isEqual(v2.x, Math.sqrt(3/4)));
-        assert(ZeroTest.isEqual(v2.y, 1/2));
+        assert.approxEqual(v2.x, Math.sqrt(3/4));
+        assert.approxEqual(v2.y, 1/2);
         var v3 = v2.rot(angle);
-        assert(ZeroTest.isEqual(v3.x, 1/2));
-        assert(ZeroTest.isEqual(v3.y, Math.sqrt(3/4)));
+        assert.approxEqual(v3.x, 1/2);
+        assert.approxEqual(v3.y, Math.sqrt(3/4));
 
         var angle2 = v2.angleTo(v3);
-        assert(ZeroTest.isEqual(angle2.deg(), 30));
+        assert.approxEqual(angle2.deg(), 30);
         var angle3 = v3.angleTo(v2);
-        assert(ZeroTest.isEqual(angle3.deg(), 330));
+        assert.approxEqual(angle3.deg(), 330);
 
         //test all rotations 10 degrees
         var b = new Vector(1, 0);
@@ -79,18 +78,18 @@ export default function VectorTest() {
         for (var i = 0; i < 36; i++) {
             var a = Angle.deg(i*10);
             var v = b.rot(a);
-            assert(ZeroTest.isEqual(v.x, Math.cos(i * Math.PI / 18)));
-            assert(ZeroTest.isEqual(v.y, Math.sin(i * Math.PI / 18)));
+            assert.approxEqual(v.x, Math.cos(i * Math.PI / 18));
+            assert.approxEqual(v.y, Math.sin(i * Math.PI / 18));
 
             v = b2.rot(a);
-            assert(ZeroTest.isEqual(v.x, Math.cos((i + 2) * Math.PI / 18)));
-            assert(ZeroTest.isEqual(v.y, Math.sin((i + 2) * Math.PI / 18)));
+            assert.approxEqual(v.x, Math.cos((i + 2) * Math.PI / 18));
+            assert.approxEqual(v.y, Math.sin((i + 2) * Math.PI / 18));
         }
     });
 
     it("translation", function(){
         var v = new Vector(2, -3);
-        var t = v.translation();
+        var t = v.getTranslation();
         assert.equal(t.matrix.m[0][0], 1);
         assert.equal(t.matrix.m[1][0], 0);
         assert.equal(t.matrix.m[0][1], 0);
