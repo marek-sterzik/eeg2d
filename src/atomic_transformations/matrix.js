@@ -1,6 +1,5 @@
 import NumberConvertor from '../convertors/number.js';
 
-import Transformation from '../geometry/transformation.js';
 import TransformationMatrix from '../math/matrix.js';
 
 import AtomicTransformation from './atomic_transformation.js';
@@ -13,9 +12,9 @@ export default class Matrix extends AtomicTransformation
         this.matrix = params.matrix;
     }
 
-    getTransformation()
+    getMatrix()
     {
-        return new Transformation(this.matrix);
+        return this.matrix;
     }
 
     getArgs()

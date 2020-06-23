@@ -1,7 +1,6 @@
 import AngleConvertor from '../convertors/angle.js';
 
 import ZeroTest from '../utility/zerotest.js';
-import Transformation from '../geometry/transformation.js';
 import MatrixGenerator from '../math/matrix_generator.js';
 
 import AtomicTransformation from './atomic_transformation.js';
@@ -19,9 +18,9 @@ export default class SkewX extends AtomicTransformation
         this.centerPoint = params.centerPoint;
     }
 
-    getTransformation()
+    getMatrix()
     {
-        return new Transformation(MatrixGenerator.skew(this.skewX, Angle.zero(), this.centerPoint));
+        return MatrixGenerator.skew(this.skewX, Angle.zero(), this.centerPoint);
     }
 
     getArgs()

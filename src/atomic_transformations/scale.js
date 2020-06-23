@@ -1,7 +1,6 @@
 import NumberConvertor from '../convertors/number.js';
 
 import ZeroTest from '../utility/zerotest.js';
-import Transformation from '../geometry/transformation.js';
 import MatrixGenerator from '../math/matrix_generator.js';
 
 import AtomicTransformation from './atomic_transformation.js';
@@ -20,9 +19,9 @@ export default class Scale extends AtomicTransformation
         this.centerPoint = params.centerPoint;
     }
 
-    getTransformation()
+    getMatrix()
     {
-        return new Transformation(MatrixGenerator.rotate(this.scaleX, this.scaleY, this.centerPoint));
+        return MatrixGenerator.rotate(this.scaleX, this.scaleY, this.centerPoint);
     }
 
     getArgs()
