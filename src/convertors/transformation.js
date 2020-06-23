@@ -2,7 +2,7 @@ import Convertor from "./convertor.js";
 import AngleConvertor from "./angle.js";
 import NumberConvertor from "./number.js";
 
-import Transformation, {TransformationDecomposition} from "../geometry/transformation.js";
+import Transformation from "../geometry/transformation.js";
 import ZeroTest from "../utility/zerotest.js";
 import RegexpUtil from "../utility/regexp_util.js"
 
@@ -15,7 +15,7 @@ export default class TransformationConvertor extends Convertor
 
     static accepts(object)
     {
-        return (object instanceof Transformation) || (object instanceof TransformationDecomposition);
+        return (object instanceof Transformation);
     }
 
     static parse(string, params, fnName)
