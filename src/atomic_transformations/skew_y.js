@@ -12,6 +12,7 @@ export default class SkewY extends AtomicTransformation
 {
     constructor(params)
     {
+        super();
         this._checkParam(params, 'skewY', Angle);
         this._checkParam(params, 'centerPoint', Point);
         this.skewY = params.skewY;

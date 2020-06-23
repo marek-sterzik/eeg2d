@@ -8,6 +8,7 @@ export default class Matrix extends AtomicTransformation
 {
     constructor(params)
     {
+        super();
         this._checkParam(params, 'matrix', TransformationMatrix);
         this.matrix = params.matrix;
     }

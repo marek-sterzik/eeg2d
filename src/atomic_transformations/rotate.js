@@ -12,6 +12,7 @@ export default class Rotate extends AtomicTransformation
 {
     constructor(params)
     {
+        super();
         this._checkParam(params, 'angle', Angle);
         this._checkParam(params, 'centerPoint', Point);
         this.angle = params.angle;

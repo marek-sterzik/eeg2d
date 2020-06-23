@@ -11,6 +11,7 @@ export default class Scale extends AtomicTransformation
 {
     constructor(params)
     {
+        super();
         this._checkParam(params, 'scaleX', 'number');
         this._checkParam(params, 'scaleY', 'number');
         this._checkParam(params, 'centerPoint', Point);

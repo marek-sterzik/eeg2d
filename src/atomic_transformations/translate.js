@@ -10,6 +10,7 @@ export default class Translate extends AtomicTransformation
 {
     constructor(params)
     {
+        super();
         this._checkParam(params, 'vector', Vector);
         this.vector = params.vector;
     }
