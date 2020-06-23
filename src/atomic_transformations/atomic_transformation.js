@@ -17,18 +17,22 @@ export default class AtomicTransformation
         registeredAtomicTransformations[name] = transformation;
     }
 
+    static getAtomicTransformationClassByType(type)
+    {
+        if (!type in registeredAtomicTransformations) {
+            throw "Unknown atomic transformation: " + type;
+        }
+
+        return registeredAtomicTransformations[type];
+    }
+
     static instantiate(params)
     {
         if (! 'type' in params) {
             throw "missing field: type";
         }
-        var type = params.type;
 
-        if (!type in registeredAtomicTransformations) {
-            throw "Unknown atomic transformation: " + type;
-        }
-
-        var atomicTransformation = registeredAtomicTransformations[type];
+        var atomicTransformation = this.getAtomicTransformationClassByType(params.type);
         
         return new atomicTransformation(params);
     }
