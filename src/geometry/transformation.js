@@ -29,7 +29,7 @@ export default class Transformation
             return args.transformation;
         } else if (args = Args.args(arguments, "string:string")) {
             return StringConvertor.get().parseTransformation(args.string);
-        } else if (args = Args.args(arguments, ["matrix", Matrix])) {
+        } else if (args = Args.args(arguments, ["matrix", TransformationMatrix])) {
            return Transformation.matrix(args.matrix);
         } else if (args = Args.args(arguments, "a:number", "b:number", "c:number", "d:number", "e:number", "f:number")) {
             var matrix = new TransformationMatrix(args.a, args.b, args.c, args.d, args.e, args.f);
@@ -56,7 +56,7 @@ export default class Transformation
     {
         var args;
         var matrix;
-        if (args = Args.args(arguments, ["matrix", Matrix])) {
+        if (args = Args.args(arguments, ["matrix", TransformationMatrix])) {
             matrix = args.matrix
         } else if (args = Args.args(arguments, "a:number", "b:number", "c:number", "d:number", "e:number", "f:number")) {
             matrix = new TransformationMatrix(args.a, args.b, args.c, args.d, args.e, args.f);

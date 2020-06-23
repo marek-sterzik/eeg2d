@@ -1,3 +1,6 @@
+import Point from "../geometry/point.js";
+import Vector from "../geometry/vector.js";
+
 export default class TransformationDecomposer
 {
     constructor()
@@ -20,9 +23,6 @@ export default class TransformationDecomposer
     decompose(matrix)
     {
         var decomposition = [];
-
-        this.translation = Vector.zero();
-        this.transformation = transformation;
 
         //Calculate the whole decomposition
         var bx = new Vector(1, 0);

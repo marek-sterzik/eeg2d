@@ -22,7 +22,7 @@ export default class Scale extends AtomicTransformation
 
     getMatrix()
     {
-        return MatrixGenerator.rotate(this.scaleX, this.scaleY, this.centerPoint);
+        return MatrixGenerator.scale(this.scaleX, this.scaleY, this.centerPoint);
     }
 
     getArgs()
