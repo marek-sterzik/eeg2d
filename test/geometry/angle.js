@@ -72,12 +72,13 @@ export default function AngleTest() {
         var angle = Angle.deg(90);
 
         var t = angle.getRotation();
-        assert.approxEqual(t.matrix.m[0][0], 0);
-        assert.approxEqual(t.matrix.m[1][0], 1);
-        assert.approxEqual(t.matrix.m[0][1], -1);
-        assert.approxEqual(t.matrix.m[1][1], 0);
-        assert.approxEqual(t.matrix.m[0][2], 0);
-        assert.approxEqual(t.matrix.m[1][2], 0);
+        var matrix = t.getMatrix();
+        assert.approxEqual(matrix.m[0][0], 0);
+        assert.approxEqual(matrix.m[1][0], 1);
+        assert.approxEqual(matrix.m[0][1], -1);
+        assert.approxEqual(matrix.m[1][1], 0);
+        assert.approxEqual(matrix.m[0][2], 0);
+        assert.approxEqual(matrix.m[1][2], 0);
         
         var t = angle.getRotation(new Point(2, 2));
         assert.approxEqual(t.matrix.m[0][0], 0);

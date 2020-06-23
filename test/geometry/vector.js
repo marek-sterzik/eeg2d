@@ -90,11 +90,12 @@ export default function VectorTest() {
     it("translation", function(){
         var v = new Vector(2, -3);
         var t = v.getTranslation();
-        assert.equal(t.matrix.m[0][0], 1);
-        assert.equal(t.matrix.m[1][0], 0);
-        assert.equal(t.matrix.m[0][1], 0);
-        assert.equal(t.matrix.m[1][1], 1);
-        assert.equal(t.matrix.m[0][2], 2);
-        assert.equal(t.matrix.m[1][2], -3);
+        var matrix = t.getMatrix();
+        assert.equal(matrix.m[0][0], 1);
+        assert.equal(matrix.m[1][0], 0);
+        assert.equal(matrix.m[0][1], 0);
+        assert.equal(matrix.m[1][1], 1);
+        assert.equal(matrix.m[0][2], 2);
+        assert.equal(matrix.m[1][2], -3);
     });
 };
