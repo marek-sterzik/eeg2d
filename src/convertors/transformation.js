@@ -3,6 +3,8 @@ import AngleConvertor from "./angle.js";
 import NumberConvertor from "./number.js";
 
 import Transformation from "../geometry/transformation.js";
+
+import AtomicTransformation from "../utility/atomic_transformation.js";
 import ZeroTest from "../utility/zerotest.js";
 import RegexpUtil from "../utility/regexp_util.js"
 
@@ -154,67 +156,43 @@ export default class TransformationConvertor extends Convertor
         return splitted;
     }
 
-    static toString(transformation, params, fnName)
+    static atomicTransformationToString(atomicTransformation, params)
     {
-        var string = '';
+        var args, argsConvertors;
         
-        var transformationDelimeter = params.get('transformation.output.transformationDelimeter');
+        var canonical = atomicTransformation.isCanonical();
+
+        if (canonical) {
+            args = atomicTransformation.getArgs();
+            argsConvertors = atomicTransformation.getArgsConvertors();
+        } else {
+            args = atomicTransformation.getNonCanonicalArgs();
+            argsConvertors = atomicTransformation.getNonCanonicalArgsConvertors();
+        }
+
+        var finalArgs = [];
+
+        for (var i = 0; i < args.length; i++) {
+            finalArgs.push(params.invokeToString(argsConvertors[i], args[i]));
+        }
+
         var fieldDelimeter = params.get('transformation.output.fieldDelimeter');
         var parenthesis = params.get('transformation.output.parenthesis');
-
-        var decomposition = transformation.getCanonicalOperations();
+        var nonCanonicalSuffix = canonical ? '' : params.get('transformation.output.nonCanonicalSuffix');
         
-        for (var i = 0; i < decomposition.length; i++) {
-            var operation = decomposition[i];
-            var args = [];
-            switch (operation.type) {
-            case 'scale':
-                args.push(params.invokeToString(NumberConvertor, operation.scaleX));
-                if(!ZeroTest.isEqual(operation.scaleX, operation.scaleY)) {
-                    args.push(params.invokeToString(NumberConvertor, operation.scaleY));
-                }
-                break;
-            case 'rotate':
-                args.push(params.invokeToString(AngleConvertor, operation.angle));
-                if (!operation.centerPoint.isOrigin()) {
-                    args.push(params.invokeToString(NumberConvertor, operation.center.x));
-                    args.push(params.invokeToString(NumberConvertor, operation.center.y));
-                }
-                break;
-            case 'translate':
-                args.push(params.invokeToString(NumberConvertor, operation.vector.x));
-                args.push(params.invokeToString(NumberConvertor, operation.vector.y));
-                break;
-            case 'skewX':
-                args.push(params.invokeToString(AngleConvertor, operation.angle));
-                break;
-            case 'skewY':
-                args.push(params.invokeToString(AngleConvertor, operation.angle));
-                break;
-            case 'skew':
-                args.push(params.invokeToString(AngleConvertor, operation.skewX));
-                if (!operation.skewY.isZero()) {
-                    args.push(params.invokeToString(AngleConvertor, operation.skewY));
-                }
-                break;
-            case 'matrix':
-                args.push(params.invokeToString(NumberConvertor, operation.matrix.m[0][0]));
-                args.push(params.invokeToString(NumberConvertor, operation.matrix.m[1][0]));
-                args.push(params.invokeToString(NumberConvertor, operation.matrix.m[0][1]));
-                args.push(params.invokeToString(NumberConvertor, operation.matrix.m[1][1]));
-                args.push(params.invokeToString(NumberConvertor, operation.matrix.m[0][2]));
-                args.push(params.invokeToString(NumberConvertor, operation.matrix.m[1][2]));
-                break;
-            default:
-                throw "Trying to convert an unknown operation to string: "+operation.type;
-            }
+        return atomicTransformation.getName() + nonCanonicalSuffix + parenthesis[0] + finalArgs.join(fieldDelimeter) + parenthesis[1];
 
-            if (string != '') {
-                string += transformationDelimeter;
-            }
+    }
 
-            string += operation.type + parenthesis[0] + args.join(fieldDelimeter) + parenthesis[1];
+    static toString(transformation, params, fnName)
+    {
+        var THIS = this;
+        if (params.get('transformation.output.convertToCanonicalForm')) {
+            transformation = transformation.canonize();
         }
-        return string;
+        return transformation
+            .getAtomicTransformations()
+            .map(function(at){ return THIS.atomicTransformationToString(at, params)})
+            .join(params.get('transformation.output.transformationDelimeter'));
     }
 }

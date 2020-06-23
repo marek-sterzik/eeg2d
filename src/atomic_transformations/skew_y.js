@@ -33,9 +33,9 @@ export default class SkewY extends AtomicTransformation
         return [this.skewY];
     }
 
-    static allowsShiftedCenterPoint()
+    isCanonical()
     {
-        return false;
+        return this.centerPoint.isOrigin();
     }
 
     static getName()

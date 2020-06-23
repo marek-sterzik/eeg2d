@@ -42,6 +42,46 @@ export default class AtomicTransformation
         throw "This method is abstract";
     }
 
+    static getArgsConvertors()
+    {
+        throw "This method is abstract";
+    }
+
+    static getNonCanonicalArgsConvertors()
+    {
+        return this.getArgsConvertors();
+    }
+
+    getClass()
+    {
+        return this.constructor;
+    }
+
+    getName()
+    {
+        return this.getClass().getName();
+    }
+
+    getArgsConvertors()
+    {
+        return this.getClass().getArgsConvertors();
+    }
+
+    getNonCanonicalArgsConvertors()
+    {
+        return this.getClass().getNonCanonicalArgsConvertors();
+    }
+
+    getArgs()
+    {
+        throw "This method is abstract";
+    }
+
+    getNonCanonicalArgs()
+    {
+        return this.getArgs();
+    }
+
     _checkParam(params, key, type)
     {
         if (!key in params) {

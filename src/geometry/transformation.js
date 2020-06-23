@@ -199,6 +199,11 @@ export default class Transformation
         return new Transformation([]);
     }
 
+    getAtomicTransformations()
+    {
+        return this.atomicTransformations;
+    }
+
     getMatrix()
     {
         return this.matrix;
@@ -245,7 +250,17 @@ export default class Transformation
         return Transformation.matrix(this.getMatrix());
     }
 
+    canonize()
+    {
+        return this;
+    }
+
     interpolate(t2)
     {
+    }
+
+    toString()
+    {
+        return StringConvertor.get.apply(StringConvertor, arguments).transformationToString(this);
     }
 }

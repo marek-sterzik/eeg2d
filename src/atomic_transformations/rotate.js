@@ -33,7 +33,7 @@ export default class Rotate extends AtomicTransformation
         }
     }
 
-    static allowsShiftedCenterPoint()
+    isCanonical()
     {
         return true;
     }

@@ -27,7 +27,7 @@ export default class Matrix extends AtomicTransformation
         ];
     }
 
-    static allowsShiftedCenterPoint()
+    isCanonical()
     {
         return true;
     }

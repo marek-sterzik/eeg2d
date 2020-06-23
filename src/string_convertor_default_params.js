@@ -65,6 +65,12 @@ export let StringConvertorDefaultParams = {
     // the parenthesis used to output a transformation
     'transformation.output.parenthesis': ['(', ')'],
 
+    // convert the transformation automatically to canonical form
+    'transformation.output.convertToCanonicalForm': true,
+    
+    // use this suffix in case a transformation should be output as non-canonical
+    'transformation.output.nonCanonicalSuffix': '!',
+
     // the space accepted in the transformation on various places
     'transformation.input.space': /\s+/,
 

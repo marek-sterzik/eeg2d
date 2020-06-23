@@ -25,7 +25,7 @@ export default class Translate extends AtomicTransformation
         return [this.vector.x, this.vector.y]
     }
 
-    static allowsShiftedCenterPoint()
+    isCanonical()
     {
         return true;
     }
