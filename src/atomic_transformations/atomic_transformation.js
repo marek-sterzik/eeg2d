@@ -69,7 +69,7 @@ export default class AtomicTransformation
         if(this.isCanonical()) {
             return [this];
         } else {
-            return this.getNonNanonicalToCanonizedTransformations();
+            return this.getNonCanonicalToCanonizedTransformations();
         }
     }
 
@@ -82,7 +82,7 @@ export default class AtomicTransformation
     {
         var v = Point.origin().vectorTo(centerPoint);
         var t1 = {"type": "translate", "vector": v.mul(-1)};
-        var t2 = {"type": "translate", "vector": v.mul};
+        var t2 = {"type": "translate", "vector": v};
         return [
             AtomicTransformation.instantiate(t1),
             AtomicTransformation.instantiate(transformation),
@@ -118,6 +118,11 @@ export default class AtomicTransformation
     getNonCanonicalArgs()
     {
         return this.getArgs();
+    }
+
+    canonicalMerge(op2)
+    {
+        return null;
     }
 
     _checkParam(params, key, type)

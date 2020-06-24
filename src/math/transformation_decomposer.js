@@ -39,15 +39,15 @@ export default class TransformationDecomposer
 
             if (this.skewMode === 'skew') {
                 var skewX = Angle.atan(bxImage.mul(byImage)/byImage.mul(byImage));
-                decomposition.push({"type": 'skew', "skewX": skewX, "skewY": Angle.zero(), "centerPoint": this.nonCanonicalCenterPoint});
+                decomposition.unshift({"type": 'skew', "skewX": skewX, "skewY": Angle.zero(), "centerPoint": this.nonCanonicalCenterPoint});
                 matrix = matrix.mul(MatrixGenerator.skew(skewX.mul(-1), Angle.zero(), this.nonCanonicalCenterPoint));
             } else if (this.skewMode === 'skewX') {
                 var skewX = Angle.atan(bxImage.mul(byImage)/byImage.mul(byImage));
-                decomposition.push({"type": 'skewX', "skewX": skewX, "centerPoint": this.nonCanonicalCenterPoint});
+                decomposition.unshift({"type": 'skewX', "skewX": skewX, "centerPoint": this.nonCanonicalCenterPoint});
                 matrix = matrix.mul(MatrixGenerator.skewX(skewX.mul(-1), this.nonCanonicalCenterPoint));
             } else {
                 var skewY = Angle.atan(bxImage.mul(byImage)/bxImage.mul(bxImage));
-                decomposition.push({"type": 'skewY', "skewY": skewY, "centerPoint": this.nonCanonicalCenterPoint});
+                decomposition.unshift({"type": 'skewY', "skewY": skewY, "centerPoint": this.nonCanonicalCenterPoint});
                 matrix = matrix.mul(MatrixGenerator.skewY(skewY.mul(-1), this.nonCanonicalCenterPoint));
             }
             
@@ -63,7 +63,7 @@ export default class TransformationDecomposer
                 scaleY = -scaleY;
             }
 
-            decomposition.push({"type": "scale", "scaleX": scaleX, "scaleY": scaleY, "centerPoint": this.nonCanonicalCenterPoint});
+            decomposition.unshift({"type": "scale", "scaleX": scaleX, "scaleY": scaleY, "centerPoint": this.nonCanonicalCenterPoint});
             
             matrix = matrix.mul(MatrixGenerator.scale(1/scaleX, 1/scaleY, this.nonCanonicalCenterPoint));
 
@@ -71,15 +71,15 @@ export default class TransformationDecomposer
             bxImage = matrix.transformVector(bx);
             var rotation = bx.angleTo(bxImage);
 
-            decomposition.push({"type": "rotate", "angle": rotation, "centerPoint": this.centerPoint});
+            decomposition.unshift({"type": "rotate", "angle": rotation, "centerPoint": this.centerPoint});
             
             matrix = matrix.mul(MatrixGenerator.rotate(rotation.mul(-1), this.centerPoint));
 
             //decompose translation
             var translation = this.centerPoint.vectorTo(matrix.transformPoint(this.centerPoint));
-            decomposition.push({"type": "translate", "vector": translation});
+            decomposition.unshift({"type": "translate", "vector": translation});
         } else {
-            decomposition.push({"type": "matrix", "matrix": matrix});
+            decomposition.unshift({"type": "matrix", "matrix": matrix});
         }
         
         return decomposition;

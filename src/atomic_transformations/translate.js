@@ -52,4 +52,13 @@ export default class Translate extends AtomicTransformation
 
         return {"vector": new Vector(x, y)};
     }
+
+    canonicalMerge(op2)
+    {
+        if (op2 instanceof Translate) {
+            return new Translate({"vector": this.vector.add(op2.vector)});
+        } else {
+            return null;
+        }
+    }
 }
