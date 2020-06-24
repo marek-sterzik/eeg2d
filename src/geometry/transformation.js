@@ -282,18 +282,23 @@ export default class Transformation
         for(var i = 0; i < this.atomicTransformations.length; i++) {
             var co = this.atomicTransformations[i].getCanonizedTransformations();
             for (var j = 0; j < co.length; j++) {
-                if (empty) {
-                    canonizedOperations.push(co[j]);
-                    empty = false;
-                } else {
-                    var mergedOp = canonizedOperations[canonizedOperations.length - 1].canonicalMerge(co[j]);
-                    if (mergedOp !== null) {
-                        canonizedOperations[canonizedOperations.length - 1] = mergedOp;
-                    } else {
+                if (!co[j].isIdentity()) {
+                    if (empty) {
                         canonizedOperations.push(co[j]);
+                        empty = false;
+                    } else {
+                        var mergedOp = canonizedOperations[canonizedOperations.length - 1].canonicalMerge(co[j]);
+                        if (mergedOp !== null) {
+                            canonizedOperations[canonizedOperations.length - 1] = mergedOp;
+                        } else {
+                            canonizedOperations.push(co[j]);
+                        }
                     }
                 }
             }
+        }
+        if (empty) {
+            canonizedOperations.push(AtomicTransformation.instantiate({"type": "translate", "vector": Vector.zero()}));
         }
         return new Transformation(canonizedOperations);
     }
