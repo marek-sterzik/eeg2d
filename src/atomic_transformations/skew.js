@@ -22,6 +22,14 @@ export default class Skew extends AtomicTransformation
         this.centerPoint = params.centerPoint;
     }
 
+    getNonCanonicalToCanonizedTransformations()
+    {
+        return this.getShiftTransformations(
+            {"type": "skew", "skewX": this.skewX, "skewY": this.skewY, "centerPoint": Point.origin()},
+            this.centerPoint
+        );
+    }
+
     getMatrix()
     {
         return MatrixGenerator.skew(this.skewX, this.skewY, this.centerPoint);

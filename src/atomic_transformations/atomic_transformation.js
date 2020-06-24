@@ -1,3 +1,5 @@
+import Point from "../geometry/point.js";
+
 var registeredAtomicTransformations = {};
 
 export default class AtomicTransformation
@@ -50,6 +52,32 @@ export default class AtomicTransformation
     static getNonCanonicalArgsConvertors()
     {
         return this.getArgsConvertors();
+    }
+
+    getCanonizedTransformations()
+    {
+        if(this.isCanonical()) {
+            return [this];
+        } else {
+            return this.getNonNanonicalToCanonizedTransformations();
+        }
+    }
+
+    getNonCanonicalToCanonizedTransformations()
+    {
+        return [AtomicTransformation.instantiate({"type": "matrix", "matrix": this.getMatrix()})];
+    }
+
+    getShiftTransformations(transformation, centerPoint)
+    {
+        var v = Point.origin().vectorTo(centerPoint);
+        var t1 = {"type": "translate", "vector": v.mul(-1)};
+        var t2 = {"type": "translate", "vector": v.mul};
+        return [
+            AtomicTransformation.instantiate(t1),
+            AtomicTransformation.instantiate(transformation),
+            AtomicTransformation.instantiate(t2)
+        ];
     }
 
     getClass()

@@ -20,6 +20,14 @@ export default class Scale extends AtomicTransformation
         this.centerPoint = params.centerPoint;
     }
 
+    getNonCanonicalToCanonizedTransformations()
+    {
+        return this.getShiftTransformations(
+            {"type": "scale", "scaleX": this.scaleX, "scaleY": this.scaleY, "centerPoint": Point.origin()},
+            this.centerPoint
+        );
+    }
+
     getMatrix()
     {
         return MatrixGenerator.scale(this.scaleX, this.scaleY, this.centerPoint);
