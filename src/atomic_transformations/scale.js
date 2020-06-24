@@ -51,6 +51,11 @@ export default class Scale extends AtomicTransformation
         return [this.scaleX, this.scaleY, this.centerPoint.x, this.centerPoint.y];
     }
 
+    isIdentity()
+    {
+        return ZeroTest.isEqual(this.scaleX, 1) && ZeroTest.isEqual(this.scaleY, 1);
+    }
+
     isCanonical()
     {
         return this.centerPoint.isOrigin();

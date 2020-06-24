@@ -2,6 +2,8 @@ import NumberConvertor from '../convertors/number.js';
 
 import TransformationMatrix from '../math/matrix.js';
 
+import ZeroTest from '../utility/zerotest.js';
+
 import AtomicTransformation from './atomic_transformation.js';
 
 export default class Matrix extends AtomicTransformation
@@ -25,6 +27,17 @@ export default class Matrix extends AtomicTransformation
             this.matrix.m[0][1], this.matrix.m[1][1],
             this.matrix.m[0][2], this.matrix.m[1][2]
         ];
+    }
+
+    isIdentity()
+    {
+        return 
+            ZeroTest.isEqual(this.matrix.m[0][0], 1) &&
+            ZeroTest.isEqual(this.matrix.m[1][0], 0) &&
+            ZeroTest.isEqual(this.matrix.m[0][1], 0) &&
+            ZeroTest.isEqual(this.matrix.m[1][1], 1) &&
+            ZeroTest.isEqual(this.matrix.m[0][2], 0) &&
+            ZeroTest.isEqual(this.matrix.m[1][2], 0);
     }
 
     isCanonical()

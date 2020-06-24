@@ -244,6 +244,11 @@ export default class Transformation
         return new Transformation(this.atomicTransformations.concat(t2.atomicTransformations))
     }
 
+    flatten()
+    {
+        return Transformation.matrix(this.getMatrix());
+    }
+
     inv()
     {
         return Transformation.matrix(this.getMatrix().inv())
@@ -268,11 +273,6 @@ export default class Transformation
         });
 
         return new Transformation(atomicOperations);
-    }
-
-    flatten()
-    {
-        return Transformation.matrix(this.getMatrix());
     }
 
     canonize()

@@ -147,6 +147,44 @@ export default function TransformationTest() {
         assertMatrixEqual(t3.inv().getMatrix(), t3inv.getMatrix());
         assertMatrixEqual(t4.inv().getMatrix(), t4inv.getMatrix());
     });
+
+    it("transformation", function() {
+        var b1 = new Vector(1, 0);
+        var b2 = new Vector(0, 1);
+
+        var p0 = Point.origin();
+        var p1 = p0.addVector(b1);
+        var p2 = p0.addVector(b2);
+
+        var b1x = b1.rot(Angle.deg(45));
+        var b2x = b2.rot(Angle.deg(45));
+
+        var p0x = new Point(1, 2);
+        var p1x = p0x.addVector(b1x);
+        var p2x = p0x.addVector(b2x);
+
+        var t = new Transformation("translate(1, 2) rotate(45)");
+
+        assertPointEqual(t.transformPoint(p0), p0x);
+        assertPointEqual(t.transformPoint(p1), p1x);
+        assertPointEqual(t.transformPoint(p2), p2x);
+
+        assertVectorEqual(t.transformVector(b1), b1x);
+        assertVectorEqual(t.transformVector(b2), b2x);
+    });
+
+    it("decomposition", function() {
+        var t1 = new Transformation("translate(2, 3) rotate(30) scale(5, 6) skew(10)");
+        var matrix = t1.getMatrix();
+        var t2 = t1.flatten();
+
+        assertTrEqual(t2, Transformation.matrix(matrix).toString());
+        
+        var t3 = t2.decompose();
+        assertTrEqual(t3, "translate(2, 3) rotate(30) scale(5, 6) skew(10)");
+
+        //FIXME test other decomposition modes
+    });
 };
 
 function assertTrEqual(transformation, expectedString)
@@ -161,4 +199,16 @@ function assertMatrixEqual(matrix, matrix2)
             assert.approxEqual(matrix.m[i][j], matrix2.m[i][j]);
         }
     }
+}
+
+function assertPointEqual(point, point2)
+{
+    assert.approxEqual(point.x, point2.x);
+    assert.approxEqual(point.y, point2.y);
+}
+
+function assertVectorEqual(vector, vector2)
+{
+    assert.approxEqual(vector.x, vector2.x);
+    assert.approxEqual(vector.y, vector2.y);
 }

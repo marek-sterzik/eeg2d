@@ -33,6 +33,11 @@ export default class Rotate extends AtomicTransformation
         }
     }
 
+    isIdentity()
+    {
+        return this.angle.normalize().isZero();
+    }
+
     isCanonical()
     {
         return true;

@@ -25,6 +25,11 @@ export default class Translate extends AtomicTransformation
         return [this.vector.x, this.vector.y]
     }
 
+    isIdentity()
+    {
+        return this.vector.isZero();
+    }
+
     isCanonical()
     {
         return true;

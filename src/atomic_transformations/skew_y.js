@@ -47,6 +47,11 @@ export default class SkewY extends AtomicTransformation
         return [this.skewY];
     }
 
+    isIdentity()
+    {
+        return this.skewY.normalize().isZero();
+    }
+
     isCanonical()
     {
         return this.centerPoint.isOrigin();

@@ -115,6 +115,11 @@ export default class AtomicTransformation
         throw "This method is abstract";
     }
 
+    isIdentity()
+    {
+        throw "This method is abstract"
+    }
+
     getNonCanonicalArgs()
     {
         return this.getArgs();
