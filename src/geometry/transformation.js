@@ -239,9 +239,14 @@ export default class Transformation
         return new Transformation(this.atomicTransformations.concat(t2.atomicTransformations))
     }
 
+    join(t2)
+    {
+        return new Transformation(this.atomicTransformations.concat(t2.atomicTransformations))
+    }
+
     inv()
     {
-        return new Transformation.matrix(this.getMatrix().inv())
+        return Transformation.matrix(this.getMatrix().inv())
     }
 
     transformPoint(p)

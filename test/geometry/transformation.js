@@ -34,6 +34,8 @@ export default function TransformationTest() {
         var a1 = AtomicTransformation.instantiate({"type": "scale", "scaleX": 2, "scaleY": 3, "centerPoint": Point.origin()});
         var a2 = AtomicTransformation.instantiate({"type": "translate", "vector": new Vector(1, 2)});
         assertTrEqual(new Transformation([a1, a2]), "scale(2, 3) translate(1, 2)");
+
+        assertTrEqual(new Transformation("rotate(45, 1, 2) translate(5, 6)"), "rotate(45, 1, 2) translate(5, 6)");
     });
 
     it("construction:matrix", function() {
@@ -102,9 +104,61 @@ export default function TransformationTest() {
         assert.equal(matrix.m[0][2], 0);
         assert.equal(matrix.m[1][2], 0);
     });
+
+    it("composition", function() {
+        var t1 = Transformation.translate(1, 2);
+        var t2 = Transformation.rotate(Angle.deg(45), 3, 4);
+        
+        var matrix = t1.getMatrix().mul(t2.getMatrix());
+        var t3 = Transformation.matrix(matrix);
+
+        var t4 = t1.compose(t2);
+        assertTrEqual(t4, t3.toString());
+        assertMatrixEqual(t4.getMatrix(), matrix);
+
+        var t5 = t1.join(t2);
+        assertTrEqual(t5, "translate(1, 2) rotate(45, 3, 4)");
+        assertMatrixEqual(t5.getMatrix(), matrix);
+
+        t5 = t1.concat(t2);
+        assertTrEqual(t5, "translate(1, 2) rotate(45, 3, 4)");
+        assertMatrixEqual(t5.getMatrix(), matrix);
+
+        var t6 = t5.flatten();
+        assertTrEqual(t6, t3.toString());
+        assertMatrixEqual(t6.getMatrix(), t5.getMatrix());
+    });
+
+    it("inversion", function() {
+        var t1 = Transformation.translate(1, 2);
+        var t2 = Transformation.rotate(Angle.deg(45), 3, 4);
+        var t3 = Transformation.scale(2, 3, new Point(4, 5));
+        var t4 = Transformation.skewX(Angle.deg(30), new Point(5, 6));
+        var t5 = Transformation.skewY(Angle.deg(30), new Point(5, 6));
+        
+        var t1inv = Transformation.translate(-1, -2);
+        var t2inv = Transformation.rotate(Angle.deg(-45), 3, 4);
+        var t3inv = Transformation.scale(1/2, 1/3, new Point(4, 5));
+        var t4inv = Transformation.skewX(Angle.deg(-30), new Point(5, 6));
+        var t5inv = Transformation.skewY(Angle.deg(-30), new Point(5, 6));
+
+        assertMatrixEqual(t1.inv().getMatrix(), t1inv.getMatrix());
+        assertMatrixEqual(t2.inv().getMatrix(), t2inv.getMatrix());
+        assertMatrixEqual(t3.inv().getMatrix(), t3inv.getMatrix());
+        assertMatrixEqual(t4.inv().getMatrix(), t4inv.getMatrix());
+    });
 };
 
 function assertTrEqual(transformation, expectedString)
 {
     assert.equal(transformation.toString(), expectedString);
+}
+
+function assertMatrixEqual(matrix, matrix2)
+{
+    for (var i = 0; i < 2; i++) {
+        for (var j = 0; j < 3; j++) {
+            assert.approxEqual(matrix.m[i][j], matrix2.m[i][j]);
+        }
+    }
 }
