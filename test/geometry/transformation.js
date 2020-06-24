@@ -211,6 +211,12 @@ export default function TransformationTest() {
         assertTrEqual(t, ot);
         assertTrEqual(t.canonize(), ct);
     });
+
+    it("string conversions", function() {
+        var t = new Transformation("translate(5, 6) rotate(60) scale(4) skewX(10)");
+        assert.equal(t.toString(), "translate(5, 6) rotate(60) scale(4) skewX(10)");
+        assertMatrixEqual(t.getMatrix(), t.flatten().getMatrix());
+    });
 };
 
 function assertTrEqual(transformation, expectedString)
