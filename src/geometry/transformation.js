@@ -289,7 +289,11 @@ export default class Transformation
                     } else {
                         var mergedOp = canonizedOperations[canonizedOperations.length - 1].canonicalMerge(co[j]);
                         if (mergedOp !== null) {
-                            canonizedOperations[canonizedOperations.length - 1] = mergedOp;
+                            if (mergedOp.isIdentity()) {
+                                canonizedOperations.pop();
+                            } else {
+                                canonizedOperations[canonizedOperations.length - 1] = mergedOp;
+                            }
                         } else {
                             canonizedOperations.push(co[j]);
                         }
@@ -297,9 +301,11 @@ export default class Transformation
                 }
             }
         }
+
         if (empty) {
             canonizedOperations.push(AtomicTransformation.instantiate({"type": "translate", "vector": Vector.zero()}));
         }
+
         return new Transformation(canonizedOperations);
     }
 

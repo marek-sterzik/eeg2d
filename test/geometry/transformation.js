@@ -193,6 +193,24 @@ export default function TransformationTest() {
         var t5 = new Transformation("translate(2, 3) rotate(30, 1, 1) scale(5, 6) skewX(15)")
         assertTrEqual(t5.decompose(new Point(1, 1), "skewX,canonical"), "translate(2, 3) rotate(30, 1, 1) scale(5, 6) skewX(15)");
     });
+
+    it("canonization", function() {
+        var p = new Point(1, 2);
+
+        assertTrEqual(Transformation.identity(), "");
+        assertTrEqual(Transformation.identity().canonize(), "translate(0, 0)");
+        assertTrEqual(Transformation.rotate(Angle.deg(45), p).canonize(), "rotate(45, 1, 2)");
+        assertTrEqual(Transformation.scale(2, 3, p).canonize(), "translate(-1, -2) scale(2, 3) translate(1, 2)");
+        assertTrEqual(Transformation.skew(Angle.deg(10), Angle.deg(15), p).canonize(), "translate(-1, -2) skew(10, 15) translate(1, 2)");
+        assertTrEqual(Transformation.skewX(Angle.deg(10), p).canonize(), "translate(-1, -2) skewX(10) translate(1, 2)");
+        assertTrEqual(Transformation.skewY(Angle.deg(10), p).canonize(), "translate(-1, -2) skewY(10) translate(1, 2)");
+
+        var ot = "translate(1, 2) translate(2, 3) rotate(45) translate(-2, -3) translate(2, 3) scale(4) translate(-2, -3) translate(1, 1)";
+        var ct = "translate(3, 5) rotate(45) scale(4) translate(-1, -2)";
+        var t = new Transformation(ot);
+        assertTrEqual(t, ot);
+        assertTrEqual(t.canonize(), ct);
+    });
 };
 
 function assertTrEqual(transformation, expectedString)
