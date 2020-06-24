@@ -1,4 +1,5 @@
 import AngleConvertor from '../convertors/angle.js';
+import NumberConvertor from '../convertors/number.js';
 
 import ZeroTest from '../utility/zerotest.js';
 import MatrixGenerator from '../math/matrix_generator.js';
@@ -24,6 +25,11 @@ export default class SkewX extends AtomicTransformation
         return MatrixGenerator.skew(this.skewX, Angle.zero(), this.centerPoint);
     }
 
+    getNonCanonicalArgs()
+    {
+        return [this.skewX, this.centerPoint.x, this.centerPoint.y];
+    }
+
     getArgs()
     {
         if (!this.centerPoint.isOrigin()) {
@@ -46,6 +52,11 @@ export default class SkewX extends AtomicTransformation
     static getArgsConvertors()
     {
         return [AngleConvertor];
+    }
+
+    static getNonCanonicalArgsConvertors()
+    {
+        return [AngleConvertor, NumberConvertor, NumberConvertor];
     }
 
     static argsToParams(args)

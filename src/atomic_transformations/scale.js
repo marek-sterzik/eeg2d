@@ -38,6 +38,11 @@ export default class Scale extends AtomicTransformation
         }
     }
 
+    getNonCanonicalArgs()
+    {
+        return [this.scaleX, this.scaleY, this.centerPoint.x, this.centerPoint.y];
+    }
+
     isCanonical()
     {
         return this.centerPoint.isOrigin();
@@ -51,6 +56,11 @@ export default class Scale extends AtomicTransformation
     static getArgsConvertors()
     {
         return [NumberConvertor, NumberConvertor];
+    }
+
+    static getNonCanonicalArgsConvertors()
+    {
+        return [NumberConvertor, NumberConvertor, NumberConvertor, NumberConvertor];
     }
 
     static argsToParams(args)
