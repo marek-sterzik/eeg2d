@@ -69,13 +69,34 @@ export default class SkewY extends AtomicTransformation
 
     static argsToParams(args)
     {
-        var skewY;
-        if (args.length != 1) {
-            throw "Invalid number of arguments for a skewY transformation";
+        return this._argsToParams(args, true);
+    }
+
+    static nonCanonicalArgsToParams(args)
+    {
+        return this._argsToParams(args, false);
+    }
+
+    static _argsToParams(args, canonical)
+    {
+        var skewY, centerPoint;
+        if (canonical) {
+            if (args.length != 1) {
+                throw "Invalid number of arguments for a skewY transformation";
+            }
+        } else {
+            if (args.length != 1 && args.length != 3) {
+                throw "Invalid number of arguments for a skewY transformation";
+            }
         }
 
         skewY = args[0];
+        if (args.length == 3) {
+            centerPoint = new Point(args[1], args[2]);
+        } else {
+            centerPoint = Point.origin();
+        }
 
-        return {"skewY": skewY, "centerPoint": Point.origin()};
+        return {"skewY": skewY, "centerPoint": centerPoint};
     }
 }

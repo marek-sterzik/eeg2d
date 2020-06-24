@@ -73,14 +73,35 @@ export default class Scale extends AtomicTransformation
 
     static argsToParams(args)
     {
-        var scaleX, scaleY;
-        if (args.length < 1 || args.length > 2) {
-            throw "Invalid number of arguments for a scale transformation";
+        return this._argsToParams(args, true);
+    }
+
+    static nonCanonicalArgsToParams(args)
+    {
+        return this._argsToParams(args, false);
+    }
+
+    static _argsToParams(args, canonical)
+    {
+        var scaleX, scaleY, centerPoint;
+        if (canonical) {
+            if (args.length < 1 || args.length > 2) {
+                throw "Invalid number of arguments for a scale transformation";
+            }
+        } else {
+            if (args.length < 1 || args.length == 3 || args.length > 4) {
+                throw "Invalid number of arguments for a scale transformation";
+            }
         }
 
         scaleX = args[0];
         scaleY = (args.length >= 2) ? args[1] : scaleX;
+        if (args.length == 4) {
+            centerPoint = new Point(args[2], args[3]);
+        } else {
+            centerPoint = Point.origin();
+        }
 
-        return {"scaleX": scaleX, "scaleY": scaleY, "centerPoint": Point.origin()};
+        return {"scaleX": scaleX, "scaleY": scaleY, "centerPoint": centerPoint};
     }
 }

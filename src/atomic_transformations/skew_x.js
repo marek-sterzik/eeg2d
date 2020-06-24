@@ -69,13 +69,34 @@ export default class SkewX extends AtomicTransformation
 
     static argsToParams(args)
     {
-        var skewX;
-        if (args.length != 1) {
-            throw "Invalid number of arguments for a skewX transformation";
+        return this._argsToParams(args, true);
+    }
+
+    static nonCanonicalArgsToParams(args)
+    {
+        return this._argsToParams(args, false);
+    }
+
+    static _argsToParams(args, canonical)
+    {
+        var skewX, centerPoint;
+        if (canonical) {
+            if (args.length != 1) {
+                throw "Invalid number of arguments for a skewX transformation";
+            }
+        } else {
+            if (args.length != 1 && args.length != 3) {
+                throw "Invalid number of arguments for a skewX transformation";
+            }
         }
 
         skewX = args[0];
+        if (args.length == 3) {
+            centerPoint = new Point(args[1], args[2]);
+        } else {
+            centerPoint = Point.origin();
+        }
 
-        return {"skewX": skewX, "centerPoint": Point.origin()};
+        return {"skewX": skewX, "centerPoint": centerPoint};
     }
 }

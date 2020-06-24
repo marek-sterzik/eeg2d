@@ -75,14 +75,35 @@ export default class Skew extends AtomicTransformation
 
     static argsToParams(args)
     {
-        var skewX, skewY;
-        if (args.length < 1 || args.length > 2) {
-            throw "Invalid number of arguments for a skew transformation";
+        return this._argsToParams(args, true);
+    }
+
+    static nonCanonicalArgsToParams(args)
+    {
+        return this._argsToParams(args, false);
+    }
+
+    static _argsToParams(args, canonical)
+    {
+        var skewX, skewY, centerPoint;
+        if (canonical) {
+            if (args.length < 1 || args.length > 2) {
+                throw "Invalid number of arguments for a skew transformation";
+            }
+        } else {
+            if (args.length < 1 || args.length == 3 || args.length > 4) {
+                throw "Invalid number of arguments for a skew transformation";
+            }
         }
 
         skewX = args[0];
         skewY = (args.length >= 2) ? args[1] : Angle.zero();
+        if (args.length == 4) {
+            centerPoint = new Point(args[2], args[3]);
+        } else {
+            centerPoint = Point.origin();
+        }
 
-        return {"skewX": skewX, "skewY": skewY, "centerPoint": Point.origin()};
+        return {"skewX": skewX, "skewY": skewY, "centerPoint": centerPoint};
     }
 }
