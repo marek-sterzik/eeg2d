@@ -1,8 +1,22 @@
+import Args from "../utility/args.js";
 import Point from "../geometry/point.js";
 import Vector from "../geometry/vector.js";
 import Angle from "../geometry/angle.js";
 
 import MatrixGenerator from "./matrix_generator.js";
+
+var decompositionModeCategories = {
+    'skew': 'skew',
+    'skewX': 'skew',
+    'skewY': 'skew',
+    'canonical': 'canonical',
+    'noncanonical': 'canonical'
+};
+
+var decompositionModeDefaults = {
+    'skew': 'skew',
+    'canonical': 'noncanonical'
+}
 
 export default class TransformationDecomposer
 {
@@ -14,13 +28,63 @@ export default class TransformationDecomposer
 
     }
 
+    parseMode(mode)
+    {
+        var modesAlreadySet = {};
+        var parsedMode = Object.assign({}, decompositionModeDefaults);
+
+        if (mode === null) {
+            mode = [];
+        } else {
+            mode = mode.split(/\s*,\s*/);
+        }
+        for(var i = 0; i < mode.length; i++) {
+            if (mode[i] == '') {
+                continue;
+            }
+            if (!mode[i] in decompositionModeCategories) {
+                throw "unknown decomposition mode: " + mode[i];
+            }
+            var cat = decompositionModeCategories[mode[i]];
+            if (cat in modesAlreadySet) {
+                throw "mode already set: " + mode[i];
+            }
+            modesAlreadySet[cat] = true;
+            parsedMode[cat] = mode[i];
+        }
+        return parsedMode;
+    }
+
     setParams(centerPoint, mode)
     {
-        //FIXME implement
-        return;
-        this.skewMode = mode;
+        var args;
+        var centerPoint, mode;
+        if (args = Args.args(arguments)) {
+            centerPoint = null;
+            mode = null;
+        } else if (args = Args.args(arguments, ["centerPoint", Point, "default", null], ["mode", "string", "default", null])) {
+            centerPoint = args.centerPoint;
+            mode = args.mode;
+        } else if (args = Args.args(arguments, ["mode", "string", "default", null])) {
+            centerPoint = null;
+            mode = args.mode;
+        } else {
+            throw "Cannot decompose according to given params";
+        }
+
+        mode = this.parseMode(mode);
+
+        if (centerPoint === null) {
+            centerPoint = Point.origin();
+        }
+        
+        this.skewMode = mode.skew;
         this.centerPoint = centerPoint;
-        this.nonCanonicalCenterPoint = centerPoint;
+        if (mode.canonical == 'noncanonical') {
+            this.nonCanonicalCenterPoint = centerPoint;
+        } else {
+            this.nonCanonicalCenterPoint = Point.origin();
+        }
     }
 
     decompose(matrix)
