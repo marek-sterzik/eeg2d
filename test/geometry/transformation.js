@@ -180,10 +180,18 @@ export default function TransformationTest() {
 
         assertTrEqual(t2, Transformation.matrix(matrix).toString());
         
-        var t3 = t2.decompose();
-        assertTrEqual(t3, "translate(2, 3) rotate(30) scale(5, 6) skew(10)");
+        assertTrEqual(t2.decompose(), "translate(2, 3) rotate(30) scale(5, 6) skew(10)");
+        assertTrEqual(t2.decompose("skew"), "translate(2, 3) rotate(30) scale(5, 6) skew(10)");
+        assertTrEqual(t2.decompose("skewX"), "translate(2, 3) rotate(30) scale(5, 6) skewX(10)");
+        
+        var t3 = new Transformation("translate(2, 3) rotate(30) scale(5, 6) skewY(15)");
+        assertTrEqual(t3.decompose("skewY"), "translate(2, 3) rotate(30) scale(5, 6) skewY(15)");
 
-        //FIXME test other decomposition modes
+        var t4 = new Transformation("translate(2, 3) rotate(30, 1, 1) scale*(5, 6, 1, 1) skewX*(15, 1, 1)")
+        assertTrEqual(t4.decompose(new Point(1, 1), "skewX"), "translate(2, 3) rotate(30, 1, 1) scale*(5, 6, 1, 1) skewX*(15, 1, 1)");
+
+        var t5 = new Transformation("translate(2, 3) rotate(30, 1, 1) scale(5, 6) skewX(15)")
+        assertTrEqual(t5.decompose(new Point(1, 1), "skewX,canonical"), "translate(2, 3) rotate(30, 1, 1) scale(5, 6) skewX(15)");
     });
 };
 
