@@ -22,53 +22,43 @@ export default class TransformationConvertor extends Convertor
 
     static parse(string, params, fnName)
     {
-        console.log(string);
         var transformationList = this.parseTransformationList(string, params);
 
         if (transformationList === null) {
             throw "Cannot parse transformation";
         }
 
-        this.convertTransformationArguments(transformationList, params);
-        
-        console.log(transformationList);
-        return Transformation.identity();
-    }
-
-    static getConvertorDescriptors()
-    {
-        return {
-            'scale': [NumberConvertor, NumberConvertor],
-            'rotate': [AngleConvertor, NumberConvertor, NumberConvertor],
-            'translate': [NumberConvertor, NumberConvertor],
-            'skewX': [AngleConvertor],
-            'skewY': [AngleConvertor],
-            'skew': [AngleConvertor, AngleConvertor],
-            'matrix': [NumberConvertor, NumberConvertor, NumberConvertor, NumberConvertor, NumberConvertor, NumberConvertor]
-        };
-    }
-
-    static convertTransformationArguments(transformationList, params)
-    {
-        var convertors = this.getConvertorDescriptors();
-
-        for (var i = 0; i < transformationList.length; i++) {
-            var name = transformationList[i].name;
-            var args = transformationList[i].args;
-            if (!name in convertors) {
-                throw "unknown transformation: " + name;
-            }
-            
-            var argConvertors = convertors[name];
-
-            if (args.length > argConvertors.length) {
-                throw "too many arguments for transformation: " + name;
+        transformationList = transformationList.map(function(record){
+            var atomicTransformationClass = AtomicTransformation.getAtomicTransformationClassByType(record.type);
+            var argsConvertors;
+            if (record.canonical) {
+                argsConvertors = atomicTransformationClass.getArgsConvertors();
+            } else {
+                argsConvertors = atomicTransformationClass.getNonCanonicalArgsConvertors();
             }
 
-            for (var j = 0; j < args.length; j++) {
-                args[j] = params.invokeParse(argConvertors[j], args[j]);
+            if (argsConvertors.length < record.args.length) {
+                throw "too much arguments when parsing transformation: " + record.type;
             }
-        }
+
+            var convertedArgs = [];
+            for (var i = 0; i < record.args.length; i++) {
+                convertedArgs.push(params.invokeParse(argsConvertors[i], record.args[i]));
+            }
+
+            var transformationDescriptor;
+            if (record.canonical) {
+                transformationDescriptor = atomicTransformationClass.argsToParams(convertedArgs);
+            } else {
+                transformationDescriptor = atomicTransformationClass.nonCanonicalArgsToParams(convertedArgs);
+            }
+
+            transformationDescriptor.type = record.type;
+
+            return AtomicTransformation.instantiate(transformationDescriptor);
+        });
+
+        return new Transformation(transformationList);
     }
 
     static parseTransformationList(string, params)
@@ -80,6 +70,7 @@ export default class TransformationConvertor extends Convertor
         var identifier = new RegexpUtil(params.get('transformation.input.identifier'));
         var transformationDelimeter = new RegexpUtil(params.get('transformation.input.transformationDelimeter'));
         var fieldDelimeter = new RegexpUtil(params.get('transformation.input.fieldDelimeter'));
+        var nonCanonicalSuffix = new RegexpUtil(params.get('transformation.input.nonCanonicalSuffix'));
         var parenthesis = params.get('transformation.input.parenthesis').map(function(x) {return new RegexpUtil(x);});
 
         
@@ -109,13 +100,22 @@ export default class TransformationConvertor extends Convertor
                 break;
             }
             
-            [record.name, string] = identifier.readToken(string);
+            [record.type, string] = identifier.readToken(string);
 
-            if (record.name === null) {
+            if (record.type === null) {
                 return null;
             }
 
             [token, string] = space.readToken(string);
+
+            [token, string] = nonCanonicalSuffix.readToken(string);
+
+            if (token !== null) {
+                record.canonical = false;
+                [token, string] = space.readToken(string);
+            } else {
+                record.canonical = true;
+            }
 
             [token, string] = parenthesis[0].readToken(string);
 

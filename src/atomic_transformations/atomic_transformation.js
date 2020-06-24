@@ -54,6 +54,16 @@ export default class AtomicTransformation
         return this.getArgsConvertors();
     }
 
+    static argsToParams(args)
+    {
+        throw "This method is abstract";
+    }
+
+    static nonCanonicalArgsToParams(args)
+    {
+        return this.argsToParams(args);
+    }
+
     getCanonizedTransformations()
     {
         if(this.isCanonical()) {

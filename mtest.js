@@ -27,6 +27,9 @@ var p = new Point(1, 2);
 console.log(p.toString())
 
 var stringTransformation = "translate( 1 , 1 ) rotate( 200grad ) scale( 2 , -3 ) skewX( 45 )";
+
+console.log(stringTransformation);
+
 transformation = new Transformation(stringTransformation);
 
 console.log(transformation.toString());

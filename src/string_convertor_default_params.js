@@ -69,7 +69,7 @@ export let StringConvertorDefaultParams = {
     'transformation.output.convertToCanonicalForm': true,
     
     // use this suffix in case a transformation should be output as non-canonical
-    'transformation.output.nonCanonicalSuffix': '!',
+    'transformation.output.nonCanonicalSuffix': '*',
 
     // the space accepted in the transformation on various places
     'transformation.input.space': /\s+/,
@@ -82,6 +82,9 @@ export let StringConvertorDefaultParams = {
 
     // the delimeter between fields of the transformation
     'transformation.input.fieldDelimeter': /\s*[,\s]\s*/,
+
+    // the suffix being recognized as the non-canonical flag
+    'transformation.input.nonCanonicalSuffix': '*',
 
     // the parenthesis being parsed for a transformation
     'transformation.input.parenthesis': [ /\s*\(/ , ')'],

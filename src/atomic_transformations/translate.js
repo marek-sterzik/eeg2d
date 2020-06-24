@@ -47,8 +47,8 @@ export default class Translate extends AtomicTransformation
             throw "Invalid number of arguments for a translation";
         }
 
-        x = args[1];
-        y = (args.length >= 2) ? args[2] : 0;
+        x = args[0];
+        y = (args.length >= 2) ? args[1] : 0;
 
         return {"vector": new Vector(x, y)};
     }
