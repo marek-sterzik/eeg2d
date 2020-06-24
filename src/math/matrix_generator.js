@@ -31,7 +31,7 @@ export default class MatrixGenerator
 
     static skew(skewX, skewY, center)
     {
-        var tr = new TransformationMatrix(1, skewX.tan(), skewY.tan(), 0, 0);
+        var tr = new TransformationMatrix(1, skewX.tan(), skewY.tan(), 1, 0, 0);
         
         return this._moveCenter(tr, center);
     }

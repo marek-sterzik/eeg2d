@@ -1,5 +1,8 @@
 import Point from "../geometry/point.js";
 import Vector from "../geometry/vector.js";
+import Angle from "../geometry/angle.js";
+
+import MatrixGenerator from "./matrix_generator.js";
 
 export default class TransformationDecomposer
 {
@@ -73,7 +76,7 @@ export default class TransformationDecomposer
             matrix = matrix.mul(MatrixGenerator.rotate(rotation.mul(-1), this.centerPoint));
 
             //decompose translation
-            var translation = centerPoint.vectorTo(matrix.transformPoint(centerPoint));
+            var translation = this.centerPoint.vectorTo(matrix.transformPoint(this.centerPoint));
             decomposition.push({"type": "translate", "vector": translation});
         } else {
             decomposition.push({"type": "matrix", "matrix": matrix});
