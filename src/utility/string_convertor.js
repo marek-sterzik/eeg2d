@@ -35,7 +35,7 @@ export default class StringConvertor
 
     setDefault()
     {
-        StringConvertor.setDefault(this);
+        return StringConvertor.setDefault(this);
     }
 
     constructor(params)

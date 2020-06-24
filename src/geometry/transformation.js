@@ -16,9 +16,7 @@ export default class Transformation
     constructor()
     {
         var args;
-        if (args = Args.args(arguments, ["at", AtomicTransformation])) {
-            this.atomicTransformations = [args.at];
-        } else if (args = Args.args(arguments, ["atomicTransformations", Array])) {
+        if (args = Args.args(arguments, ["atomicTransformations", Array])) {
             for (var i = 0; i < args.atomicTransformations.length; i++) {
                 if (!args.atomicTransformations[i] instanceof AtomicTransformation) {
                     throw "Cannot construct a transformation from given arguments";
@@ -65,7 +63,7 @@ export default class Transformation
         }
 
         var at = AtomicTransformation.instantiate({"type": "matrix", "matrix": matrix});
-        return new Transformation(at);
+        return new Transformation([at]);
     }
 
     static translate()
@@ -81,7 +79,7 @@ export default class Transformation
         }
 
         var at = AtomicTransformation.instantiate({"type": "translate", "vector": v});
-        return new Transformation(at);
+        return new Transformation([at]);
     }
 
     static rotate()
@@ -91,9 +89,15 @@ export default class Transformation
         if (args = Args.args(arguments, ["angle", Angle], ["center", Point, "default", null])) {
             angle = args.angle;
             center = args.center;
+        } else if (args = Args.args(arguments, ["angle", Angle], "cx:number", ["cy", "number", "default", 0])) {
+            angle = args.angle;
+            center = new Point(args.cx, args.cy);
         } else if (args = Args.args(arguments, "angle:number", ["center", Point, "default", null])) {
             angle = new Angle(args.angle);
             center = args.center;
+        } else if (args = Args.args(arguments, "angle:number", "cx:number", ["cy", "number", "default", 0])) {
+            angle = new Angle(args.angle);
+            center = new Point(args.cx, args.cy);
         } else {
             throw "Cannot construct a rotation transformation from the given arguments";
         }
@@ -103,7 +107,7 @@ export default class Transformation
         }
 
         var at = AtomicTransformation.instantiate({"type": "rotate", "centerPoint": center, "angle": angle});
-        return new Transformation(at);
+        return new Transformation([at]);
     }
 
     static scale()
@@ -127,7 +131,7 @@ export default class Transformation
         }
 
         var at = AtomicTransformation.instantiate({"type": "scale", "centerPoint": center, "scaleX": a, "scaleY": b});
-        return new Transformation(at);
+        return new Transformation([at]);
     }
 
     static skewX()
@@ -141,7 +145,7 @@ export default class Transformation
             angle = args.angle;
             center = args.center;
         } else {
-            throw "Cannot construct a skewX matrix from the given arguments";
+            throw "Cannot construct a skewX transformation from the given arguments";
         }
 
         if (center === null) {
@@ -149,7 +153,7 @@ export default class Transformation
         }
 
         var at = AtomicTransformation.instantiate({"type": "skewX", "centerPoint": center, "skewX": angle});
-        return new Transformation(at);
+        return new Transformation([at]);
     }
 
     static skewY()
@@ -163,7 +167,7 @@ export default class Transformation
             angle = args.angle;
             center = args.center;
         } else {
-            throw "Cannot construct a skewY matrix from the given arguments";
+            throw "Cannot construct a skewY transformation from the given arguments";
         }
 
         if (center === null) {
@@ -171,27 +175,43 @@ export default class Transformation
         }
 
         var at = AtomicTransformation.instantiate({"type": "skewY", "centerPoint": center, "skewY": angle});
-        return new Transformation(at);
+        return new Transformation([at]);
     }
 
     static skew()
     {
         var args;
         var skewX, skewY, center;
-        if (args = Args.args(arguments, "skewX", ["skewY", "default", 0], ["center", Point, "default", null])) {
+        if (args = Args.args(arguments, ["skewX", Angle], ["skewY", Angle, "default", null], ["center", Point, "default", null])) {
+            skewX = args.skewX;
+            skewY = args.skewY;
+            center = args.center;
+        } else if (args = Args.args(arguments, "skewX:number", ["skewY", "number", "default", 0], ["center", Point, "default", null])) {
             skewX = new Angle(args.skewX);
             skewY = new Angle(args.skewY);
             center = args.center;
+        } else if (args = Args.args(arguments, ["skewX", Angle], ["center", Point, "default", null])) {
+            skewX = new Angle(args.skewX);
+            skewY = Angle.zero();
+            center = args.center;
+        } else if (args = Args.args(arguments, "skewX:number", ["center", Point, "default", null])) {
+            skewX = new Angle(args.skewX);
+            skewY = Angle.zero();
+            center = args.center;
         } else {
-            throw "Cannot construct a skew matrix from the given arguments";
+            throw "Cannot construct a skew transformation from the given arguments";
         }
 
         if (center === null) {
             center = Point.origin();
         }
 
+        if (skewY === null) {
+            skewY = Angle.zero();
+        }
+
         var at = AtomicTransformation.instantiate({"type": "skew", "centerPoint": center, "skewX": skewX, "skewY": skewY});
-        return new Transformation(at);
+        return new Transformation([at]);
     }
 
     static identity()

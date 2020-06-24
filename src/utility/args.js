@@ -41,6 +41,7 @@ export default class Args
             argDescriptions.push(arg);
         }
 
+
         if (wasVariadic) {
             maxArguments = argsToProcess.length;
         }
