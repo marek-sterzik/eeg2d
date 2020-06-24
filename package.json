@@ -30,5 +30,5 @@
   "main": "src/eeg2d.js",
   "type": "module",
   "license": "MIT",
-  "version": "0.0.1"
+  "version": "0.0.2"
 }
