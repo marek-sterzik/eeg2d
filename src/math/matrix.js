@@ -6,8 +6,7 @@ import Vector from '../geometry/vector.js';
 
 export default class TransformMatrix
 {
-    static create(a, b, c, d, e, f)
-    {
+    static create = (a, b, c, d, e, f) => {
         return new TransformMatrix(a, b, c, d, e, f);
     }
 
@@ -24,8 +23,7 @@ export default class TransformMatrix
         Object.freeze(this.m[1]);
     }
 
-    inv()
-    {
+    inv = () => {
         var mx = [
             this.m[0].concat([1, 0, 0]),
             this.m[1].concat([0, 1, 0]),
@@ -67,20 +65,17 @@ export default class TransformMatrix
         );
     }
 
-    mul()
-    {
-        var args;
-        if (args = Args.args(arguments, "scalar:number")) {
+    mul = (m2) => {
+        if (typeof m2 == 'number') {
             //scalar multiplication
             return new TransformMatrix(
-                this.m[0][0] * args.scalar, this.m[1][0] * args.scalar,
-                this.m[0][1] * args.scalar, this.m[1][1] * args.scalar,
-                this.m[0][2] * args.scalar, this.m[1][2] * args.scalar
+                this.m[0][0] * args.scalar, this.m[1][0] * m2,
+                this.m[0][1] * args.scalar, this.m[1][1] * m2,
+                this.m[0][2] * args.scalar, this.m[1][2] * m2
             );
-        } else if (args = Args.args(arguments, ["m2", TransformMatrix])) {
+        } else if (m2 instanceof TransformMatrix) {
             //matrix multiplication
             var m1 = this;
-            var m2 = args.m2;
             const _scMul = (row, col) => {
                 var x = 0;
                 for (var i = 0; i < 3; i++) {
@@ -98,8 +93,7 @@ export default class TransformMatrix
         }
     }
 
-    add(m2)
-    {
+    add = (m2) => {
         return new TransformMatrix(
             this.m[0][0] + m2.m[0][0], this.m[1][0] + m2.m[1][0],
             this.m[0][1] + m2.m[0][1], this.m[1][1] + m2.m[1][1],
@@ -107,8 +101,7 @@ export default class TransformMatrix
         );
     }
 
-    sub(m2)
-    {
+    sub = (m2) => {
         return new TransformMatrix(
             this.m[0][0] - m2.m[0][0], this.m[1][0] - m2.m[1][0],
             this.m[0][1] - m2.m[0][1], this.m[1][1] - m2.m[1][1],
@@ -116,23 +109,19 @@ export default class TransformMatrix
         );
     }
 
-    det()
-    {
+    det = () => {
         return this.m[0][0] * this.m[1][1] - this.m[0][1] * this.m[1][0];
     }
 
-    isRegular()
-    {
+    isRegular = () => {
         return !ZeroTest.isZero(this.det());
     }
 
-    isSingular()
-    {
+    isSingular = () => {
         return ZeroTest.isZero(this.det());
     }
 
-    _transform(data)
-    {
+    _transform = (data) => {
         var m1 = this;
         const _scMul = (row) => {
             var x = 0;
@@ -144,14 +133,12 @@ export default class TransformMatrix
         return [_scMul(0), _scMul(1)];
     }
 
-    transformPoint(p)
-    {
+    transformPoint = (p) => {
         var transformed = this._transform([p.x, p.y, 1]);
         return new Point(transformed[0], transformed[1]);
     }
 
-    transformVector(v)
-    {
+    transformVector = (v) => {
         var transformed = this._transform([v.x, v.y, 0]);
         return new Vector(transformed[0], transformed[1]);
     }

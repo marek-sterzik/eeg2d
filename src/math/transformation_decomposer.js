@@ -28,8 +28,7 @@ export default class TransformationDecomposer
 
     }
 
-    parseMode(mode)
-    {
+    parseMode = (mode) => {
         var modesAlreadySet = {};
         var parsedMode = Object.assign({}, decompositionModeDefaults);
 
@@ -55,17 +54,16 @@ export default class TransformationDecomposer
         return parsedMode;
     }
 
-    setParams(centerPoint, mode)
-    {
+    setParams = (...argList) => {
         var args;
         var centerPoint, mode;
-        if (args = Args.args(arguments)) {
+        if (args = Args.args(argList)) {
             centerPoint = null;
             mode = null;
-        } else if (args = Args.args(arguments, ["centerPoint", Point, "default", null], ["mode", "string", "default", null])) {
+        } else if (args = Args.args(argList, ["centerPoint", Point, "default", null], ["mode", "string", "default", null])) {
             centerPoint = args.centerPoint;
             mode = args.mode;
-        } else if (args = Args.args(arguments, ["mode", "string", "default", null])) {
+        } else if (args = Args.args(argList, ["mode", "string", "default", null])) {
             centerPoint = null;
             mode = args.mode;
         } else {
@@ -87,8 +85,7 @@ export default class TransformationDecomposer
         }
     }
 
-    decompose(matrix)
-    {
+    decompose = (matrix) => {
         var decomposition = [];
 
         //Calculate the whole decomposition
