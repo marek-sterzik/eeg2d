@@ -273,9 +273,7 @@ export default class Transformation
     {
         var decomposer = new TransformationDecomposer();
         decomposer.setParams.apply(decomposer, arguments);
-        var atomicOperations = decomposer.decompose(this.getMatrix()).map(function(op){
-            return AtomicTransformation.instantiate(op);
-        });
+        var atomicOperations = decomposer.decompose(this.getMatrix()).map(op => AtomicTransformation.instantiate(op));
 
         return new Transformation(atomicOperations);
     }

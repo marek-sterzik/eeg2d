@@ -6,8 +6,8 @@ import AtomicTransformation from "../../src/utility/atomic_transformation.js";
 
 var defaultStringConvertor;
 
-export default function TransformationTest() {
-    before(function() {
+export default () => {
+    before(() => {
         //this config is necessary for assertTrEqual working properly
         var config = {
             'transformation.output.convertToCanonicalForm': false,
@@ -16,11 +16,11 @@ export default function TransformationTest() {
         defaultStringConvertor = StringConvertor.get(config).setDefault();
     });
 
-    after(function() {
+    after(() => {
         defaultStringConvertor.setDefault();
     });
 
-    it("construction:constructor", function() {
+    it("construction:constructor", () => {
         var t1 = Transformation.rotate(Angle.deg(45), Point.create(1, 2));
 
         assertTrEqual(Transformation.create(t1), "rotate(45, 1, 2)");
@@ -39,14 +39,14 @@ export default function TransformationTest() {
         assertTrEqual(Transformation.create("rotate(45, 1, 2) translate(5, 6)"), "rotate(45, 1, 2) translate(5, 6)");
     });
 
-    it("construction:matrix", function() {
+    it("construction:matrix", () => {
         assertTrEqual(Transformation.matrix(1, 2, 3, 4, 5, 6), "matrix(1, 2, 3, 4, 5, 6)");
 
         var matrix = TransformationMatrix.create(6, 5, 4, 3, 2, 1);
         assertTrEqual(Transformation.matrix(matrix), "matrix(6, 5, 4, 3, 2, 1)");
     });
 
-    it("construction:translate", function() {
+    it("construction:translate", () => {
         assertTrEqual(Transformation.translate(1, 2), "translate(1, 2)");
         assertTrEqual(Transformation.translate(1), "translate(1, 0)");
         
@@ -54,7 +54,7 @@ export default function TransformationTest() {
         assertTrEqual(Transformation.translate(v), "translate(4, 5)");
     });
 
-    it("construction:rotate", function() {
+    it("construction:rotate", () => {
         assertTrEqual(Transformation.rotate(Angle.deg(45)), "rotate(45)");
         assertTrEqual(Transformation.rotate(Math.PI/4), "rotate(45)");
         assertTrEqual(Transformation.rotate(Angle.deg(45), 1, 2), "rotate(45, 1, 2)");
@@ -63,28 +63,28 @@ export default function TransformationTest() {
         assertTrEqual(Transformation.rotate(Math.PI/4, Point.create(5, 6)), "rotate(45, 5, 6)");
     });
 
-    it("construction:scale", function() {
+    it("construction:scale", () => {
         assertTrEqual(Transformation.scale(5), "scale(5)");
         assertTrEqual(Transformation.scale(5, 6), "scale(5, 6)");
         assertTrEqual(Transformation.scale(5, Point.create(1, 2)), "scale*(5, 5, 1, 2)");
         assertTrEqual(Transformation.scale(5, 6, Point.create(1, 2)), "scale*(5, 6, 1, 2)");
     });
 
-    it("construction:skewX", function() {
+    it("construction:skewX", () => {
         assertTrEqual(Transformation.skewX(Angle.deg(45)), "skewX(45)");
         assertTrEqual(Transformation.skewX(Math.PI/4), "skewX(45)");
         assertTrEqual(Transformation.skewX(Angle.deg(45), Point.create(1, 2)), "skewX*(45, 1, 2)");
         assertTrEqual(Transformation.skewX(Math.PI/4, Point.create(1, 2)), "skewX*(45, 1, 2)");
     });
 
-    it("construction:skewY", function() {
+    it("construction:skewY", () => {
         assertTrEqual(Transformation.skewY(Angle.deg(45)), "skewY(45)");
         assertTrEqual(Transformation.skewY(Math.PI/4), "skewY(45)");
         assertTrEqual(Transformation.skewY(Angle.deg(45), Point.create(1, 2)), "skewY*(45, 1, 2)");
         assertTrEqual(Transformation.skewY(Math.PI/4, Point.create(1, 2)), "skewY*(45, 1, 2)");
     });
 
-    it("construction:skew", function() {
+    it("construction:skew", () => {
         assertTrEqual(Transformation.skew(Angle.deg(45)), "skew(45)");
         assertTrEqual(Transformation.skew(Angle.deg(45), Angle.deg(30)), "skew(45, 30)");
         assertTrEqual(Transformation.skew(Math.PI/4), "skew(45)");
@@ -95,7 +95,7 @@ export default function TransformationTest() {
         assertTrEqual(Transformation.skew(Math.PI/4, Math.PI/6, Point.create(1, 2)), "skew*(45, 30, 1, 2)");
     });
 
-    it("construction:identity", function() {
+    it("construction:identity", () => {
         assertTrEqual(Transformation.identity(), "");
         var matrix = Transformation.identity().getMatrix();
         assert.equal(matrix.m[0][0], 1);
@@ -106,7 +106,7 @@ export default function TransformationTest() {
         assert.equal(matrix.m[1][2], 0);
     });
 
-    it("composition", function() {
+    it("composition", () => {
         var t1 = Transformation.translate(1, 2);
         var t2 = Transformation.rotate(Angle.deg(45), 3, 4);
         
@@ -130,7 +130,7 @@ export default function TransformationTest() {
         assertMatrixEqual(t6.getMatrix(), t5.getMatrix());
     });
 
-    it("inversion", function() {
+    it("inversion", () => {
         var t1 = Transformation.translate(1, 2);
         var t2 = Transformation.rotate(Angle.deg(45), 3, 4);
         var t3 = Transformation.scale(2, 3, Point.create(4, 5));
@@ -149,7 +149,7 @@ export default function TransformationTest() {
         assertMatrixEqual(t4.inv().getMatrix(), t4inv.getMatrix());
     });
 
-    it("transformation", function() {
+    it("transformation", () => {
         var b1 = Vector.create(1, 0);
         var b2 = Vector.create(0, 1);
 
@@ -174,7 +174,7 @@ export default function TransformationTest() {
         assertVectorEqual(t.transformVector(b2), b2x);
     });
 
-    it("decomposition", function() {
+    it("decomposition", () => {
         var t1 = Transformation.create("translate(2, 3) rotate(30) scale(5, 6) skew(10)");
         var matrix = t1.getMatrix();
         var t2 = t1.flatten();
@@ -195,7 +195,7 @@ export default function TransformationTest() {
         assertTrEqual(t5.decompose(Point.create(1, 1), "skewX,canonical"), "translate(2, 3) rotate(30, 1, 1) scale(5, 6) skewX(15)");
     });
 
-    it("canonization", function() {
+    it("canonization", () => {
         var p = Point.create(1, 2);
 
         assertTrEqual(Transformation.identity(), "");
@@ -213,20 +213,18 @@ export default function TransformationTest() {
         assertTrEqual(t.canonize(), ct);
     });
 
-    it("string conversions", function() {
+    it("string conversions", () => {
         var t = Transformation.create("translate(5, 6) rotate(60) scale(4) skewX(10)");
         assert.equal(t.toString(), "translate(5, 6) rotate(60) scale(4) skewX(10)");
         assertMatrixEqual(t.getMatrix(), t.flatten().getMatrix());
     });
 };
 
-function assertTrEqual(transformation, expectedString)
-{
+const assertTrEqual = (transformation, expectedString) => {
     assert.equal(transformation.toString(), expectedString);
 }
 
-function assertMatrixEqual(matrix, matrix2)
-{
+const assertMatrixEqual = (matrix, matrix2) => {
     for (var i = 0; i < 2; i++) {
         for (var j = 0; j < 3; j++) {
             assert.approxEqual(matrix.m[i][j], matrix2.m[i][j]);
@@ -234,14 +232,12 @@ function assertMatrixEqual(matrix, matrix2)
     }
 }
 
-function assertPointEqual(point, point2)
-{
+const assertPointEqual = (point, point2) => {
     assert.approxEqual(point.x, point2.x);
     assert.approxEqual(point.y, point2.y);
 }
 
-function assertVectorEqual(vector, vector2)
-{
+const assertVectorEqual = (vector, vector2) => {
     assert.approxEqual(vector.x, vector2.x);
     assert.approxEqual(vector.y, vector2.y);
 }

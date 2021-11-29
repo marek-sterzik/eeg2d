@@ -2,8 +2,8 @@ import assert from "../assert/assert.js";
 
 import {Vector, Angle} from "../../src/eeg2d.js";
 
-export default function VectorTest() {
-    it("construction", function() {
+export default () => {
+    it("construction", () => {
         var v0 = Vector.create(-6, -7);
         assert.equal(v0.x, -6);
         assert.equal(v0.y, -7);
@@ -25,7 +25,7 @@ export default function VectorTest() {
         assert.equal(v4.y, 0);
     });
 
-    it("basic operations", function(){
+    it("basic operations", () => {
         var v1 = Vector.create(1, 2);
         var v2 = Vector.create(2, 1);
 
@@ -60,7 +60,7 @@ export default function VectorTest() {
 
     });
 
-    it("angle operations", function(){
+    it("angle operations", () => {
         //universal angle operations
         var angle = Angle.deg(30);
         var v1 = Vector.create(1, 0);
@@ -91,7 +91,7 @@ export default function VectorTest() {
         }
     });
 
-    it("translation", function(){
+    it("translation", () => {
         var v = Vector.create(2, -3);
         var t = v.getTranslation();
         var matrix = t.getMatrix();

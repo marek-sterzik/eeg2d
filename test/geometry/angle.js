@@ -2,8 +2,8 @@ import assert from "../assert/assert.js";
 
 import {Point, Vector, Angle} from "../../src/eeg2d.js";
 
-export default function AngleTest() {
-    it("construction", function() {
+export default () => {
+    it("construction", () => {
         assertAngle(new Angle(Math.PI), 180, "deg");
 
         var a1 = Angle.create(2 * Math.PI);
@@ -30,7 +30,7 @@ export default function AngleTest() {
         assertAngle(Angle.atan(1), 45, "deg");
     });
 
-    it("basic operations", function(){
+    it("basic operations", () => {
         var angle = Angle.deg(45);
         assertAngle(angle, 45, "deg");
         assertAngle(angle, Math.PI / 4, "rad");
@@ -70,7 +70,7 @@ export default function AngleTest() {
         assert.equal(Angle.deg(45).toString(), "45");
     });
 
-    it("rotation", function(){
+    it("rotation", () => {
         var angle = Angle.deg(90);
 
         var t = angle.getRotation();
@@ -92,7 +92,6 @@ export default function AngleTest() {
     });
 }
 
-function assertAngle(angle, value, unit)
-{
+const assertAngle = (angle, value, unit) => {
     assert.approxEqual(angle[unit].call(angle), value);
 }

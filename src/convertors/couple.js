@@ -12,7 +12,7 @@ export default class CoupleConvertor extends Convertor
             throw "cannot parse " + this.getName();
         }
 
-        couple = couple.map(function(x){return params.invokeParse(NumberConvertor, x);});
+        couple = couple.map(x => params.invokeParse(NumberConvertor, x));
 
         return this.coupleToObject(couple);
     }
@@ -22,7 +22,7 @@ export default class CoupleConvertor extends Convertor
         var name = this.getName();
         var space = new RegexpUtil(params.get(name + '.input.space'));
         var delimeter = new RegexpUtil(params.get(name + '.input.delimeter'));
-        var parenthesis = params.get(name + '.input.parenthesis').map(function(x) {return new RegexpUtil(x);});
+        var parenthesis = params.get(name + '.input.parenthesis').map(x => new RegexpUtil(x));
 
         string = space.trim(string);
 
@@ -54,7 +54,7 @@ export default class CoupleConvertor extends Convertor
             return null;
         }
 
-        return ar.map(function(x){return space.trim(x);});
+        return ar.map(x => space.trim(x));
     }
 
     static toString(object, params, fnName)

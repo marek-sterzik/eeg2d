@@ -31,17 +31,17 @@ export default class TransformMatrix
             this.m[1].concat([0, 1, 0]),
             this.m[2].concat([0, 0, 1])
         ];
-        var _mulRow = function(row, c) {
+        const _mulRow = (row, c) => {
             for (var i = 0; i < 6; i++) {
                 mx[row][i] = mx[row][i] * c;
             }
         }
-        var _addRow = function(baseRow, addedRow, c) {
+        const _addRow = (baseRow, addedRow, c) => {
             for (var i = 0; i < 6; i++) {
                 mx[baseRow][i] += mx[addedRow][i] * c;
             }
         }
-        var _swapRow = function(row1, row2) {
+        const _swapRow = (row1, row2) => {
             var tmp;
             for (var i = 0; i < 6; i++) {
                 tmp = mx[row1][i];
@@ -81,7 +81,7 @@ export default class TransformMatrix
             //matrix multiplication
             var m1 = this;
             var m2 = args.m2;
-            var _scMul = function(row, col) {
+            const _scMul = (row, col) => {
                 var x = 0;
                 for (var i = 0; i < 3; i++) {
                     x += m1.m[row][i] * m2.m[i][col];
@@ -134,7 +134,7 @@ export default class TransformMatrix
     _transform(data)
     {
         var m1 = this;
-        var _scMul = function(row) {
+        const _scMul = (row) => {
             var x = 0;
             for (var i = 0; i < 3; i++) {
                 x += m1.m[row][i] * data[i];

@@ -2,8 +2,8 @@ import assert from "../assert/assert.js";
 
 import {Point, Vector, Angle} from "../../src/eeg2d.js";
 
-export default function PointTest() {
-    it("construction", function() {
+export default () => {
+    it("construction", () => {
         var p0 = new Point(6, 7);
         assert.equal(p0.x, 6);
         assert.equal(p0.y, 7);
@@ -25,7 +25,7 @@ export default function PointTest() {
         assert.equal(p4.y, 0);
     });
 
-    it("basic operations", function(){
+    it("basic operations", () => {
         var p1 = Point.create(1, 2);
         var v1 = Vector.create(2, 1);
 

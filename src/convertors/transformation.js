@@ -28,7 +28,7 @@ export default class TransformationConvertor extends Convertor
             throw "Cannot parse transformation";
         }
 
-        transformationList = transformationList.map(function(record){
+        transformationList = transformationList.map((record) => {
             var atomicTransformationClass = AtomicTransformation.getAtomicTransformationClassByType(record.type);
             var argsConvertors;
             if (record.canonical) {
@@ -71,7 +71,7 @@ export default class TransformationConvertor extends Convertor
         var transformationDelimeter = new RegexpUtil(params.get('transformation.input.transformationDelimeter'));
         var fieldDelimeter = new RegexpUtil(params.get('transformation.input.fieldDelimeter'));
         var nonCanonicalSuffix = new RegexpUtil(params.get('transformation.input.nonCanonicalSuffix'));
-        var parenthesis = params.get('transformation.input.parenthesis').map(function(x) {return new RegexpUtil(x);});
+        var parenthesis = params.get('transformation.input.parenthesis').map(x => new RegexpUtil(x));
 
         
         var first = true;
@@ -192,7 +192,7 @@ export default class TransformationConvertor extends Convertor
         }
         return transformation
             .getAtomicTransformations()
-            .map(function(at){ return THIS.atomicTransformationToString(at, params)})
+            .map(at => THIS.atomicTransformationToString(at, params))
             .join(params.get('transformation.output.transformationDelimeter'));
     }
 }

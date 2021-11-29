@@ -139,11 +139,8 @@ class StringConvertorParams
             fnThis = convertor;
         }
 
-        return function(object) {
-            return fn.call(fnThis, object, params, fnName);
-        };
+        return object => fn.call(fnThis, object, params, fnName);
     }
-
 
     _get(param)
     {
@@ -160,4 +157,3 @@ class StringConvertorParams
 }
 
 var defaultStringConvertor = new StringConvertor();
-
