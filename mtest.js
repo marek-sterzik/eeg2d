@@ -19,19 +19,19 @@ transformation = transformation.decompose();
 
 console.log(transformation.toString());
 
-var v = new Vector(1, 2);
+var v = Vector.create(1, 2);
 console.log(v.toString())
 
-var p = new Point(1, 2);
+var p = Point.create(1, 2);
 console.log(p.toString())
 
 var stringTransformation = "translate( 1 , 1 ) rotate( 200grad ) scale*( 2 , -3, 1, 1) skewX( 45 )";
 
 console.log(stringTransformation);
 
-transformation = new Transformation(stringTransformation);
+transformation = Transformation.create(stringTransformation);
 
 console.log(transformation.toString());
 
-var v = new Point("[4 2]");
+var v = Point.create("[4 2]");
 console.log(v);
