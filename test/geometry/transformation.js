@@ -25,7 +25,7 @@ export default function TransformationTest() {
 
         assertTrEqual(Transformation.create(t1), "rotate(45, 1, 2)");
         
-        var matrix = new TransformationMatrix(6, 5, 4, 3, 2, 1);
+        var matrix = TransformationMatrix.create(6, 5, 4, 3, 2, 1);
         var t2 = Transformation.create(matrix);
         assertTrEqual(t2, "matrix(6, 5, 4, 3, 2, 1)");
         assertTrEqual(Transformation.create(1, 2, 3, 4, 5, 6), "matrix(1, 2, 3, 4, 5, 6)");
@@ -41,7 +41,7 @@ export default function TransformationTest() {
     it("construction:matrix", function() {
         assertTrEqual(Transformation.matrix(1, 2, 3, 4, 5, 6), "matrix(1, 2, 3, 4, 5, 6)");
 
-        var matrix = new TransformationMatrix(6, 5, 4, 3, 2, 1);
+        var matrix = TransformationMatrix.create(6, 5, 4, 3, 2, 1);
         assertTrEqual(Transformation.matrix(matrix), "matrix(6, 5, 4, 3, 2, 1)");
     });
 

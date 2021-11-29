@@ -6,6 +6,11 @@ import Vector from '../geometry/vector.js';
 
 export default class TransformMatrix
 {
+    static create(a, b, c, d, e, f)
+    {
+        return new TransformMatrix(a, b, c, d, e, f);
+    }
+
     constructor(a, b, c, d, e, f)
     {
         this.m = [

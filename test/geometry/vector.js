@@ -59,7 +59,7 @@ export default function VectorTest() {
     it("angle operations", function(){
         //universal angle operations
         var angle = Angle.deg(30);
-        var v1 = new Vector(1, 0);
+        var v1 = Vector.create(1, 0);
         var v2 = v1.rot(angle);
         assert.approxEqual(v2.x, Math.sqrt(3/4));
         assert.approxEqual(v2.y, 1/2);
@@ -73,7 +73,7 @@ export default function VectorTest() {
         assert.approxEqual(angle3.deg(), 330);
 
         //test all rotations 10 degrees
-        var b = new Vector(1, 0);
+        var b = Vector.create(1, 0);
         var b2 = b.rot(Angle.deg(20));
         for (var i = 0; i < 36; i++) {
             var a = Angle.deg(i*10);
@@ -88,7 +88,7 @@ export default function VectorTest() {
     });
 
     it("translation", function(){
-        var v = new Vector(2, -3);
+        var v = Vector.create(2, -3);
         var t = v.getTranslation();
         var matrix = t.getMatrix();
         assert.equal(matrix.m[0][0], 1);

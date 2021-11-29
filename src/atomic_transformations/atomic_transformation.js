@@ -6,7 +6,7 @@ export default class AtomicTransformation
 {
     static register(transformation)
     {
-        if (!transformation instanceof this) {
+        if (!transformation instanceof AtomicTransformation) {
             throw "Cannot register an object not being an instance of AtomicTransformation";
         }
 

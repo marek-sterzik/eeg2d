@@ -1,4 +1,3 @@
-
 import Vector from "./geometry/vector.js";
 import Point from "./geometry/point.js";
 import Angle from "./geometry/angle.js";
