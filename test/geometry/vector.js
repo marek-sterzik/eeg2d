@@ -4,6 +4,10 @@ import {Vector, Angle} from "../../src/eeg2d.js";
 
 export default function VectorTest() {
     it("construction", function() {
+        var v0 = Vector.create(-6, -7);
+        assert.equal(v0.x, -6);
+        assert.equal(v0.y, -7);
+        
         var v1 = Vector.create(1, -3);
         assert.equal(v1.x, 1);
         assert.equal(v1.y, -3);

@@ -4,6 +4,8 @@ import {Point, Vector, Angle} from "../../src/eeg2d.js";
 
 export default function AngleTest() {
     it("construction", function() {
+        assertAngle(new Angle(Math.PI), 180, "deg");
+
         var a1 = Angle.create(2 * Math.PI);
         assertAngle(a1, 360, "deg");
 

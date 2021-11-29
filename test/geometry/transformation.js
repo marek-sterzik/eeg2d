@@ -33,6 +33,7 @@ export default function TransformationTest() {
 
         var a1 = AtomicTransformation.instantiate({"type": "scale", "scaleX": 2, "scaleY": 3, "centerPoint": Point.origin()});
         var a2 = AtomicTransformation.instantiate({"type": "translate", "vector": Vector.create(1, 2)});
+        assertTrEqual(new Transformation([a1, a2]), "scale(2, 3) translate(1, 2)");
         assertTrEqual(Transformation.create([a1, a2]), "scale(2, 3) translate(1, 2)");
 
         assertTrEqual(Transformation.create("rotate(45, 1, 2) translate(5, 6)"), "rotate(45, 1, 2) translate(5, 6)");

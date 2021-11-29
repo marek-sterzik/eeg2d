@@ -4,6 +4,10 @@ import {Point, Vector, Angle} from "../../src/eeg2d.js";
 
 export default function PointTest() {
     it("construction", function() {
+        var p0 = new Point(6, 7);
+        assert.equal(p0.x, 6);
+        assert.equal(p0.y, 7);
+
         var p1 = Point.create(1, -3);
         assert.equal(p1.x, 1);
         assert.equal(p1.y, -3);
