@@ -13,28 +13,9 @@ import Angle from "./angle.js";
 
 export default class Transformation
 {
-    constructor()
+    constructor(atomicTransformations)
     {
-        var args;
-        if (args = Args.args(arguments, ["atomicTransformations", Array])) {
-            for (var i = 0; i < args.atomicTransformations.length; i++) {
-                if (!args.atomicTransformations[i] instanceof AtomicTransformation) {
-                    throw "Cannot construct a transformation from given arguments";
-                }
-            }
-            this.atomicTransformations = args.atomicTransformations;
-        } else if (args = Args.args(arguments, ["transformation", Transformation])) {
-            return args.transformation;
-        } else if (args = Args.args(arguments, "string:string")) {
-            return StringConvertor.get().parseTransformation(args.string);
-        } else if (args = Args.args(arguments, ["matrix", TransformationMatrix])) {
-           return Transformation.matrix(args.matrix);
-        } else if (args = Args.args(arguments, "a:number", "b:number", "c:number", "d:number", "e:number", "f:number")) {
-            var matrix = new TransformationMatrix(args.a, args.b, args.c, args.d, args.e, args.f);
-            return Transformation.matrix(matrix);
-        } else {
-            throw "Cannot construct a transformation from given arguments";
-        }
+        this.atomicTransformations = [...atomicTransformations];
 
         if (this.atomicTransformations.length > 0) {
             this.matrix = this.atomicTransformations[0].getMatrix();
@@ -48,6 +29,30 @@ export default class Transformation
 
         Object.freeze(this);
         Object.freeze(this.atomicTransformations);
+    }
+
+    static create()
+    {
+        var args;
+        if (args = Args.args(arguments, ["atomicTransformations", Array])) {
+            for (var i = 0; i < args.atomicTransformations.length; i++) {
+                if (!args.atomicTransformations[i] instanceof AtomicTransformation) {
+                    throw "Cannot construct a transformation from given arguments";
+                }
+            }
+            return new Transformation(args.atomicTransformations);
+        } else if (args = Args.args(arguments, ["transformation", Transformation])) {
+            return args.transformation;
+        } else if (args = Args.args(arguments, "string:string")) {
+            return StringConvertor.get().parseTransformation(args.string);
+        } else if (args = Args.args(arguments, ["matrix", TransformationMatrix])) {
+           return Transformation.matrix(args.matrix);
+        } else if (args = Args.args(arguments, "a:number", "b:number", "c:number", "d:number", "e:number", "f:number")) {
+            var matrix = new TransformationMatrix(args.a, args.b, args.c, args.d, args.e, args.f);
+            return Transformation.matrix(matrix);
+        } else {
+            throw "Cannot construct a transformation from given arguments";
+        }
     }
 
     static matrix()
@@ -307,10 +312,6 @@ export default class Transformation
         }
 
         return new Transformation(canonizedOperations);
-    }
-
-    interpolate(t2)
-    {
     }
 
     toString()

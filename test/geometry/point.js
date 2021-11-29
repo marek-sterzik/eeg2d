@@ -22,8 +22,8 @@ export default function PointTest() {
     });
 
     it("basic operations", function(){
-        var p1 = new Point(1, 2);
-        var v1 = new Vector(2, 1);
+        var p1 = Point.create(1, 2);
+        var v1 = Vector.create(2, 1);
 
         var p2 = p1.addVector(v1);
         assert.equal(p2.x, 3);
@@ -33,17 +33,17 @@ export default function PointTest() {
         assert.equal(v2.x, 2);
         assert.equal(v2.y, 1);
 
-        var p3 = new Point(4, 6);
+        var p3 = Point.create(4, 6);
         assert.approxEqual(p1.distanceTo(p3), 5);
         assert.approxEqual(p3.distanceTo(p1), 5);
         
-        assert.equal((new Point(0, 0)).isOrigin(), true);
-        assert.equal((new Point(0.00001, 0)).isOrigin(), false);
-        assert.equal((new Point(0, 0.00001)).isOrigin(), false);
-        assert.equal((new Point(1, 1)).isOrigin(), false);
+        assert.equal((Point.create(0, 0)).isOrigin(), true);
+        assert.equal((Point.create(0.00001, 0)).isOrigin(), false);
+        assert.equal((Point.create(0, 0.00001)).isOrigin(), false);
+        assert.equal((Point.create(1, 1)).isOrigin(), false);
 
         var angle = Angle.deg(90);
-        var p4 = new Point(3, 4);
+        var p4 = Point.create(3, 4);
         var p5 = p1.rot(p4, angle);
         assert.approxEqual(p5.x, -1);
         assert.approxEqual(p5.y, 4);
