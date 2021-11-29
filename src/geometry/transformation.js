@@ -93,10 +93,10 @@ export default class Transformation
             angle = args.angle;
             center = new Point(args.cx, args.cy);
         } else if (args = Args.args(arguments, "angle:number", ["center", Point, "default", null])) {
-            angle = new Angle(args.angle);
+            angle = Angle.create(args.angle);
             center = args.center;
         } else if (args = Args.args(arguments, "angle:number", "cx:number", ["cy", "number", "default", 0])) {
-            angle = new Angle(args.angle);
+            angle = Angle.create(args.angle);
             center = new Point(args.cx, args.cy);
         } else {
             throw "Cannot construct a rotation transformation from the given arguments";
@@ -191,7 +191,7 @@ export default class Transformation
             skewY = new Angle(args.skewY);
             center = args.center;
         } else if (args = Args.args(arguments, ["skewX", Angle], ["center", Point, "default", null])) {
-            skewX = new Angle(args.skewX);
+            skewX = args.skewX;
             skewY = Angle.zero();
             center = args.center;
         } else if (args = Args.args(arguments, "skewX:number", ["center", Point, "default", null])) {

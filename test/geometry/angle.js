@@ -4,12 +4,12 @@ import {Point, Vector, Angle} from "../../src/eeg2d.js";
 
 export default function AngleTest() {
     it("construction", function() {
-        var a1 = new Angle(2 * Math.PI);
+        var a1 = Angle.create(2 * Math.PI);
         assertAngle(a1, 360, "deg");
 
-        assertAngle(new Angle(a1), 360, "deg");
+        assertAngle(Angle.create(a1), 360, "deg");
 
-        assertAngle(new Angle("120"), 120, "deg");
+        assertAngle(Angle.create("120"), 120, "deg");
 
         assertAngle(Angle.zero(), 0, "deg");
 
@@ -80,7 +80,7 @@ export default function AngleTest() {
         assert.approxEqual(matrix.m[0][2], 0);
         assert.approxEqual(matrix.m[1][2], 0);
         
-        var t = angle.getRotation(new Point(2, 2));
+        var t = angle.getRotation(Point.create(2, 2));
         assert.approxEqual(t.matrix.m[0][0], 0);
         assert.approxEqual(t.matrix.m[1][0], 1);
         assert.approxEqual(t.matrix.m[0][1], -1);

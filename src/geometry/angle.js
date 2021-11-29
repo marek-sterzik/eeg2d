@@ -7,11 +7,17 @@ import Transformation from "./transformation.js";
 
 export default class Angle
 {
-    constructor()
+    constructor(radians)
+    {
+        this.radians = radians
+        Object.freeze(this);
+    }
+
+    static create()
     {
         var args;
         if (args = Args.args(arguments, "radians:number")) {
-            this.radians = args.radians;
+            return new Angle(args.radians);
         } else if (args = Args.args(arguments, ["angle", Angle])) {
             return args.angle;
         } else if (args = Args.args(arguments, "string:string")) {
@@ -19,7 +25,6 @@ export default class Angle
         } else {
             throw "Cannot construct an angle from given arguments";
         }
-        Object.freeze(this);
     }
 
     static zero()
@@ -37,7 +42,6 @@ export default class Angle
         return new Angle(Math.PI);
     }
 
-
     static right()
     {
         return new Angle(Math.PI / 2);
@@ -45,7 +49,7 @@ export default class Angle
 
     static rad(r)
     {
-        return new Angle(r * 1);
+        return new Angle(r);
     }
 
     static deg(d)
@@ -96,7 +100,7 @@ export default class Angle
     add(a2)
     {
         if (!(a2 instanceof Angle)) {
-            a2 = new Angle(a2);
+            a2 = Angle.create(a2);
         }
 
         return new Angle(this.radians + a2.radians);
@@ -105,7 +109,7 @@ export default class Angle
     sub(a2)
     {
         if (!(a2 instanceof Angle)) {
-            a2 = new Angle(a2);
+            a2 = Angle.create(a2);
         }
 
         return new Angle(this.radians - a2.radians);
@@ -144,15 +148,8 @@ export default class Angle
         return this.cos() / this.sin();
     }
 
-    getRotation() 
+    getRotation(center = Point.origin()) 
     {
-        var args;
-        var center;
-        if (args = Args.args(arguments, ["center", Point, "default", Point.origin()])) {
-            center = args.center;
-        } else {
-            throw "Cannot construct an angle from given arguments";
-        }
         return Transformation.rotate(this, center);
     }
 

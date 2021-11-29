@@ -6,12 +6,18 @@ import Vector from "./vector.js";
 
 export default class Point
 {
-    constructor()
+    constructor(x, y)
+    {
+        this.x = x;
+        this.y = y;
+        Object.freeze(this);
+    }
+
+    static create()
     {
         var args;
         if (args = Args.args(arguments, "x:number", "y:number")) {
-            this.x = args.x;
-            this.y = args.y;
+            return new Point(args.x, args.y);
         } else if (args = Args.args(arguments, ["point", Point])) {
             return args.point;
         } else if (args = Args.args(arguments, "string:string")) {
@@ -19,7 +25,6 @@ export default class Point
         } else {
             throw "Cannot construct vector from given arguments";
         }
-        Object.freeze(this);
     }
 
     static origin()

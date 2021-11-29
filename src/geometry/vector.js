@@ -7,12 +7,18 @@ import Transformation from "./transformation.js";
 
 export default class Vector
 {
-    constructor()
+    constructor(x, y)
+    {
+        this.x = x;
+        this.y = y;
+        Object.freeze(this);
+    }
+
+    static create()
     {
         var args;
         if (args = Args.args(arguments, "x:number", "y:number")) {
-            this.x = args.x;
-            this.y = args.y;
+            return new Vector(args.x, args.y);
         } else if (args = Args.args(arguments, ["vector", Vector])) {
             return args.vector;
         } else if (args = Args.args(arguments, "string:string")) {
@@ -20,7 +26,6 @@ export default class Vector
         } else {
             throw "Cannot construct vector from given arguments";
         }
-        Object.freeze(this);
     }
 
     static zero() 
@@ -43,16 +48,15 @@ export default class Vector
         return ZeroTest.isZero(this.x) && ZeroTest.isZero(this.y);
     }
 
-    mul()
+    mul(o2)
     {
-        var args;
-        if (args = Args.args(arguments, "scalar:number")) {
-            return new Vector (this.x * args.scalar, this.y * args.scalar);
-        } else if (args = Args.args(arguments, ["vector", Vector])) {
-            return (this.x * args.vector.x) + (this.y * args.vector.y);
-        } else {
-            throw "invalid arguments";
+        if (typeof o2 == "number") {
+            return new Vector (this.x * o2, this.y * o2);
         }
+        if (o2 instanceof Vector) {
+            return (this.x * o2.x) + (this.y * o2.y);
+        }
+        throw "invalid arguments";
     }
 
     add(v)
@@ -67,8 +71,8 @@ export default class Vector
 
     rot(angle)
     {
-        var cs = Math.cos(angle.rad());
-        var sn = Math.sin(angle.rad());
+        var cs = angle.cos();
+        var sn = angle.sin();
         return new Vector (cs * this.x - sn * this.y, sn * this.x + cs * this.y);
     }
 

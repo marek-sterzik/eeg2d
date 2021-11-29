@@ -4,15 +4,15 @@ import {Vector, Angle} from "../../src/eeg2d.js";
 
 export default function VectorTest() {
     it("construction", function() {
-        var v1 = new Vector(1, -3);
+        var v1 = Vector.create(1, -3);
         assert.equal(v1.x, 1);
         assert.equal(v1.y, -3);
 
-        var v2 = new Vector(v1);
+        var v2 = Vector.create(v1);
         assert.equal(v2.x, 1);
         assert.equal(v2.y, -3);
 
-        var v3 = new Vector("4, -8");
+        var v3 = Vector.create("4, -8");
         assert.equal(v3.x, 4);
         assert.equal(v3.y, -8);
 
@@ -22,8 +22,8 @@ export default function VectorTest() {
     });
 
     it("basic operations", function(){
-        var v1 = new Vector(1, 2);
-        var v2 = new Vector(2, 1);
+        var v1 = Vector.create(1, 2);
+        var v2 = Vector.create(2, 1);
 
         var v3 = v1.add(v2);
         assert.equal(v3.x, 3);
@@ -40,19 +40,19 @@ export default function VectorTest() {
         var x = v1.mul(v2);
         assert.equal(x, 4);
 
-        var v6 = new Vector(3, 4);
+        var v6 = Vector.create(3, 4);
         assert.approxEqual(v6.size(), 5);
 
         var v7 = v6.normalize();
         assert.approxEqual(v7.x, 3/5);
         assert.approxEqual(v7.y, 4/5);
 
-        assert.equal((new Vector(0, 0)).isZero(), true);
-        assert.equal((new Vector(0.00001, 0)).isZero(), false);
-        assert.equal((new Vector(0, 0.00001)).isZero(), false);
-        assert.equal((new Vector(1, 1)).isZero(), false);
+        assert.equal((Vector.create(0, 0)).isZero(), true);
+        assert.equal((Vector.create(0.00001, 0)).isZero(), false);
+        assert.equal((Vector.create(0, 0.00001)).isZero(), false);
+        assert.equal((Vector.create(1, 1)).isZero(), false);
 
-        assert.equal((new Vector(1, 2)).toString(), '(1, 2)');
+        assert.equal((Vector.create(1, 2)).toString(), '(1, 2)');
 
     });
 
