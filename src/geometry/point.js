@@ -13,27 +13,24 @@ export default class Point
         Object.freeze(this);
     }
 
-    static create()
-    {
+    static create = (...argList) => {
         var args;
-        if (args = Args.args(arguments, "x:number", "y:number")) {
+        if (args = Args.args(argList, "x:number", "y:number")) {
             return new Point(args.x, args.y);
-        } else if (args = Args.args(arguments, ["point", Point])) {
+        } else if (args = Args.args(argList, ["point", Point])) {
             return args.point;
-        } else if (args = Args.args(arguments, "string:string")) {
+        } else if (args = Args.args(argList, "string:string")) {
             return StringConvertor.get().parsePoint(args.string);
         } else {
             throw "Cannot construct vector from given arguments";
         }
     }
 
-    static origin()
-    {
+    static origin = () => {
         return new Point(0, 0);
     }
 
-    rot(o2, angle)
-    {
+    rot = (o2, angle) => {
         if (o2 instanceof Point) {
             o2 = this.vectorTo(o2);
         }
@@ -44,30 +41,25 @@ export default class Point
         return this.addVector(o2.rot(angle));
     }
 
-    addVector(v)
-    {
+    addVector = (v) => {
         return new Point (this.x + v.x, this.y + v.y);
     }
 
-    distanceTo(p2)
-    {
+    distanceTo = (p2) => {
         return this.vectorTo(p2).size();
     }
 
-    vectorTo(p2)
-    {
+    vectorTo = (p2) => {
         var x = p2.x - this.x;
         var y = p2.y - this.y;
         return new Vector(x, y);
     }
 
-    isOrigin()
-    {
+    isOrigin = () => {
         return ZeroTest.isZero(this.x) && ZeroTest.isZero(this.y);
     }
 
-    toString()
-    {
-        return StringConvertor.get.apply(StringConvertor, arguments).pointToString(this);
+    toString = (...argList) => {
+        return StringConvertor.get.apply(StringConvertor, argList).pointToString(this);
     }
 }

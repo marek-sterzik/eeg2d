@@ -14,42 +14,36 @@ export default class Vector
         Object.freeze(this);
     }
 
-    static create()
-    {
+    static create = (...argList) => {
         var args;
-        if (args = Args.args(arguments, "x:number", "y:number")) {
+        if (args = Args.args(argList, "x:number", "y:number")) {
             return new Vector(args.x, args.y);
-        } else if (args = Args.args(arguments, ["vector", Vector])) {
+        } else if (args = Args.args(argList, ["vector", Vector])) {
             return args.vector;
-        } else if (args = Args.args(arguments, "string:string")) {
+        } else if (args = Args.args(argList, "string:string")) {
             return StringConvertor.get().parseVector(args.string);
         } else {
             throw "Cannot construct vector from given arguments";
         }
     }
 
-    static zero() 
-    {
+    static zero = () => {
         return new Vector(0, 0);
     }
 
-    getTranslation()
-    {
+    getTranslation = () => {
         return Transformation.translate(this);
     }
 
-    size()
-    {
+    size = () => {
         return Math.sqrt(this.mul(this));
     }
 
-    isZero()
-    {
+    isZero = () => {
         return ZeroTest.isZero(this.x) && ZeroTest.isZero(this.y);
     }
 
-    mul(o2)
-    {
+    mul = (o2) => {
         if (typeof o2 == "number") {
             return new Vector (this.x * o2, this.y * o2);
         }
@@ -59,25 +53,21 @@ export default class Vector
         throw "invalid arguments";
     }
 
-    add(v)
-    {
+    add = (v) => {
         return new Vector (this.x + v.x, this.y + v.y);
     }
 
-    sub(v)
-    {
+    sub = (v) => {
         return new Vector (this.x - v.x, this.y - v.y);
     }
 
-    rot(angle)
-    {
+    rot = (angle) => {
         var cs = angle.cos();
         var sn = angle.sin();
         return new Vector (cs * this.x - sn * this.y, sn * this.x + cs * this.y);
     }
 
-    normalize()
-    {
+    normalize = () => {
         var size = this.size();
         if (size > 0) {
             return new Vector(this.x/size, this.y/size);
@@ -86,8 +76,7 @@ export default class Vector
         }
     }
 
-    angleTo(v)
-    {
+    angleTo = (v) => {
         var angleRadians = Math.acos(this.mul(v) / (this.size() * v.size()));
         if (this.x * v.y - this.y * v.x < 0) {
             angleRadians = 2*Math.PI - angleRadians;
@@ -96,8 +85,7 @@ export default class Vector
         return Angle.rad(angleRadians);
     }
 
-    toString()
-    {
-        return StringConvertor.get.apply(StringConvertor, arguments).vectorToString(this);
+    toString = (...argList) => {
+        return StringConvertor.get.apply(StringConvertor, argList).vectorToString(this);
     }
 }

@@ -13,92 +13,76 @@ export default class Angle
         Object.freeze(this);
     }
 
-    static create()
-    {
+    static create = (...argList) => {
         var args;
-        if (args = Args.args(arguments, "radians:number")) {
+        if (args = Args.args(argList, "radians:number")) {
             return new Angle(args.radians);
-        } else if (args = Args.args(arguments, ["angle", Angle])) {
+        } else if (args = Args.args(argList, ["angle", Angle])) {
             return args.angle;
-        } else if (args = Args.args(arguments, "string:string")) {
+        } else if (args = Args.args(argList, "string:string")) {
             return StringConvertor.get().parseAngle(args.string);
         } else {
             throw "Cannot construct an angle from given arguments";
         }
     }
 
-    static zero()
-    {
+    static zero = () => {
         return new Angle(0);
     }
 
-    static full()
-    {
+    static full = () => {
         return new Angle(2 * Math.PI);
     }
 
-    static straight()
-    {
+    static straight = () => {
         return new Angle(Math.PI);
     }
 
-    static right()
-    {
+    static right = () => {
         return new Angle(Math.PI / 2);
     }
 
-    static rad(r)
-    {
+    static rad = (r) => {
         return new Angle(r);
     }
 
-    static deg(d)
-    {
+    static deg = (d) => {
         return new Angle(d * Math.PI / 180);
     }
 
-    static grad(g)
-    {
+    static grad = (g) => {
         return new Angle(g * Math.PI / 200);
     }
 
-    static turn(t)
-    {
+    static turn = (t) => {
         return new Angle(t * 2 * Math.PI);
     }
 
-    static atan(x)
-    {
+    static atan = (x) => {
         return new Angle(Math.atan(x));
     }
 
-    rad()
-    {
+    rad = () => {
         return this.radians;
     }
 
-    deg()
-    {
+    deg = () => {
         return this.radians * 180 / Math.PI;
     }
 
-    grad()
-    {
+    grad = () => {
         return this.radians * 200 / Math.PI;
     }
 
-    turn()
-    {
+    turn = () => {
         return this.radians / (2 * Math.PI);
     }
 
-    mul(c)
-    {
+    mul = (c) => {
         return new Angle(this.radians * c);
     }
 
-    add(a2)
-    {
+    add = (a2) => {
         if (!(a2 instanceof Angle)) {
             a2 = Angle.create(a2);
         }
@@ -106,8 +90,7 @@ export default class Angle
         return new Angle(this.radians + a2.radians);
     }
 
-    sub(a2)
-    {
+    sub = (a2) => {
         if (!(a2 instanceof Angle)) {
             a2 = Angle.create(a2);
         }
@@ -115,8 +98,7 @@ export default class Angle
         return new Angle(this.radians - a2.radians);
     }
 
-    normalize()
-    {
+    normalize = () => {
         if (this.radians < 0) {
             var n = Math.ceil((- this.radians) / (2 * Math.PI));
             return new Angle(this.radians + 2 * n * Math.PI);
@@ -128,38 +110,31 @@ export default class Angle
         }
     }
 
-    sin()
-    {
+    sin = () => {
         return Math.sin(this.radians);
     }
 
-    cos()
-    {
+    cos = () => {
         return Math.cos(this.radians);
     }
 
-    tan()
-    {
+    tan = () => {
         return Math.tan(this.radians);
     }
 
-    cotan()
-    {
+    cotan = () => {
         return this.cos() / this.sin();
     }
 
-    getRotation(center = Point.origin()) 
-    {
+    getRotation = (center = Point.origin()) => {
         return Transformation.rotate(this, center);
     }
 
-    isZero()
-    {
+    isZero = () => {
         return ZeroTest.isZero(this.radians);
     }
 
-    toString()
-    {
-        return StringConvertor.get.apply(StringConvertor, arguments).angleToString(this);
+    toString = (...argList) => {
+        return StringConvertor.get.apply(StringConvertor, argList).angleToString(this);
     }
 }

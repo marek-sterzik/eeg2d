@@ -31,23 +31,22 @@ export default class Transformation
         Object.freeze(this.atomicTransformations);
     }
 
-    static create()
-    {
+    static create = (...argList) => {
         var args;
-        if (args = Args.args(arguments, ["atomicTransformations", Array])) {
+        if (args = Args.args(argList, ["atomicTransformations", Array])) {
             for (var i = 0; i < args.atomicTransformations.length; i++) {
                 if (!args.atomicTransformations[i] instanceof AtomicTransformation) {
                     throw "Cannot construct a transformation from given arguments";
                 }
             }
             return new Transformation(args.atomicTransformations);
-        } else if (args = Args.args(arguments, ["transformation", Transformation])) {
+        } else if (args = Args.args(argList, ["transformation", Transformation])) {
             return args.transformation;
-        } else if (args = Args.args(arguments, "string:string")) {
+        } else if (args = Args.args(argList, "string:string")) {
             return StringConvertor.get().parseTransformation(args.string);
-        } else if (args = Args.args(arguments, ["matrix", TransformationMatrix])) {
+        } else if (args = Args.args(argList, ["matrix", TransformationMatrix])) {
            return Transformation.matrix(args.matrix);
-        } else if (args = Args.args(arguments, "a:number", "b:number", "c:number", "d:number", "e:number", "f:number")) {
+        } else if (args = Args.args(argList, "a:number", "b:number", "c:number", "d:number", "e:number", "f:number")) {
             var matrix = new TransformationMatrix(args.a, args.b, args.c, args.d, args.e, args.f);
             return Transformation.matrix(matrix);
         } else {
@@ -55,13 +54,12 @@ export default class Transformation
         }
     }
 
-    static matrix()
-    {
+    static matrix = (...argList) => {
         var args;
         var matrix;
-        if (args = Args.args(arguments, ["matrix", TransformationMatrix])) {
+        if (args = Args.args(argList, ["matrix", TransformationMatrix])) {
             matrix = args.matrix
-        } else if (args = Args.args(arguments, "a:number", "b:number", "c:number", "d:number", "e:number", "f:number")) {
+        } else if (args = Args.args(argList, "a:number", "b:number", "c:number", "d:number", "e:number", "f:number")) {
             matrix = new TransformationMatrix(args.a, args.b, args.c, args.d, args.e, args.f);
         } else {
             throw "Cannot construct a matrix transformation from the given arguments";
@@ -71,13 +69,12 @@ export default class Transformation
         return new Transformation([at]);
     }
 
-    static translate()
-    {
+    static translate = (...argList) => {
         var args;
         var v;
-        if (args = Args.args(arguments, ["v", Vector])) {
+        if (args = Args.args(argList, ["v", Vector])) {
             v = args.v
-        } else if (args = Args.args(arguments, "x:number", ["y", "number", "default", 0])) {
+        } else if (args = Args.args(argList, "x:number", ["y", "number", "default", 0])) {
             v = new Vector(args.x, args.y);
         } else {
             throw "Cannot construct a translation transformation from the given arguments";
@@ -87,20 +84,19 @@ export default class Transformation
         return new Transformation([at]);
     }
 
-    static rotate()
-    {
+    static rotate = (...argList) => {
         var args;
         var angle, center;
-        if (args = Args.args(arguments, ["angle", Angle], ["center", Point, "default", null])) {
+        if (args = Args.args(argList, ["angle", Angle], ["center", Point, "default", null])) {
             angle = args.angle;
             center = args.center;
-        } else if (args = Args.args(arguments, ["angle", Angle], "cx:number", ["cy", "number", "default", 0])) {
+        } else if (args = Args.args(argList, ["angle", Angle], "cx:number", ["cy", "number", "default", 0])) {
             angle = args.angle;
             center = new Point(args.cx, args.cy);
-        } else if (args = Args.args(arguments, "angle:number", ["center", Point, "default", null])) {
+        } else if (args = Args.args(argList, "angle:number", ["center", Point, "default", null])) {
             angle = Angle.create(args.angle);
             center = args.center;
-        } else if (args = Args.args(arguments, "angle:number", "cx:number", ["cy", "number", "default", 0])) {
+        } else if (args = Args.args(argList, "angle:number", "cx:number", ["cy", "number", "default", 0])) {
             angle = Angle.create(args.angle);
             center = new Point(args.cx, args.cy);
         } else {
@@ -115,15 +111,14 @@ export default class Transformation
         return new Transformation([at]);
     }
 
-    static scale()
-    {
+    static scale = (...argList) => {
         var args;
         var a, b, center;
-        if (args = Args.args(arguments, "a:number", ["b", "number", "default", null], ["center", Point, "default", null])) {
+        if (args = Args.args(argList, "a:number", ["b", "number", "default", null], ["center", Point, "default", null])) {
             a = args.a;
             b = (args.b === null) ? args.a : args.b;
             center = args.center;
-        } else if (args = Args.args(arguments, "a:number", ["center", Point, "default", null])) {
+        } else if (args = Args.args(argList, "a:number", ["center", Point, "default", null])) {
             a = args.a;
             b = args.a;
             center = args.center;
@@ -139,14 +134,13 @@ export default class Transformation
         return new Transformation([at]);
     }
 
-    static skewX()
-    {
+    static skewX = (...argList) => {
         var args;
         var angle, center;
-        if (args = Args.args(arguments, "angle:number", ["center", Point, "default", null])) {
+        if (args = Args.args(argList, "angle:number", ["center", Point, "default", null])) {
             angle = new Angle(args.angle);
             center = args.center;
-        } else if (args = Args.args(arguments, ["angle", Angle], ["center", Point, "default", null])) {
+        } else if (args = Args.args(argList, ["angle", Angle], ["center", Point, "default", null])) {
             angle = args.angle;
             center = args.center;
         } else {
@@ -161,14 +155,13 @@ export default class Transformation
         return new Transformation([at]);
     }
 
-    static skewY()
-    {
+    static skewY = (...argList) => {
         var args;
         var angle, center;
-        if (args = Args.args(arguments, "angle:number", ["center", Point, "default", null])) {
+        if (args = Args.args(argList, "angle:number", ["center", Point, "default", null])) {
             angle = new Angle(args.angle);
             center = args.center;
-        } else if (args = Args.args(arguments, ["angle", Angle], ["center", Point, "default", null])) {
+        } else if (args = Args.args(argList, ["angle", Angle], ["center", Point, "default", null])) {
             angle = args.angle;
             center = args.center;
         } else {
@@ -183,23 +176,22 @@ export default class Transformation
         return new Transformation([at]);
     }
 
-    static skew()
-    {
+    static skew = (...argList) => {
         var args;
         var skewX, skewY, center;
-        if (args = Args.args(arguments, ["skewX", Angle], ["skewY", Angle, "default", null], ["center", Point, "default", null])) {
+        if (args = Args.args(argList, ["skewX", Angle], ["skewY", Angle, "default", null], ["center", Point, "default", null])) {
             skewX = args.skewX;
             skewY = args.skewY;
             center = args.center;
-        } else if (args = Args.args(arguments, "skewX:number", ["skewY", "number", "default", 0], ["center", Point, "default", null])) {
+        } else if (args = Args.args(argList, "skewX:number", ["skewY", "number", "default", 0], ["center", Point, "default", null])) {
             skewX = new Angle(args.skewX);
             skewY = new Angle(args.skewY);
             center = args.center;
-        } else if (args = Args.args(arguments, ["skewX", Angle], ["center", Point, "default", null])) {
+        } else if (args = Args.args(argList, ["skewX", Angle], ["center", Point, "default", null])) {
             skewX = args.skewX;
             skewY = Angle.zero();
             center = args.center;
-        } else if (args = Args.args(arguments, "skewX:number", ["center", Point, "default", null])) {
+        } else if (args = Args.args(argList, "skewX:number", ["center", Point, "default", null])) {
             skewX = new Angle(args.skewX);
             skewY = Angle.zero();
             center = args.center;
@@ -219,67 +211,66 @@ export default class Transformation
         return new Transformation([at]);
     }
 
-    static identity()
-    {
+    static identity = () => {
         return new Transformation([]);
     }
 
-    getAtomicTransformations()
-    {
+    getAtomicTransformations = () => {
         return this.atomicTransformations;
     }
 
-    getMatrix()
-    {
+    getMatrix = () => {
         return this.matrix;
     }
 
-    compose(t2)
-    {
+    compose = (t2) => {
         return Transformation.matrix(this.getMatrix().mul(t2.getMatrix()));
     }
 
-    concat(t2)
-    {
+    concat = (t2) => {
         return new Transformation(this.atomicTransformations.concat(t2.atomicTransformations))
     }
 
-    join(t2)
-    {
+    join = (t2) => {
         return new Transformation(this.atomicTransformations.concat(t2.atomicTransformations))
     }
 
-    flatten()
-    {
+    flatten = () => {
         return Transformation.matrix(this.getMatrix());
     }
 
-    inv()
-    {
+    inv = () => {
         return Transformation.matrix(this.getMatrix().inv())
     }
 
-    transformPoint(p)
-    {
+    transformPoint = (p) => {
         return this.getMatrix().transformPoint(p);
     }
 
-    transformVector(v)
-    {
+    transformVector = (v) => {
         return this.getMatrix().transformVector(v);
     }
 
-    decompose()
-    {
+    transform = (pv) => {
+        if (pv instanceof Point) {
+            return this.transformPoint(pv);
+        }
+        if (pv instanceof Vector) {
+            return this.transformVector(pv);
+        }
+
+        throw "Invalid argument"
+    }
+
+    decompose = (...argList) => {
         var decomposer = new TransformationDecomposer();
-        decomposer.setParams.apply(decomposer, arguments);
+        decomposer.setParams.apply(decomposer, argList);
         var atomicOperations = decomposer.decompose(this.getMatrix()).map(op => AtomicTransformation.instantiate(op));
 
         return new Transformation(atomicOperations);
     }
 
-    canonize()
-    {
+    canonize = () => {
         var canonizedOperations = [];
         var empty = true;
         for(var i = 0; i < this.atomicTransformations.length; i++) {
@@ -312,8 +303,7 @@ export default class Transformation
         return new Transformation(canonizedOperations);
     }
 
-    toString()
-    {
-        return StringConvertor.get.apply(StringConvertor, arguments).transformationToString(this);
+    toString = (...argList) => {
+        return StringConvertor.get.apply(StringConvertor, argList).transformationToString(this);
     }
 }

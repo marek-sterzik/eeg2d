@@ -167,11 +167,16 @@ export default () => {
         var t = Transformation.create("translate(1, 2) rotate(45)");
 
         assertPointEqual(t.transformPoint(p0), p0x);
+        assertPointEqual(t.transform(p0), p0x);
         assertPointEqual(t.transformPoint(p1), p1x);
+        assertPointEqual(t.transform(p1), p1x);
         assertPointEqual(t.transformPoint(p2), p2x);
+        assertPointEqual(t.transform(p2), p2x);
 
         assertVectorEqual(t.transformVector(b1), b1x);
+        assertVectorEqual(t.transform(b1), b1x);
         assertVectorEqual(t.transformVector(b2), b2x);
+        assertVectorEqual(t.transform(b2), b2x);
     });
 
     it("decomposition", () => {
@@ -233,11 +238,13 @@ const assertMatrixEqual = (matrix, matrix2) => {
 }
 
 const assertPointEqual = (point, point2) => {
+    assert.ok(point instanceof Point, "Point expected");
     assert.approxEqual(point.x, point2.x);
     assert.approxEqual(point.y, point2.y);
 }
 
 const assertVectorEqual = (vector, vector2) => {
+    assert.ok(vector instanceof Vector, "Vector expected");
     assert.approxEqual(vector.x, vector2.x);
     assert.approxEqual(vector.y, vector2.y);
 }
