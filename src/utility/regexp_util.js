@@ -17,8 +17,7 @@ export default class RegexpUtil
         this.trimToken = new RegExp(trimPattern, newFlags);
     }
 
-    split2(string)
-    {
+    split2 = (string) => {
         var match = string.match(this.splitPattern);
         if (!match) {
             return [string];
@@ -27,8 +26,7 @@ export default class RegexpUtil
         return [string.replace(this.splitPattern, ''), match[match.length - 1]];
     }
 
-    readToken(string)
-    {
+    readToken = (string) => {
         var matches = string.match(this.readTokenPattern);
         if (!matches) {
             return [null, string];
@@ -36,8 +34,7 @@ export default class RegexpUtil
         return [matches[1], matches[matches.length - 1]];
     }
 
-    readTokenFromEnd(string)
-    {
+    readTokenFromEnd = (string) => {
         var match = string.match(this.trimToken);
         if (!match) {
             return [null, string];
@@ -45,8 +42,7 @@ export default class RegexpUtil
         return [match[1], string.replace(this.trimToken, '')];
     }
 
-    trim(string)
-    {
+    trim = (string) => {
         var s;
         [s, string] = this.readToken(string);
         [s, string] = this.readTokenFromEnd(string);
@@ -54,8 +50,7 @@ export default class RegexpUtil
         return string;
     }
 
-    matchAll(string)
-    {
+    matchAll = (string) => {
         var m = this.readToken(string);
         return (m[0] !== null && m[1] === '');
     }
@@ -71,8 +66,7 @@ class StringUtil
         this.pattern = pattern;
     }
 
-    split2(string)
-    {
+    split2 = (string) => {
         var index = string.indexOf(this.pattern);
         if (index < 0) {
             return [string];
@@ -80,8 +74,7 @@ class StringUtil
         return [string.substr(0, index), string.substr(index + this.pattern.length)];
     }
 
-    readToken(string)
-    {
+    readToken = (string) => {
         if (string.substr(0, this.pattern.length) === this.pattern) {
             return [this.pattern, string.substr(this.pattern.length)];
         } else {
@@ -89,8 +82,7 @@ class StringUtil
         }
     }
 
-    readTokenFromEnd(string)
-    {
+    readTokenFromEnd = (string) => {
         if (
             string.length > this.pattern.length &&
             string.substr(string.length - this.pattern.length, this.pattern.length) === this.pattern
@@ -101,8 +93,7 @@ class StringUtil
         return [null, string];
     }
 
-    trim(string)
-    {
+    trim = (string) => {
         var s;
         [s, string] = this.readToken(string);
         [s, string] = this.readTokenFromEnd(string);
@@ -110,8 +101,7 @@ class StringUtil
         return string;
     }
 
-    matchAll(string)
-    {
+    matchAll = (string) => {
         var m = this.readToken(string);
         return (m[0] !== null && m[1] === '');
     }

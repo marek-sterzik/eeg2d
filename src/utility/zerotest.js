@@ -1,12 +1,10 @@
 export default class ZeroTest
 {
-    static isZero(number)
-    {
+    static isZero = (number) => {
         return (number == 0) || Math.abs(number) < zeroTestEpsilon;
     }
 
-    static isEqual(a, b)
-    {
+    static isEqual = (a, b) => {
         return this.isZero(a-b);
     }
 }

@@ -8,21 +8,19 @@ import {StringConvertorDefaultParams, Reference} from "../string_convertor_defau
 
 export default class StringConvertor
 {
-    static get()
-    {
+    static get = (...argList) => {
         var defaultConvertor = defaultStringConvertor;
 
 
-        if (arguments.length >= 1) {
-            var params = defaultConvertor.params.merge(arguments[0]);
+        if (argList.length >= 1) {
+            var params = defaultConvertor.params.merge(argList[0]);
             defaultConvertor = new StringConvertor(params);
         }
 
         return defaultConvertor;
     }
 
-    static setDefault(stringConvertor)
-    {
+    static setDefault = (stringConvertor) => {
         var oldStringConvertor = defaultStringConvertor;
 
         if (stringConvertor === null) {
@@ -31,11 +29,6 @@ export default class StringConvertor
         defaultStringConvertor = stringConvertor;
 
         return oldStringConvertor;
-    }
-
-    setDefault()
-    {
-        return StringConvertor.setDefault(this);
     }
 
     constructor(params)
@@ -49,43 +42,39 @@ export default class StringConvertor
         this.params = params;
     }
 
-    parseVector(string)
-    {
+    setDefault = () => {
+        return StringConvertor.setDefault(this);
+    }
+
+    parseVector = (string) => {
         return this.params.invokeParse(VectorConvertor, string);
     }
 
-    vectorToString(vector)
-    {
+    vectorToString = (vector) => {
         return this.params.invokeToString(VectorConvertor, vector);
     }
 
-    parsePoint(string)
-    {
+    parsePoint = (string) => {
         return this.params.invokeParse(PointConvertor, string);
     }
 
-    pointToString(point)
-    {
+    pointToString = (point) => {
         return this.params.invokeToString(PointConvertor, point);
     }
 
-    parseAngle(string)
-    {
+    parseAngle = (string) => {
         return this.params.invokeParse(AngleConvertor, string);
     }
 
-    angleToString(angle)
-    {
+    angleToString = (angle) => {
         return this.params.invokeToString(AngleConvertor, angle);
     }
 
-    parseTransformation(string)
-    {
+    parseTransformation = (string) => {
         return this.params.invokeParse(TransformationConvertor, string);
     }
 
-    transformationToString(transformation)
-    {
+    transformationToString = (transformation) => {
         return this.params.invokeToString(TransformationConvertor, transformation);
     }
 }
@@ -97,13 +86,11 @@ class StringConvertorParams
         this._params = params;
     }
 
-    merge(params)
-    {
+    merge = (params) => {
         return new StringConvertorParams(Object.assign({}, this._params, params));
     }
 
-    invokeParse(convertor, string)
-    {
+    invokeParse = (convertor, string) => {
         var fn = this._getInvokedFunction(convertor, 'parse');
         var object = fn(string);
         if (!convertor.accepts(object)) {
@@ -112,8 +99,7 @@ class StringConvertorParams
         return object;
     }
 
-    invokeToString(convertor, object)
-    {
+    invokeToString = (convertor, object) => {
         var fn = this._getInvokedFunction(convertor, 'toString');
         if (!convertor.accepts(object)) {
             throw "Convertor does not accept this object for toString conversion";
@@ -123,13 +109,11 @@ class StringConvertorParams
         return string;
     }
 
-    get(param)
-    {
+    get = (param) => {
         return this._get(param);
     }
 
-    _getInvokedFunction(convertor, operation)
-    {
+    _getInvokedFunction = (convertor, operation) => {
         var fnName = "fn." + convertor.getName() + "." + operation;
         var fn = this.get(fnName);
         var fnThis = null;
@@ -142,8 +126,7 @@ class StringConvertorParams
         return object => fn.call(fnThis, object, params, fnName);
     }
 
-    _get(param)
-    {
+    _get = (param) => {
         if (param in this._params) {
             return this._params[param];
         }
