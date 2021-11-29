@@ -5,8 +5,7 @@ import RegexpUtil from "../utility/regexp_util.js"
 
 export default class CoupleConvertor extends Convertor
 {
-    static parse(string, params, fnName)
-    {   
+    static parse(string, params, fnName) {
         var couple = this.parseStringCouple(string, params);
         if (couple === null) {
             throw "cannot parse " + this.getName();

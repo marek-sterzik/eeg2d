@@ -1,23 +1,19 @@
 export default class Convertor
 {
 
-    static getName()
-    {
+    static getName = () => {
         throw "This method is abstract";
     }
 
-    static accepts(object)
-    {
+    static accepts = (object) => {
         return true;
     }
 
-    static parse(string, params, fnName)
-    {
+    static parse = (string, params, fnName) => {
         throw "This method is abstract";
     }
 
-    static toString(object, params, fnName)
-    {
+    static toString = (object, params, fnName) => {
         throw "This method is abstract";
     }
 }

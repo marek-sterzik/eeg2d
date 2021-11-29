@@ -10,18 +10,15 @@ import RegexpUtil from "../utility/regexp_util.js"
 
 export default class TransformationConvertor extends Convertor
 {
-    static getName()
-    {
+    static getName = () => {
         return 'transformation';
     }
 
-    static accepts(object)
-    {
+    static accepts = (object) => {
         return (object instanceof Transformation);
     }
 
-    static parse(string, params, fnName)
-    {
+    static parse = (string, params, fnName) => {
         var transformationList = this.parseTransformationList(string, params);
 
         if (transformationList === null) {
@@ -61,8 +58,7 @@ export default class TransformationConvertor extends Convertor
         return new Transformation(transformationList);
     }
 
-    static parseTransformationList(string, params)
-    {
+    static parseTransformationList = (string, params) => {
         var transformations = [];
         string = string.trim();
 
@@ -138,8 +134,7 @@ export default class TransformationConvertor extends Convertor
         return transformations;
     }
 
-    static parseTransformationArgs(argString, space, fieldDelimeter)
-    {
+    static parseTransformationArgs = (argString, space, fieldDelimeter) => {
         var splitted = [];
         var ar = [argString];
 
@@ -156,8 +151,7 @@ export default class TransformationConvertor extends Convertor
         return splitted;
     }
 
-    static atomicTransformationToString(atomicTransformation, params)
-    {
+    static atomicTransformationToString = (atomicTransformation, params) => {
         var args, argsConvertors;
         
         var canonical = atomicTransformation.isCanonical();
@@ -184,8 +178,7 @@ export default class TransformationConvertor extends Convertor
 
     }
 
-    static toString(transformation, params, fnName)
-    {
+    static toString = (transformation, params, fnName) => {
         var THIS = this;
         if (params.get('transformation.output.convertToCanonicalForm')) {
             transformation = transformation.canonize();

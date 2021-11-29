@@ -7,23 +7,19 @@ import Angle from "../geometry/angle.js";
 
 export default class AngleConvertor extends Convertor
 {
-    static getName()
-    {
+    static getName = () => {
         return 'angle';
     }
 
-    static accepts(object)
-    {
+    static accepts = (object) => {
         return (object instanceof Angle);
     }
 
-    static getAllAvailableUnits()
-    {
+    static getAllAvailableUnits = () => {
         return ['deg', 'rad', 'grad', 'turn'];
     }
 
-    static parse(string, params, fnName)
-    {
+    static parse = (string, params, fnName) => {
         var space = new RegexpUtil(params.get('angle.input.space'));
         var caseSensitive = params.get('angle.input.unitsCaseSensitive');
         var units = params.get('angle.units');
@@ -70,8 +66,7 @@ export default class AngleConvertor extends Convertor
         return Angle[unitFound].call(Angle, number);
     }
 
-    static findUnit(string, unit, caseSensitive)
-    {
+    static findUnit = (string, unit, caseSensitive) => {
         if (string.length < unit.length) {
             return null;
         }
@@ -90,8 +85,7 @@ export default class AngleConvertor extends Convertor
         return string.substr(0, string.length - unit.length);
     }
 
-    static toString(angle, params, fnName)
-    {
+    static toString = (angle, params, fnName) => {
         var angleUnit = this.getRealUnit(params.get('angle.output.unit'), false);
         var angleDefaultUnit = this.getRealUnit(params.get('angle.defaultUnit'), true);
         var number = null;
@@ -116,8 +110,7 @@ export default class AngleConvertor extends Convertor
         return string;
     }
 
-    static getAngleOutputUnit(unit, params)
-    {
+    static getAngleOutputUnit = (unit, params) => {
         var units = params.get('angle.units');
         if (unit in units) {
             return units[unit][0];
@@ -126,8 +119,7 @@ export default class AngleConvertor extends Convertor
         return unit;
     }
 
-    static getRealUnit(u, allowEmpty)
-    {
+    static getRealUnit = (u, allowEmpty) => {
         var availableUnits = this.getAllAvailableUnits();
         var found = false;
         for (var i = 0; i < availableUnits.length; i++) {

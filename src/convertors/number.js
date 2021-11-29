@@ -4,18 +4,15 @@ import RegexpUtil from "../utility/regexp_util.js"
 
 export default class NumberConvertor extends Convertor
 {
-    static getName()
-    {
+    static getName = () => {
         return 'number';
     }
 
-    static accepts(object)
-    {
+    static accepts = (object) => {
         return (typeof object === 'number');
     }
 
-    static parse(string, params, fnName)
-    {
+    static parse = (string, params, fnName) => {
         var space = new RegexpUtil(params.get('number.input.space'));
         
         string = space.trim(string);
@@ -27,8 +24,7 @@ export default class NumberConvertor extends Convertor
         return number;
     }
 
-    static toString(number, params, fnName)
-    {
+    static toString = (number, params, fnName) => {
         var percision = params.get('number.output.percision');
         if (percision !== null) {
             number = number.toFixed(percision).replace(/\.?0+$/, '');
