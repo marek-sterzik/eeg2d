@@ -9,3 +9,23 @@ The current state of the project is just to provide a preview and to test npm pu
 yet for this library and no examples how to use it. But hope both will be added soon. The intention is to document the
 library as soon as possible.
 
+
+# TODO
+
+* complete tests for transformation <-> string conversions
+    * transformation.output.transformationDelimeter
+    * transformation.output.fieldDelimeter
+    * transformation.output.parenthesis
+    * transformation.output.convertToCanonicalForm
+    * transformation.output.nonCanonicalSuffix
+    * transformation.input.space
+    * transformation.input.identifier
+    * transformation.input.transformationDelimeter
+    * transformation.input.fieldDelimeter
+    * transformation.input.nonCanonicalSuffix
+    * transformation.input.parenthesis
+    * fn.transformation.parse
+    * fn.transformation.toString
+* other tests?
+* write documentation
+* transformation interpolation
