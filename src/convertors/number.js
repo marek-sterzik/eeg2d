@@ -25,9 +25,13 @@ export default class NumberConvertor extends Convertor
     }
 
     static toString = (number, params, fnName) => {
-        var percision = params.get('number.output.percision');
-        if (percision !== null) {
-            number = number.toFixed(percision).replace(/\.?0+$/, '');
+        var precision = params.get('number.output.precision');
+        if (precision !== null) {
+            var outputZeros = params.get('number.output.outputZeroTrailingDecimals');
+            number = number.toFixed(precision);
+            if (!outputZeros) {
+                number = number.replace(/\.?0+$/, '');
+            }
         }
         return "" + number;
     }

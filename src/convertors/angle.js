@@ -25,8 +25,9 @@ export default class AngleConvertor extends Convertor
         var units = params.get('angle.units');
         var availableUnits = this.getAllAvailableUnits();
         var unitFound = null;
+        var unitVariantFound = null;
         var newString;
-        
+
         string = space.trim(string);
 
         for (var i = 0; i < availableUnits.length; i++) {
@@ -35,14 +36,16 @@ export default class AngleConvertor extends Convertor
                 for (var j = 0; j < unitVariants.length; j++) {
                     var s = this.findUnit(string, unitVariants[j], caseSensitive);
                     if (s !== null) {
-                        if (unitFound === null || availableUnits[i].length > unitFound.length) {
+                        if (unitVariantFound === null || unitVariants[j].length > unitVariantFound.length) {
                             unitFound = availableUnits[i];
+                            unitVariantFound = unitVariants[j];
                             newString = s;
                         }
                     }
                 }
             }
         }
+
 
         if (unitFound !== null) {
             string = space.trim(newString);
@@ -73,7 +76,7 @@ export default class AngleConvertor extends Convertor
 
         var parsedUnit = string.substr(string.length - unit.length, unit.length);
         
-        if (caseSensitive) {
+        if (!caseSensitive) {
             unit = unit.toLowerCase();
             parsedUnit = parsedUnit.toLowerCase();
         }

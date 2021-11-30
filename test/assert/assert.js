@@ -8,13 +8,18 @@ export default class
         assert.ok(value, message);
     }
 
-    static equal(a, b)
+    static equal(...args)
     {
-        return assert.equal(a, b);
+        return assert.equal(...args);
     }
 
-    static approxEqual(a, b)
+    static deepStrictEqual(...args)
     {
-        return assert(ZeroTest.isEqual(a, b));
+        return assert.deepStrictEqual(...args)
+    }
+
+    static approxEqual(a, b, msg)
+    {
+        return assert.ok(ZeroTest.isEqual(a, b), msg);
     }
 }

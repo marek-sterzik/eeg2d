@@ -11,7 +11,7 @@ export default () => {
         //this config is necessary for assertTrEqual working properly
         var config = {
             'transformation.output.convertToCanonicalForm': false,
-            'number.output.percision': 4,
+            'number.output.precision': 4,
         };
         defaultStringConvertor = StringConvertor.get(config).setDefault();
     });

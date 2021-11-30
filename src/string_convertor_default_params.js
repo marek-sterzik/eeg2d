@@ -20,8 +20,11 @@ export let StringConvertorDefaultParams = {
     // specify if the unit reader is case sensitive or not
     'angle.input.unitsCaseSensitive': true,
 
-    // the percision to be used to output numbers (number or null)
-    'number.output.percision': null,
+    // the precision to be used to output numbers (number or null)
+    'number.output.precision': null,
+    
+    // if precision is set, output trailing zero decimals
+    'number.output.outputZeroTrailingDecimals': false,
 
     // space accepted arround numbers
     'number.input.space': /\s+/,

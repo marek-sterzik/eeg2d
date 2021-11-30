@@ -8,16 +8,15 @@ import {StringConvertorDefaultParams, Reference} from "../string_convertor_defau
 
 export default class StringConvertor
 {
-    static get = (...argList) => {
-        var defaultConvertor = defaultStringConvertor;
-
-
-        if (argList.length >= 1) {
-            var params = defaultConvertor.params.merge(argList[0]);
-            defaultConvertor = new StringConvertor(params);
+    static get = (def) => {
+        if (def instanceof StringConvertor) {
+            return def
+        }
+        if (def === undefined || def === null) {
+            return defaultStringConvertor
         }
 
-        return defaultConvertor;
+        return new StringConvertor(defaultStringConvertor.params.merge(def));
     }
 
     static setDefault = (stringConvertor) => {
