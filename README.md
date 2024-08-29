@@ -12,20 +12,5 @@ library as soon as possible.
 
 # TODO
 
-* complete tests for transformation <-> string conversions
-    * transformation.output.transformationDelimeter
-    * transformation.output.fieldDelimeter
-    * transformation.output.parenthesis
-    * transformation.output.convertToCanonicalForm
-    * transformation.output.nonCanonicalSuffix
-    * transformation.input.space
-    * transformation.input.identifier
-    * transformation.input.transformationDelimeter
-    * transformation.input.fieldDelimeter
-    * transformation.input.nonCanonicalSuffix
-    * transformation.input.parenthesis
-    * fn.transformation.parse
-    * fn.transformation.toString
-* other tests?
 * write documentation
 * transformation interpolation

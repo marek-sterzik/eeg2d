@@ -23,6 +23,11 @@ export default class TransformMatrix
         Object.freeze(this.m[1]);
     }
 
+    data()
+    {
+        return [this.m[0][0], this.m[1][0], this.m[0][1], this.m[1][1], this.m[0][2], this.m[1][2]]
+    }
+
     inv = () => {
         var mx = [
             this.m[0].concat([1, 0, 0]),
