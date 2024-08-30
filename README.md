@@ -181,3 +181,4 @@ transformation.toString()          // convert transformation to string
 # TODO
 
 * transformation interpolation
+* better string conversion documentation
