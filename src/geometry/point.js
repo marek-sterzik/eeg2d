@@ -41,8 +41,22 @@ export default class Point
         return this.addVector(o2.rot(angle));
     }
 
-    addVector = (v) => {
+    add = (v) => {
+        if (!v instanceof Vector) {
+            throw "invalid argument: vector needs to be added to a point";
+        }
         return new Point (this.x + v.x, this.y + v.y);
+    }
+
+    addVector = (v) => {
+        if (!v instanceof Vector) {
+            throw "invalid argument: vector needs to be added to a point";
+        }
+        return new Point (this.x + v.x, this.y + v.y);
+    }
+
+    interpolate = (p2, ratio = 0.5) => {
+        return this.addVector(this.vectorTo(p2).mul(ratio))
     }
 
     distanceTo = (p2) => {

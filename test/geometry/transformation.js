@@ -106,6 +106,23 @@ export default () => {
         assert.equal(matrix.m[1][2], 0);
     });
 
+    it("construction:twoPoint", () => {
+        const a1 = Point.create(0, 0)
+        const b1 = Point.create(0, 1)
+        const a2 = Point.create(1, 0)
+        const b2 = Point.create(2, 0)
+
+        const transformation = Transformation.twoPoint(a1, b1, a2, b2)
+
+        const a1i = transformation.transformPoint(a1)
+        const b1i = transformation.transformPoint(b1)
+
+        assert.approxEqual(a1i.x, a2.x)
+        assert.approxEqual(a1i.y, a2.y)
+        assert.approxEqual(b1i.x, b2.x)
+        assert.approxEqual(b1i.y, b2.y)
+    });
+
     it("composition", () => {
         var t1 = Transformation.translate(1, 2);
         var t2 = Transformation.rotate(Angle.deg(45), 3, 4);

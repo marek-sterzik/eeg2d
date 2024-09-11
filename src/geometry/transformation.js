@@ -215,6 +215,18 @@ export default class Transformation
         return new Transformation([]);
     }
 
+    static twoPoint = (a1, b1, a2, b2) => {
+        const v1 = a1.vectorTo(b1)
+        const v2 = a2.vectorTo(b2)
+        const angle = v1.angleTo(v2)
+        const scale = v2.size() / v1.size()
+        const translation = a1.vectorTo(a2)
+        const at1 = AtomicTransformation.instantiate({"type": "translate", "vector": translation});
+        const at2 = AtomicTransformation.instantiate({"type": "scale", "centerPoint": a1, "scaleX": scale, "scaleY": scale})
+        const at3 = AtomicTransformation.instantiate({"type": "rotate", "centerPoint": a1, "angle": angle});
+        return new Transformation([at1, at2, at3])
+    }
+
     getAtomicTransformations = () => {
         return this.atomicTransformations;
     }

@@ -91,14 +91,17 @@ Point.origin()        // the origin of the coordinates
 
 Point operations:
 ```js
-point1.rot(point2, angle) // rotate the vector from point1 to point2 by the given angle and get the new point as a result
-point.rot(vector, angle)  // similar as above, but point2 is replaced by the vector from point1 to point2
+point1.rot(point2, angle)         // rotate the vector from point1 to point2 by the given angle and get the new point as a result
+point.rot(vector, angle)          // similar as above, but point2 is replaced by the vector from point1 to point2
 
-point.addVector(vector)   // add vector to point (get new point)
-point1.distanceTo(point2) // distance between two points
-point1.vectorTo(point2)   // vector from point1 to point2
+point.addVector(vector)           // add vector to point
+point.add(vector)                 // add vector to point (same as addVector)
+point1.interpolate(point2)        // find center between two points
+point1.interpolate(point2, ratio) // find weighted center between two point (ratio=0 means point1, ratio=1 means point2, ratio=0.5 means the exact center)
+point1.distanceTo(point2)         // distance between two points
+point1.vectorTo(point2)           // vector from point1 to point2
 
-point.isOrigin()          // test if the point is the origin
+point.isOrigin()                  // test if the point is the origin
 
 ```
 
@@ -143,6 +146,8 @@ Transformation.skew(angleX, angleY)
 Transformation.skew(angleX, angleY, centerPoint)
 
 Transformation.identity()         // get the identity transformation
+
+Transformation.twoPoint(a1, b1, a2, b2)  // find the angle-preserving transformation transforming a1 to a2 and b1 to b2
 ```
 
 Transformation operations:
