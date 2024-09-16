@@ -1,11 +1,11 @@
-import Convertor from "./convertor.js";
-import AngleConvertor from "./angle.js";
-import NumberConvertor from "./number.js";
+import Convertor from "./convertor.js"
+import AngleConvertor from "./angle.js"
+import NumberConvertor from "./number.js"
 
-import Transformation from "../geometry/transformation.js";
+import Transformation from "../geometry/transformation.js"
 
-import AtomicTransformation from "../utility/atomic_transformation.js";
-import ZeroTest from "../utility/zerotest.js";
+import AtomicTransformation from "../utility/atomic_transformation.js"
+import ZeroTest from "../utility/zerotest.js"
 import RegexpUtil from "../utility/regexp_util.js"
 
 export default class TransformationConvertor extends Convertor
@@ -75,7 +75,7 @@ export default class TransformationConvertor extends Convertor
         var ar
         var record
         while (string !== '') {
-            record = {};
+            record = {}
             if (!first) {
                 ar = transformationDelimeter.split2(string)
                 if (ar.length < 2) {
@@ -93,13 +93,13 @@ export default class TransformationConvertor extends Convertor
             [token, string] = space.readToken(string)
 
             if (string === '') {
-                break;
+                break
             }
             
             [record.type, string] = identifier.readToken(string)
 
             if (record.type === null) {
-                return null;
+                return null
             }
 
             [token, string] = space.readToken(string);

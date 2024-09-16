@@ -61,7 +61,7 @@ class StringUtil
     constructor(pattern)
     {
         if (typeof pattern !== 'string') {
-            throw 'cannot create a string matching pattern from non-string';
+            throw 'cannot create a string matching pattern from non-string'
         }
         this.pattern = pattern
     }
