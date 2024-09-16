@@ -1,9 +1,9 @@
-import PointConvertor from "../convertors/point.js";
-import VectorConvertor from "../convertors/vector.js";
-import AngleConvertor from "../convertors/angle.js";
-import TransformationConvertor from "../convertors/transformation.js";
+import PointConvertor from "../convertors/point.js"
+import VectorConvertor from "../convertors/vector.js"
+import AngleConvertor from "../convertors/angle.js"
+import TransformationConvertor from "../convertors/transformation.js"
 
-import {StringConvertorDefaultParams, Reference} from "../string_convertor_default_params.js";
+import {StringConvertorDefaultParams, Reference} from "../string_convertor_default_params.js"
 
 
 export default class StringConvertor
@@ -16,65 +16,65 @@ export default class StringConvertor
             return defaultStringConvertor
         }
 
-        return new StringConvertor(defaultStringConvertor.params.merge(def));
+        return new StringConvertor(defaultStringConvertor.params.merge(def))
     }
 
     static setDefault = (stringConvertor) => {
-        var oldStringConvertor = defaultStringConvertor;
+        var oldStringConvertor = defaultStringConvertor
 
         if (stringConvertor === null) {
-            stringConvertor = new StringConvertor();
+            stringConvertor = new StringConvertor()
         }
-        defaultStringConvertor = stringConvertor;
+        defaultStringConvertor = stringConvertor
 
-        return oldStringConvertor;
+        return oldStringConvertor
     }
 
     constructor(params)
     {
         if (params === undefined) {
-            params = {};
+            params = {}
         }
         if (! (params instanceof StringConvertorParams)) {
-            params = new StringConvertorParams(params);
+            params = new StringConvertorParams(params)
         }
-        this.params = params;
+        this.params = params
     }
 
     setDefault = () => {
-        return StringConvertor.setDefault(this);
+        return StringConvertor.setDefault(this)
     }
 
     parseVector = (string) => {
-        return this.params.invokeParse(VectorConvertor, string);
+        return this.params.invokeParse(VectorConvertor, string)
     }
 
     vectorToString = (vector) => {
-        return this.params.invokeToString(VectorConvertor, vector);
+        return this.params.invokeToString(VectorConvertor, vector)
     }
 
     parsePoint = (string) => {
-        return this.params.invokeParse(PointConvertor, string);
+        return this.params.invokeParse(PointConvertor, string)
     }
 
     pointToString = (point) => {
-        return this.params.invokeToString(PointConvertor, point);
+        return this.params.invokeToString(PointConvertor, point)
     }
 
     parseAngle = (string) => {
-        return this.params.invokeParse(AngleConvertor, string);
+        return this.params.invokeParse(AngleConvertor, string)
     }
 
     angleToString = (angle) => {
-        return this.params.invokeToString(AngleConvertor, angle);
+        return this.params.invokeToString(AngleConvertor, angle)
     }
 
     parseTransformation = (string) => {
-        return this.params.invokeParse(TransformationConvertor, string);
+        return this.params.invokeParse(TransformationConvertor, string)
     }
 
     transformationToString = (transformation) => {
-        return this.params.invokeToString(TransformationConvertor, transformation);
+        return this.params.invokeToString(TransformationConvertor, transformation)
     }
 }
 
@@ -82,60 +82,60 @@ class StringConvertorParams
 {
     constructor(params)
     {
-        this._params = params;
+        this._params = params
     }
 
     merge = (params) => {
-        return new StringConvertorParams(Object.assign({}, this._params, params));
+        return new StringConvertorParams(Object.assign({}, this._params, params))
     }
 
     invokeParse = (convertor, string) => {
-        var fn = this._getInvokedFunction(convertor, 'parse');
-        var object = fn(string);
+        var fn = this._getInvokedFunction(convertor, 'parse')
+        var object = fn(string)
         if (!convertor.accepts(object)) {
-            throw "Parser created an object which is not accepted by the convertor";
+            throw "Parser created an object which is not accepted by the convertor"
         }
-        return object;
+        return object
     }
 
     invokeToString = (convertor, object) => {
-        var fn = this._getInvokedFunction(convertor, 'toString');
+        var fn = this._getInvokedFunction(convertor, 'toString')
         if (!convertor.accepts(object)) {
-            throw "Convertor does not accept this object for toString conversion";
+            throw "Convertor does not accept this object for toString conversion"
         }
-        var string = fn(object);
+        var string = fn(object)
 
-        return string;
+        return string
     }
 
     get = (param) => {
-        return this._get(param);
+        return this._get(param)
     }
 
     _getInvokedFunction = (convertor, operation) => {
-        var fnName = "fn." + convertor.getName() + "." + operation;
-        var fn = this.get(fnName);
-        var fnThis = null;
-        var params = this;
+        var fnName = "fn." + convertor.getName() + "." + operation
+        var fn = this.get(fnName)
+        var fnThis = null
+        var params = this
         if (fn === null) {
-            fn = convertor[operation];
-            fnThis = convertor;
+            fn = convertor[operation]
+            fnThis = convertor
         }
 
-        return object => fn.call(fnThis, object, params, fnName);
+        return object => fn.call(fnThis, object, params, fnName)
     }
 
     _get = (param) => {
         if (param in this._params) {
-            return this._params[param];
+            return this._params[param]
         }
 
         if (param in StringConvertorDefaultParams) {
-            return StringConvertorDefaultParams[param];
+            return StringConvertorDefaultParams[param]
         }
 
-        return null;
+        return null
     }
 }
 
-var defaultStringConvertor = new StringConvertor();
+var defaultStringConvertor = new StringConvertor()
