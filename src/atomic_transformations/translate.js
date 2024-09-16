@@ -1,23 +1,23 @@
-import NumberConvertor from '../convertors/number.js';
+import NumberConvertor from '../convertors/number.js'
 
-import MatrixGenerator from '../math/matrix_generator.js';
+import MatrixGenerator from '../math/matrix_generator.js'
 
-import AtomicTransformation from './atomic_transformation.js';
+import AtomicTransformation from './atomic_transformation.js'
 
-import Vector from '../geometry/vector.js';
+import Vector from '../geometry/vector.js'
 
 export default class Translate extends AtomicTransformation
 {
     constructor(params)
     {
-        super();
-        this._checkParam(params, 'vector', Vector);
-        this.vector = params.vector;
+        super()
+        this._checkParam(params, 'vector', Vector)
+        this.vector = params.vector
     }
 
     getMatrix()
     {
-        return MatrixGenerator.translate(this.vector);
+        return MatrixGenerator.translate(this.vector)
     }
 
     getArgs()
@@ -27,43 +27,43 @@ export default class Translate extends AtomicTransformation
 
     isIdentity()
     {
-        return this.vector.isZero();
+        return this.vector.isZero()
     }
 
     isCanonical()
     {
-        return true;
+        return true
     }
 
     static getName()
     {
-        return 'translate';
+        return 'translate'
     }
 
     static getArgsConvertors()
     {
-        return [NumberConvertor, NumberConvertor];
+        return [NumberConvertor, NumberConvertor]
     }
 
     static argsToParams(args)
     {
-        var x, y;
+        var x, y
         if (args.length < 1 || args.length > 3) {
-            throw "Invalid number of arguments for a translation";
+            throw "Invalid number of arguments for a translation"
         }
 
-        x = args[0];
-        y = (args.length >= 2) ? args[1] : 0;
+        x = args[0]
+        y = (args.length >= 2) ? args[1] : 0
 
-        return {"vector": new Vector(x, y)};
+        return {"vector": new Vector(x, y)}
     }
 
     canonicalMerge(op2)
     {
         if (op2 instanceof Translate) {
-            return new Translate({"vector": this.vector.add(op2.vector)});
+            return new Translate({"vector": this.vector.add(op2.vector)})
         } else {
-            return null;
+            return null
         }
     }
 }
