@@ -91,6 +91,13 @@ export default () => {
         }
     });
 
+    it("angle with inaccurate computing", () => {
+        // test if angle is working in cases where inaccuracy causes the acos argument being > 1
+        var v = Vector.create(-79.08203125, -2.681640625)
+        var angle = v.angleTo(v)
+        assert.approxEqual(angle.rad(), 0)
+    })
+
     it("translation", () => {
         var v = Vector.create(2, -3);
         var t = v.getTranslation();
