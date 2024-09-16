@@ -125,7 +125,7 @@ export let StringConvertorDefaultParams = {
     //transformation stringifier
     'fn.transformation.toString': null,
 
-};
+}
 
 export class Reference
 {
