@@ -39,6 +39,10 @@ export default class Vector
         return Math.sqrt(this.mul(this))
     }
 
+    sizeSquare = () => {
+        return this.mul(this)
+    }
+
     isZero = () => {
         return ZeroTest.isZero(this.x) && ZeroTest.isZero(this.y)
     }

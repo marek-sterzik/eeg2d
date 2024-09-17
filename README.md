@@ -60,7 +60,7 @@ Vector.zero()         // zero vector
 Vector operations:
 ```js
 vector.size()         // size of the vector
-
+vector.sizeSquare()   // the square of the vector (faster than size() because it does not need to comupte the square root)
 vector1.add(vector2)  // add two vectors
 vector1.sub(vector2)  // subtract two vectors
 vector.mul(2)         // multiply vector by 2

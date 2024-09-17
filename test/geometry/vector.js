@@ -46,6 +46,7 @@ export default () => {
 
         var v6 = Vector.create(3, 4);
         assert.approxEqual(v6.size(), 5);
+        assert.equal(v6.sizeSquare(), 25);
 
         var v7 = v6.normalize();
         assert.approxEqual(v7.x, 3/5);
