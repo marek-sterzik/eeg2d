@@ -68,6 +68,7 @@ vector.mul(2)         // multiply vector by 2
 vector1.mul(vector2)  // scalar product of two vectors
 
 vector.rot(angle)     // rotate the vector by a given angle clockwise
+vector.rot()          // equal to vector.rot(Angle.right())
 
 vector.normalize()    // make unit vector of the same direction
 

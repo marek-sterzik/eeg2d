@@ -61,9 +61,18 @@ export default class Vector
         return new Vector (this.x - v.x, this.y - v.y)
     }
 
-    rot = (angle) => {
-        var cs = angle.cos()
-        var sn = angle.sin()
+    rot = (angle = undefined) => {
+        var cs, sn
+        if (angle !== undefined) {
+            if (!(angle instanceof Angle)) {
+                angle = Angle.create(angle)
+            }
+            cs = angle.cos()
+            sn = angle.sin()
+        } else {
+            cs = 0
+            sn = 1
+        }
         return new Vector (cs * this.x - sn * this.y, sn * this.x + cs * this.y)
     }
 

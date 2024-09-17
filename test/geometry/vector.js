@@ -89,6 +89,16 @@ export default () => {
             assert.approxEqual(v.x, Math.cos((i + 2) * Math.PI / 18));
             assert.approxEqual(v.y, Math.sin((i + 2) * Math.PI / 18));
         }
+
+        var v4 = Vector.create(2, 1).rot()
+        assert.equal(v4.x, -1)
+        assert.equal(v4.y, 2)
+        v4 = v4.rot()
+        assert.equal(v4.x, -2)
+        assert.equal(v4.y, -1)
+        v4 = v4.rot()
+        assert.equal(v4.x, 1)
+        assert.equal(v4.y, -2)
     });
 
     it("angle with inaccurate computing", () => {
