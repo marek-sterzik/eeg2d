@@ -230,7 +230,7 @@ convertor.parseTransformation("rotate(45deg)")  // convert string to transformat
 ```
 
 String convertor parameters. A string convertor is always created using an object of parameters.
-See [src/convertor\_default\_params.js](src/convertor_default_params.js) for the list of available parameters.
+See [src/string\_convertor\_default\_params.js](src/string_convertor_default_params.js) for the list of available parameters.
 
 # TODO
 
