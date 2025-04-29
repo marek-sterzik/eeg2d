@@ -16,7 +16,7 @@ export default class StringConvertor
             return defaultStringConvertor
         }
 
-        return new StringConvertor(defaultStringConvertor.params.merge(def))
+        return new StringConvertor(baseStringConvertor.params.merge(def))
     }
 
     static setDefault = (stringConvertor) => {
@@ -138,4 +138,5 @@ class StringConvertorParams
     }
 }
 
-var defaultStringConvertor = new StringConvertor()
+const baseStringConvertor = new StringConvertor()
+var defaultStringConvertor = baseStringConvertor

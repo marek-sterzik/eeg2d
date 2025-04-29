@@ -94,7 +94,8 @@ export let StringConvertorDefaultParams = {
 
     
     // all 'fn.*' params expect either a custom function or null.
-    // The function is used to parse/stringify an object.
+    // The function is used to parse/stringify an object and if set, other parameters 
+    // associated with the given string conversion does not take any effect.
     // All these functions gets 3 arguments:
     //   1. the string/object itself to be parsed/stringified
     //   2. the string convertor params (use params.get('<param>') to get a single param value)

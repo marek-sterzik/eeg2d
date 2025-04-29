@@ -184,16 +184,54 @@ atomicTransformation.getArgs()           // get the arguments of the atomic tran
 
 ## String conversions
 
+Simple conversions to string:
 ```js
-angle.toString()                   // convert angle to string
-vector.toString()                  // convert vector to string
-point.toString()                   // convert point to string
-transformation.toString()          // convert transformation to string
+angle.toString()                        // convert angle to string
+vector.toString()                       // convert vector to string
+point.toString()                        // convert point to string
+transformation.toString()               // convert transformation to string
+
+Angle.create("90deg")                   // convert string to angle
+Vector.create("(1, 2)")                 // convert string to vector
+Point.create("[1, 2]")                  // convert string to point
+Transformation.create("rotate(45deg)")  // convert string to transformation
+```
+Transformation string conversions are by default designed to match the svg standard.
+
+But string conversions may be customized. For customizing string conversions you need an object of type `StringConvertor` which does all the conversion staff.
+All the operations above use the default string convertor, which is already preset. But you may either change the default string convertor, or do some special
+string conversions by a custom string convertor while not changing the default string convertor.
+
+Manipulating string convertors:
+```js
+import {StringConvertor} from "eeg2d"
+
+convertor = StringConvertor.get()                     // get the current default string convertor
+
+oldConvertor = convertor.setDefault()                 // set the given string convertor as default
+oldConvertor = StringConvertor.setDefault(convertor)  // same as above (set the given string convertor as default)
+
+convertor = StringConvertor.get(params)               // get the string convertor according to the given parameters (see later)
 ```
 
-**Warning:** String conversions needs to be described more detailed.
+Using a specific non-default string convertor to process the string conversions:
+```js
+convertor = StringConvertor.get(params)
+
+angle.toString(convertor)                       // convert angle to string
+vector.toString(convertor)                      // convert vector to string
+point.toString(convertor)                       // convert point to string
+transformation.toString(convertor)              // convert transformation to string
+
+convertor.parseAngle("90deg")                   // convert string to angle
+convertor.parseVector("(1, 2)")                 // convert string to vector
+convertor.parsePoint("[1, 2]")                  // convert string to point
+convertor.parseTransformation("rotate(45deg)")  // convert string to transformation
+```
+
+String convertor parameters. A string convertor is always created using an object of parameters.
+See [src/convertor\_default\_params.js](src/convertor_default_params.js) for the list of available parameters.
 
 # TODO
 
 * transformation interpolation
-* better string conversion documentation
