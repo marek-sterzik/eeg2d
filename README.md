@@ -78,6 +78,15 @@ vector.isZero()       // test if the vector is zero
 
 ```
 
+Vector to base decomposition:
+```js
+// decompose vector to coefficients <c1, c2> of the linear combination of the vector base <b1, b2>:
+[c1, c2] = vector.decompose(b1, b2)
+
+// similar as vector.decompose(), but the return value are vectors - multiples of the base <b1, b2>:
+[v1, v2] = vector.decomposeAsVectors(b1, b2)
+```
+
 ## Points
 
 A point represents a point in the euclidian 2-dimensional space

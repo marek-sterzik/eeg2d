@@ -5,6 +5,14 @@ import StringConvertor from "../utility/string_convertor.js"
 import Angle from "./angle.js"
 import Transformation from "./transformation.js"
 
+const valueWeight = (v) => {
+    v = Math.abs(v)
+    if (v > 1) {
+        v = 1/v
+    }
+    return v
+}
+
 export default class Vector
 {
     constructor(x, y)
@@ -102,6 +110,26 @@ export default class Vector
         }
 
         return Angle.rad(angleRadians)
+    }
+
+    decompose = (v1, v2) => {
+        var swap = false
+        if (valueWeight(v2.x) > valueWeight(v1.x)) {
+            [v2, v1] = [v1, v2];
+            swap = true
+        }
+        const D = v1.x * v2.y - v1.y * v2.x
+        if (ZeroTest.isZero(D)) {
+            throw "Cannot decompose to linear dependent base vectors"
+        }
+        const x1 = this.x * (D + v2.x * v1.y)/(v1.x * D) - this.y * v2.x/D
+        const x2 = this.y * v1.x/D - this.x * v1.y/D
+        return swap ? [x2, x1] : [x1, x2]
+    }
+
+    decomposeAsVectors = (v1, v2) => {
+        const [c1, c2] = this.decompose(v1, v2)
+        return [v1.mul(c1), v2.mul(c2)]
     }
 
     toString = (...argList) => {

@@ -3,6 +3,11 @@ import ZeroTest from "../../src/utility/zerotest.js";
 
 export default class
 {
+    static throws(block, error = undefined, message = undefined)
+    {
+        assert.throws(block, error, message)
+    }
+
     static ok(value, message)
     {
         assert.ok(value, message);
